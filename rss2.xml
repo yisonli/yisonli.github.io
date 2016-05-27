@@ -10,7 +10,7 @@
 	<atom:link href="http://yisonli.github.io/rss2.xml" rel="self" type="application/rss+xml" />
 	<link>http://yisonli.github.io/</link>
 	<description>其实，有一种风景无需刻意寻觅就能随时随地感受到</description>
-	<lastBuildDate>Fri, 27 May 2016 13:46:00 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 27 May 2016 13:47:04 +0000</lastBuildDate>
 	<language>zh-CN</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
@@ -20,7 +20,7 @@
 		<title>Sample Page</title>
 		<link>http://yisonli.github.io/article/2.html</link>
 		<comments></comments>
-		<pubDate>Fri, 27 May 2016 13:46:00 +0000</pubDate>
+		<pubDate>Fri, 27 May 2016 13:47:04 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[]]></category>
@@ -35,7 +35,7 @@
 		<title>Hello world!</title>
 		<link>http://yisonli.github.io/article/1.html</link>
 		<comments></comments>
-		<pubDate>Fri, 27 May 2016 13:46:00 +0000</pubDate>
+		<pubDate>Fri, 27 May 2016 13:47:04 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[Uncategorized]]></category>
