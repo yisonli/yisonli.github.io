@@ -10,25 +10,25 @@
 	<atom:link href="http://yisonli.github.io/rss2.xml" rel="self" type="application/rss+xml" />
 	<link>http://yisonli.github.io/</link>
 	<description>其实，有一种风景无需刻意寻觅就能随时随地感受到</description>
-	<lastBuildDate>Sun, 29 May 2016 08:32:34 +0000</lastBuildDate>
+	<lastBuildDate>Sun, 29 May 2016 08:53:31 +0000</lastBuildDate>
 	<language>zh-CN</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>http://yisonli.github.io/</generator>
   
   	<item>
-		<title>测试测试</title>
+		<title>同时使用多个GITHUB的KEY的配置</title>
 		<link>http://yisonli.github.io/article/7.html</link>
 		<comments></comments>
-		<pubDate>Sun, 29 May 2016 08:32:34 +0000</pubDate>
+		<pubDate>Sun, 29 May 2016 08:53:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[未分类]]></category>
     		<category><![CDATA[未分类]]></category>
         
 		<guid isPermaLink="false">http://yisonli.github.io/article/7.html</guid>
-		<description><![CDATA[11112222]]></description>
-    <content:encoded><![CDATA[11112222]]></content:encoded>
+		<description><![CDATA[一、生成并添加第一个ssh key$ ssh-keygen -t rsa -C"youremail@xxx.com"执行命令一路回车，会在~/.ssh/目录下生成id_rsa和id_rsa.pub两个文件$ cat ~/.ssh/id_rsa.pub打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库1）二、生成并添加第二个ssh key$ ssh-]]></description>
+    <content:encoded><![CDATA[一、生成并添加第一个ssh key$ ssh-keygen -t rsa -C"youremail@xxx.com"执行命令一路回车，会在~/.ssh/目录下生成id_rsa和id_rsa.pub两个文件$ cat ~/.ssh/id_rsa.pub打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库1）二、生成并添加第二个ssh key$ ssh-]]></content:encoded>
 		<wfw:commentRss></wfw:commentRss>
 		<slash:comments>0</slash:comments>
 	</item>
@@ -36,7 +36,7 @@
 		<title>示例页面</title>
 		<link>http://yisonli.github.io/article/2.html</link>
 		<comments></comments>
-		<pubDate>Sun, 29 May 2016 08:32:34 +0000</pubDate>
+		<pubDate>Sun, 29 May 2016 08:53:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[]]></category>
@@ -51,7 +51,7 @@
 		<title>世界，您好！</title>
 		<link>http://yisonli.github.io/article/1.html</link>
 		<comments></comments>
-		<pubDate>Sun, 29 May 2016 08:32:34 +0000</pubDate>
+		<pubDate>Sun, 29 May 2016 08:53:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[未分类]]></category>
