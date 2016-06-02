@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <base href='http://yisonli.github.io/'>
+    <meta name="baidu-site-verification" content="73P8XwbEjJ" />
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+    <title></title>
+    <style>
+      body{
+        margin:0;
+        padding:0;
+        background: #DADEE2;
+      }
+      img{
+           margin: 20px auto;
+           display: block;
+           max-width: 100%;
+      }
+      .globalWidth{
+        display: block;
+        width:1160px;
+        margin: 0 auto;
+        /*border:2px white solid;*/
+        text-align: left;
+      }
+      div.header{
+        padding: 20px 0 5px;
+        background:#144254;
+      }
+      div.header .inner{
+        color: #EBEDEF;
+      }
+      div.header .inner .title{
+        font-size: 46px;
+      }
+      div.header .inner a,
+      div.header .inner a:visited{
+        font-weight: bold;
+        color: #EBEDEF;
+        text-decoration: none;
+      }
+      div.header .inner a:hover{
+        color: #0000EF;
+      }
+      div.header .inner small{
+        font-size: 18px;
+        /*margin-left: 20px;*/
+      }
+      .article{
+        margin: 16px 0;
+      }
+      .article .leftPart{
+        width:1100px;
+        /*border:1px solid;*/
+        float: left;
+      }
+      .article .leftPart .format_left{
+        padding: 16px;
+        margin: 0 0 16px 0;
+        background: #FFFFFF;
+      }
+      .article .rightPart{
+        width:45px;
+        height:45px;
+        border:1px solid #ABADAF;
+        float: right;
+        /*background: #D8DBDE;*/
+        background: #ABADAF;
+      }
+      .article .rightPart .format_right{
+        /*padding: 14px;*/
+      }
+      
+      .color_title{color: #444444;}
+      .color_content{color: #8F446C;}
+      .color_tag{color: #CDBBC4;}
+      
+      .iTitle{
+        font-size: 30px;
+        font-family: "微软雅黑";
+        color: #444444;
+      }
+      .iTitle a,.iTitle a:visited{
+        color: #444444;
+        text-decoration: none;
+      }
+      .iTitle a:hover{
+        color:#999999;
+      }
+      .iInfoMore{
+        padding: 10px 0;
+        font-size: 14px;
+      }
+      .iContent{
+        padding: 20px 0;
+        font:15px/20px "";
+      }
+      
+    </style>
+    <script>
+            </script>
+  </head>
+  <body>
+    <!--START OF 头部-->
+    <div class="header">
+      <div class="inner globalWidth">
+        <div class="title"><a href="http://yisonli.github.io/">晨之雨</a></div>
+        <small><a href="http://yisonli.github.io/">其实，有一种风景无需刻意寻觅就能随时随地感受到</a></small>
+      </div>
+    </div>
+    <!--END OF 头部-->
+    <!--START OF 内容-->
+    <div class="article">
+      <div class="globalWidth">
+        <div class="leftPart">
+                    <div class="format_left">
+            <div class="iTitle"><a href="article/15.html">PHP7.0.7安装记录</a></div>
+            <div class="iInfoMore">
+                <b>日期</b>
+                <span class="iDate">2016-06-02</span>
+                <b>分类</b>
+                <span class="iTag">PHP</span>
+                <b>标签</b>
+                                <span class="iTag">#PHP#</span>
+                            </div>
+            <div class="iContent"><p><div></p><p><div><strong>1.获取 PHP 指定版本，下载地址可以在这个页面找到：</strong></div></p><p><div>sudo wget <a href="http://cn2.php.net/distributions/php-7.0.7.tar.xz">http://cn2.php.net/distributions/php-7.0.7.tar.xz</a></div></p><p><div></div></p><p><div>tar -xvf php-7.0.7.tar.xz</div></p><p><div></div></p><p></div></p><p><div><strong>2.安装:</strong></div></p><p><div></div></p><p><div></div></p><p><div>sudo apt-get update</div></p><p><div></div></p><p><div>sudo apt-get install nginx mysql-client-core-5.6 git libxml2-dev build-essential openssl libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev libpng-dev libmcrypt-dev libreadline6 libreadline6-dev libjpeg-dev libpng-dev libgmp-dev</div></p><p><div></div></p><p><div>sudo ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h</div></p><p><div></div></p><p><div></div></p><p><div>cd php-7*</div></p><p><div></div></p><p><div><strong>3. 编译</strong></div></p><p><div></div></p><p><div>sudo ./configure --prefix=/usr/local/php7.0.7 --enable-fpm --enable-inline-optimization --disable-debug --disable-rpath --enable-shared --enable-opcache --with-gmp  --with-mysql --with-mysqli --with-mysql-sock  --enable-pdo --with-pdo-mysql --with-gettext --enable-mbstring --with-iconv --with-mcrypt --with-mhash --with-openssl --enable-bcmath --enable-soap --with-libxml-dir --enable-pcntl --enable-shmop --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-sockets --with-curl --with-zlib --enable-zip --enable-bz2 --with-readline --without-sqlite3 --without-pdo-sqlite --with-pear --with-libdir=/lib/x86_64-linux-gnu --with-gd --with-jpeg-dir=/usr/lib --enable-gd-native-ttf --enable-xml</div></p><p><div></div></p><p><div>//中间可能会出现 configure: WARNING: unrecognized options: --with-mysql, --enable-bz2</div></p><p><div></div></p><p><div>sudo make</div></p><p><div>sudo make install</div></p><p><div></div></p><p><div>sudo ln -s /usr/local/php7.0.7 /usr/local/php</div></p><p><div></div></p><p><div>sudo cp php.ini-production /usr/local/php/lib/php/php.ini</div></p><p><div></div></p><p><div></div></p><p><div></div></p><p><div><strong>4. 配置php-fpm</strong></div></p><p><div>cd /usr/local/php/etc</div></p><p><div>sudo cp php-fpm.conf.default php-fpm.conf</div></p><p><div>cd /usr/local/php/etc/php-fpm.d</div></p><p><div>sudo cp <a href="http://www.conf.default/">www.conf.default</a> <a href="http://www.conf/">www.conf</a></div></p><p><div>sudo vim <a href="http://www.conf/">www.conf</a></div></p><p><div></div></p><p><div>修改</div></p><p><div>user = www-data</div></p><p><div>group = www-data</div></p><p><div></div></p><p><div>如果www-data用户不存在，那么先添加www-data用户</div></p><p><div>groupadd www-data</div></p><p><div>useradd -g www-data www-data</div></p><p><div></div></p><p><div><strong>5. 启动php-fpm</strong></div></p><p><div>sudo /usr/local/php/sbin/php-fpm</div></p><p><div></div></p><p><div>加入系统变量</div></p><p><div>sudo echo "PATH=$PATH:/usr/local/php/bin"&gt;&gt; /etc/profile</div></p><p><div>sudo echo "export PATH"&gt;&gt; /etc/profile</div></p><p><div>source /etc/profile</div></p><p><div></div></p><p><div></div></p><p><div><strong>6. NGINX配置</strong></div></p><p><div></div></p><p><div>cd /etc/nginx/sites-enabled</div></p><p><div>vim default</div></p><p><div></div></p><p><div>找到下面的配置, 把注释打开</div></p><p><div># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</div></p><p><div>#</div></p><p><div>location ~ \.php$ {</div></p><p><div>        fastcgi_split_path_info ^(.+\.php)(/.+)$;</div></p><p><div>        # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini</div></p><p><div></div></p><p><div>        # With php5-cgi alone:</div></p><p><div>        fastcgi_pass 127.0.0.1:9000;</div></p><p><div>        # With php5-fpm:</div></p><p><div>        #fastcgi_pass unix:/var/run/php5-fpm.sock;</div></p><p><div>        fastcgi_index index.php;</div></p><p><div>        include fastcgi_params;</div></p><p><div>}</div></p><p><div></div></p><p><div>sudo service nginx reload</div></p><p><div></div></p><p><div></div></p><p><div>cd /usr/share/nginx/html</div></p><p><div>写一个index.php 即可看到效果</div></p><p><div></div></p><p><div>最后：注意腾讯云安全组的问题，要把对外80端口打开</div></p></div>
+          </div>
+                  </div>
+        <div class="rightPart">
+          <div class="format_right">
+            <a href="http://yisonli.github.io/rss2.xml">RSS</a>          </div>
+        </div>
+      </div>
+      
+    </div>
+    <!--END OF 内容-->
+    <!--START OF 脚部-->
+    <!--END OF 脚部-->
+
+  </body>
+  
+</html>
+<script>
+var data = {};
+
+</script>
