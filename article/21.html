@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <base href='http://yisonli.github.io/'>
+    <meta name="baidu-site-verification" content="73P8XwbEjJ" />
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+    <title></title>
+    <style>
+      body{
+        margin:0;
+        padding:0;
+        background: #DADEE2;
+      }
+      img{
+           margin: 20px auto;
+           display: block;
+           max-width: 100%;
+      }
+      .globalWidth{
+        display: block;
+        width:1160px;
+        margin: 0 auto;
+        /*border:2px white solid;*/
+        text-align: left;
+      }
+      div.header{
+        padding: 20px 0 5px;
+        background:#144254;
+      }
+      div.header .inner{
+        color: #EBEDEF;
+      }
+      div.header .inner .title{
+        font-size: 46px;
+      }
+      div.header .inner a,
+      div.header .inner a:visited{
+        font-weight: bold;
+        color: #EBEDEF;
+        text-decoration: none;
+      }
+      div.header .inner a:hover{
+        color: #0000EF;
+      }
+      div.header .inner small{
+        font-size: 18px;
+        /*margin-left: 20px;*/
+      }
+      .article{
+        margin: 16px 0;
+      }
+      .article .leftPart{
+        width:1100px;
+        /*border:1px solid;*/
+        float: left;
+      }
+      .article .leftPart .format_left{
+        padding: 16px;
+        margin: 0 0 16px 0;
+        background: #FFFFFF;
+      }
+      .article .rightPart{
+        width:45px;
+        height:45px;
+        border:1px solid #ABADAF;
+        float: right;
+        /*background: #D8DBDE;*/
+        background: #ABADAF;
+      }
+      .article .rightPart .format_right{
+        /*padding: 14px;*/
+      }
+      
+      .color_title{color: #444444;}
+      .color_content{color: #8F446C;}
+      .color_tag{color: #CDBBC4;}
+      
+      .iTitle{
+        font-size: 30px;
+        font-family: "微软雅黑";
+        color: #444444;
+      }
+      .iTitle a,.iTitle a:visited{
+        color: #444444;
+        text-decoration: none;
+      }
+      .iTitle a:hover{
+        color:#999999;
+      }
+      .iInfoMore{
+        padding: 10px 0;
+        font-size: 14px;
+      }
+      .iContent{
+        padding: 20px 0;
+        font:15px/20px "";
+      }
+      
+    </style>
+    <script>
+            </script>
+  </head>
+  <body>
+    <!--START OF 头部-->
+    <div class="header">
+      <div class="inner globalWidth">
+        <div class="title"><a href="http://yisonli.github.io/">晨之雨</a></div>
+        <small><a href="http://yisonli.github.io/">其实，有一种风景无需刻意寻觅就能随时随地感受到</a></small>
+      </div>
+    </div>
+    <!--END OF 头部-->
+    <!--START OF 内容-->
+    <div class="article">
+      <div class="globalWidth">
+        <div class="leftPart">
+                    <div class="format_left">
+            <div class="iTitle"><a href="article/21.html">Top K相关的一道题</a></div>
+            <div class="iInfoMore">
+                <b>日期</b>
+                <span class="iDate">2016-06-03</span>
+                <b>分类</b>
+                <span class="iTag">编程算法</span>
+                <b>标签</b>
+                                <span class="iTag">#编程算法#</span>
+                            </div>
+            <div class="iContent"><p><strong>题目是： </strong></p><p></p><p>假设有一个100亿行数据的文件，每一行都有两个字段，时间(年月日)和用户名，</p><p></p><p>For Example:</p><p></p><p>20160603,user_one</p><p></p><p>20160603,user_two</p><p></p><p>...</p><p></p><p>不重复的用户可能有99亿个，单核CPU，512M内存，硬盘足够大；</p><p></p><p>求如何找出记录数最多的10个用户</p><p></p><p>&nbsp;</p><p></p><p><strong>鄙人之拙见：</strong></p><p></p><p>一般来说，解决的办法分为两步。</p><p></p><p>1. 用hash_map结构，做到key-value映射，可以用来统计出现的次数</p><p></p><p>2. 用Top K算法，最小堆的方式取出最大的10个key</p><p></p><p>★但由于内存只有512M，存不下99亿的key-value映射，只能分而治之。</p><p></p><p>★又因为文件系统限制，32位系统下一个文件夹最多能创建65536个文件</p><p></p><p>所以，我们在hash_map前，怎么样把原100亿行的文件做拆分就至关重要了。</p><p></p><p><strong>鄙人的拆分想法如下：</strong></p><p></p><p>1. 我们可以按行读取原始文件，把用户字段取出来，然后按一定的规则分类，例<span style="line-height: 1.5;">如：</span></p><p></p><p>按首字符的二进制来分，0x00~0xff共256钟，可以分为256个文件夹；</p><p></p><p>然后第二个字符再按二进制来分，每个文件夹下可以分为256个文件。</p><p></p><p>这样，就划分了65536块，100亿假设有100G，就分成了每个文件不到2M的大小，内存完全够用。</p><p></p><p>2. 分完文件后，我们对每个文件进行hash_map映射，来统计每个文件里的用户出现次数；统计完成后生成对应的文件记录结果(共有65536个结果)。</p><p></p><p>3. 最终还是用最小堆算法，每个结果都过一遍，就得到最终的10个用户了。</p><p></p><p>&nbsp;</p><p></p><p><strong>以上是鄙人的一些拙见，欢迎各大侠各抒己见，欢迎附代码实现。</strong></p><p></p><p><strong>^_^</strong></p><p></p><p>&nbsp;</p></div>
+          </div>
+                  </div>
+        <div class="rightPart">
+          <div class="format_right">
+            <a href="http://yisonli.github.io/rss2.xml">RSS</a>          </div>
+        </div>
+      </div>
+      
+    </div>
+    <!--END OF 内容-->
+    <!--START OF 脚部-->
+    <!--END OF 脚部-->
+
+  </body>
+  
+</html>
+<script>
+var data = {};
+
+</script>

@@ -10,17 +10,33 @@
 	<atom:link href="http://yisonli.github.io/rss2.xml" rel="self" type="application/rss+xml" />
 	<link>http://yisonli.github.io/</link>
 	<description>其实，有一种风景无需刻意寻觅就能随时随地感受到</description>
-	<lastBuildDate>Thu, 02 Jun 2016 16:06:25 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 03 Jun 2016 14:08:31 +0000</lastBuildDate>
 	<language>zh-CN</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>http://yisonli.github.io/</generator>
   
   	<item>
+		<title>Top K相关的一道题</title>
+		<link>http://yisonli.github.io/article/21.html</link>
+		<comments></comments>
+		<pubDate>Fri, 03 Jun 2016 14:08:31 +0000</pubDate>
+		<dc:creator><![CDATA[晨之雨]]></dc:creator>
+    
+		<category><![CDATA[编程算法]]></category>
+    		<category><![CDATA[编程算法]]></category>
+        
+		<guid isPermaLink="false">http://yisonli.github.io/article/21.html</guid>
+		<description><![CDATA[题目是： 假设有一个100亿行数据的文件，每一行都有两个字段，时间(年月日)和用户名，For Example:20160603,user_one20160603,user_two...不重复的用户可能有99亿个，单核CPU，512M内存，硬盘足够大；求如何找出记录数最多的10个用户&nbsp;鄙人之拙见：一般来说，解决的办法分为两步。1. 用hash_m]]></description>
+    <content:encoded><![CDATA[题目是： 假设有一个100亿行数据的文件，每一行都有两个字段，时间(年月日)和用户名，For Example:20160603,user_one20160603,user_two...不重复的用户可能有99亿个，单核CPU，512M内存，硬盘足够大；求如何找出记录数最多的10个用户&nbsp;鄙人之拙见：一般来说，解决的办法分为两步。1. 用hash_m]]></content:encoded>
+		<wfw:commentRss></wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	</item>
+	<item>
 		<title>PHP7.0.7安装记录</title>
 		<link>http://yisonli.github.io/article/15.html</link>
 		<comments></comments>
-		<pubDate>Thu, 02 Jun 2016 16:06:25 +0000</pubDate>
+		<pubDate>Fri, 03 Jun 2016 14:08:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[PHP]]></category>
@@ -36,7 +52,7 @@
 		<title>同时使用多个GITHUB的KEY的配置</title>
 		<link>http://yisonli.github.io/article/7.html</link>
 		<comments></comments>
-		<pubDate>Thu, 02 Jun 2016 16:06:25 +0000</pubDate>
+		<pubDate>Fri, 03 Jun 2016 14:08:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[GIT]]></category>
@@ -52,7 +68,7 @@
 		<title>示例页面</title>
 		<link>http://yisonli.github.io/article/2.html</link>
 		<comments></comments>
-		<pubDate>Thu, 02 Jun 2016 16:06:25 +0000</pubDate>
+		<pubDate>Fri, 03 Jun 2016 14:08:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[]]></category>
@@ -67,7 +83,7 @@
 		<title>世界，您好！</title>
 		<link>http://yisonli.github.io/article/1.html</link>
 		<comments></comments>
-		<pubDate>Thu, 02 Jun 2016 16:06:25 +0000</pubDate>
+		<pubDate>Fri, 03 Jun 2016 14:08:31 +0000</pubDate>
 		<dc:creator><![CDATA[晨之雨]]></dc:creator>
     
 		<category><![CDATA[未分类]]></category>
