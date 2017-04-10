@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <base href='http://yisonli.github.io/'>
+    <meta name="baidu-site-verification" content="73P8XwbEjJ" />
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+    <title></title>
+    <style>
+      body{
+        margin:0;
+        padding:0;
+        background: #DADEE2;
+      }
+      img{
+           margin: 20px auto;
+           display: block;
+           max-width: 100%;
+      }
+      .globalWidth{
+        display: block;
+        width:1160px;
+        margin: 0 auto;
+        /*border:2px white solid;*/
+        text-align: left;
+      }
+      div.header{
+        padding: 20px 0 5px;
+        background:#144254;
+      }
+      div.header .inner{
+        color: #EBEDEF;
+      }
+      div.header .inner .title{
+        font-size: 46px;
+      }
+      div.header .inner a,
+      div.header .inner a:visited{
+        font-weight: bold;
+        color: #EBEDEF;
+        text-decoration: none;
+      }
+      div.header .inner a:hover{
+        color: #0000EF;
+      }
+      div.header .inner small{
+        font-size: 18px;
+        /*margin-left: 20px;*/
+      }
+      .article{
+        margin: 16px 0;
+      }
+      .article .leftPart{
+        width:1100px;
+        /*border:1px solid;*/
+        float: left;
+      }
+      .article .leftPart .format_left{
+        padding: 16px;
+        margin: 0 0 16px 0;
+        background: #FFFFFF;
+      }
+      .article .rightPart{
+        width:45px;
+        height:45px;
+        border:1px solid #ABADAF;
+        float: right;
+        /*background: #D8DBDE;*/
+        background: #ABADAF;
+      }
+      .article .rightPart .format_right{
+        /*padding: 14px;*/
+      }
+      
+      .color_title{color: #444444;}
+      .color_content{color: #8F446C;}
+      .color_tag{color: #CDBBC4;}
+      
+      .iTitle{
+        font-size: 30px;
+        font-family: "微软雅黑";
+        color: #444444;
+      }
+      .iTitle a,.iTitle a:visited{
+        color: #444444;
+        text-decoration: none;
+      }
+      .iTitle a:hover{
+        color:#999999;
+      }
+      .iInfoMore{
+        padding: 10px 0;
+        font-size: 14px;
+      }
+      .iContent{
+        padding: 20px 0;
+        font:15px/20px "";
+      }
+      
+    </style>
+    <script>
+            </script>
+  </head>
+  <body>
+    <!--START OF 头部-->
+    <div class="header">
+      <div class="inner globalWidth">
+        <div class="title"><a href="http://yisonli.github.io/">晨之雨</a></div>
+        <small><a href="http://yisonli.github.io/">其实，有一种风景无需刻意寻觅就能随时随地感受到</a></small>
+      </div>
+    </div>
+    <!--END OF 头部-->
+    <!--START OF 内容-->
+    <div class="article">
+      <div class="globalWidth">
+        <div class="leftPart">
+                    <div class="format_left">
+            <div class="iTitle"><a href="article/29.html">如何新建用户并加入sudo权限</a></div>
+            <div class="iInfoMore">
+                <b>日期</b>
+                <span class="iDate">2017-04-10</span>
+                <b>分类</b>
+                <span class="iTag">Linux</span>
+                <b>标签</b>
+                                <span class="iTag">#Linux#</span>
+                            </div>
+            <div class="iContent"><p><strong>1. 添加一个用户组并指定id为1002</strong></p><p></p><p>sudo groupadd －g 1002 www</p><p></p><p>&nbsp;</p><p></p><p><strong>2. 添加一个用户到www组并指定id为1003</strong></p><p></p><p>sudo useradd wyx -g 1002 -u 1003 -m</p><p></p><p>&nbsp;</p><p></p><p><strong>3. 修改用户的密码</strong></p><p></p><p>sudo passwd wyx</p><p></p><p>&nbsp;</p><p></p><p><strong>4. 删除一个用户</strong></p><p></p><p>sudo userdel wyx</p><p></p><p><strong>4.1 添加一个管理员用户</strong></p><p></p><p><span style="font-size: small;">sudo useradd -s /bin/bash -mr</span></p><p></p><p>&nbsp;</p><p></p><p><strong>5. 为该用户添加sudo权限</strong></p><p></p><p>sudo usermod -a -G adm wyx</p><p></p><p>sudo usermod -a -G sudo wyx</p><p></p><p>&nbsp;</p><p></p><p><strong>6. 查看所有用户和用户组：</strong></p><p></p><p>cat /etc/passwd</p><p></p><p>cat /etc/group</p><p></p><p>&nbsp;</p><p></p><p><span style="color: #0000ff;">系统第一个默认账号加入的组除了它自己组外还有：</span></p><p></p><p>adm cdrom sudo dip plugdev lpadmin sambashare //使用 groups &lt;username&gt;命令查看。</p></div>
+          </div>
+                  </div>
+        <div class="rightPart">
+          <div class="format_right">
+            <a href="http://yisonli.github.io/rss2.xml">RSS</a>          </div>
+        </div>
+      </div>
+      
+    </div>
+    <!--END OF 内容-->
+    <!--START OF 脚部-->
+    <!--END OF 脚部-->
+
+  </body>
+  
+</html>
+<script>
+var data = {};
+
+</script>
