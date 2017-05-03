@@ -10,17 +10,33 @@
 	<atom:link href="http://yisonli.github.io/rss2.xml" rel="self" type="application/rss+xml" />
 	<link>http://yisonli.github.io/</link>
 	<description>其实，有一种风景无需刻意寻觅就能随时随地感受到</description>
-	<lastBuildDate>Wed, 03 May 2017 11:30:03 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 03 May 2017 12:00:07 +0000</lastBuildDate>
 	<language>zh-CN</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>http://yisonli.github.io/</generator>
   
   	<item>
+		<title>如何使用ECS+COS</title>
+		<link>http://yisonli.github.io/article/48.html</link>
+		<comments></comments>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
+		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
+    
+		<category><![CDATA[未分类]]></category>
+    		<category><![CDATA[未分类]]></category>
+        
+		<guid isPermaLink="false">http://yisonli.github.io/article/48.html</guid>
+		<description><![CDATA[COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。&nbsp;一、COS开通&amp;配置1、开通对象存储服务，比较简单，根据提示开通即可2、创建Bucket，注意所属地域要与服务器的一致，否则不算内网3、获取秘钥配置&nbsp;二、选用wp的COS插件，上传图片时可以同步到COS]]></description>
+    <content:encoded><![CDATA[COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。&nbsp;一、COS开通&amp;配置1、开通对象存储服务，比较简单，根据提示开通即可2、创建Bucket，注意所属地域要与服务器的一致，否则不算内网3、获取秘钥配置&nbsp;二、选用wp的COS插件，上传图片时可以同步到COS]]></content:encoded>
+		<wfw:commentRss></wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	</item>
+	<item>
 		<title>MYSQL新建数据库和用户账号</title>
 		<link>http://yisonli.github.io/article/45.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[未分类]]></category>
@@ -36,7 +52,7 @@
 		<title>有意思</title>
 		<link>http://yisonli.github.io/article/39.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[]]></category>
@@ -51,7 +67,7 @@
 		<title>如何新建用户并加入sudo权限</title>
 		<link>http://yisonli.github.io/article/29.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[Linux]]></category>
@@ -67,7 +83,7 @@
 		<title>Top K相关的一道题</title>
 		<link>http://yisonli.github.io/article/21.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[编程算法]]></category>
@@ -83,7 +99,7 @@
 		<title>PHP7.0.7安装记录</title>
 		<link>http://yisonli.github.io/article/15.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[PHP]]></category>
@@ -99,7 +115,7 @@
 		<title>同时使用多个GITHUB的KEY的配置</title>
 		<link>http://yisonli.github.io/article/7.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[GIT]]></category>
@@ -115,7 +131,7 @@
 		<title>示例页面</title>
 		<link>http://yisonli.github.io/article/2.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[]]></category>
@@ -130,7 +146,7 @@
 		<title>世界，您好！</title>
 		<link>http://yisonli.github.io/article/1.html</link>
 		<comments></comments>
-		<pubDate>Wed, 03 May 2017 11:30:03 +0000</pubDate>
+		<pubDate>Wed, 03 May 2017 12:00:07 +0000</pubDate>
 		<dc:creator><![CDATA[Yisonの小站]]></dc:creator>
     
 		<category><![CDATA[未分类]]></category>
