@@ -8,7 +8,7 @@
     
     
     
-    <title>《web全栈工程师的自我修养》读书笔记 | Yison's Blog</title>
+    <title>同时使用多个github的key的配置 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="《web全栈工程师的自我修养》读书笔记">
-    <meta property="og:url" content="/web%E5%89%8D%E7%AB%AF/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+    <meta property="og:title" content="同时使用多个github的key的配置">
+    <meta property="og:url" content="/git/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="《web全栈工程师的自我修养》读书笔记">
+    <meta name="twitter:title" content="同时使用多个github的key的配置">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/web%E5%89%8D%E7%AB%AF/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="《web全栈工程师的自我修养》读书笔记" itemprop="url">《web全栈工程师的自我修养》读书笔记</a>
+      <a href="/git/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/" title="同时使用多个github的key的配置" itemprop="url">同时使用多个github的key的配置</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-10-28 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-10-28</time>
+    <time datetime="2016-05-29 00:00:00 +0800" itemprop="datePublished"> 发表于 2016-05-29</time>
     
   </p>
 </header>
@@ -117,228 +117,58 @@
 		</div>
 		
 		<blockquote>
-  <p>当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。<br />
-但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。</p>
+  <p>github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。</p>
 </blockquote>
 
-<h4 id="概念">概念</h4>
-<ul>
-  <li>全栈工程师（Full-Stack Engineer）：
-    <ul>
-      <li>一个能处理数据库、服务器、系统工程和客户端的所有工作的工程师。</li>
-    </ul>
-  </li>
-  <li>全栈：
-    <ul>
-      <li>表示为了完成一个项目，所需要的一系列技术的集合。简单来说，全栈工程师就是可以独立完成一个产品的</li>
-      <li>能力 + 思维</li>
-    </ul>
-  </li>
-  <li>Web开发流程
-    <ul>
-      <li>产品设计</li>
-      <li>交互设计</li>
-      <li>视觉设计</li>
-      <li>前端开发</li>
-      <li>后台开发</li>
-      <li>测试</li>
-      <li>发布</li>
-    </ul>
-  </li>
-</ul>
+<h1 id="一生成并添加第一个ssh-key">一、生成并添加第一个ssh key</h1>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-C</span><span class="s2">"youremail@xxx.com"</span>
+</code></pre></div></div>
+<p>执行命令一路回车，会在~/.ssh/目录下生成id_rsa和id_rsa.pub两个文件</p>
 
-<h4 id="一专多长">一专多长</h4>
-<ul>
-  <li>先在一个特定的方向上有比较深入的钻研，然后再将学习目标渐渐推广开来。</li>
-  <li>比如先从前端方向入手，掌握了基本的HTML、CSS、JavaScript之后，不要转头向服务器端语言或者App方向发展，而是深入到性能优化、SEO、多种框架、响应式页面等前端细节中去。</li>
-</ul>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub
+</code></pre></div></div>
+<p>打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库1）</p>
 
-<h4 id="解决问题而不是醉心技术">解决问题，而不是醉心技术</h4>
-<ul>
-  <li>公司存在的意义就是解决问题，公司要解决用户的问题，而员工要解决公司的问题。</li>
-  <li>公司的问题可能是降低成本、扩大用户群、增加成交量、优化性能，等等。</li>
-  <li>设计四大原则：对齐、对比、距离和重复。</li>
-</ul>
+<h1 id="二生成并添加第二个ssh-key">二、生成并添加第二个ssh key</h1>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-C</span><span class="s2">"youremail@xxx.com"</span>
+</code></pre></div></div>
+<p>这次不要一路回车了，给这个文件起一个名字，假如起名叫idb_rsa_you</p>
 
-<h4 id="web性能优化">Web性能优化</h4>
-<ul>
-  <li>压缩源码和图片
-    <ul>
-      <li>JavaScript文件源代码可以采用混淆压缩的方式，CSS文件源代码进行普通压缩，JPG图片可以根据具体质量来压缩为50%到70%，PNG可以使用一些开源压缩软件来压缩，比如24色变成8色、去掉一些PNG格式信息等。</li>
-    </ul>
-  </li>
-  <li>选择合适的图片格式
-    <ul>
-      <li>如果图片颜色数较多就使用JPG格式，如果图片颜色数较少就使用PNG格式，如果能够通过服务器端判断浏览器支持WebP，那么就使用WebP格式和SVG格式。</li>
-    </ul>
-  </li>
-  <li>合并静态资源
-    <ul>
-      <li>包括CSS、JavaScript和小图片，减少HTTP请求。</li>
-    </ul>
-  </li>
-  <li>开启服务器端的Gzip压缩
-    <ul>
-      <li>这对文本资源非常有效，对图片资源则没那么大的压缩比率。</li>
-    </ul>
-  </li>
-  <li>使用CDN
-    <ul>
-      <li>或者一些公开库使用第三方提供的静态资源地址（比如jQuery、normalize.css）。</li>
-      <li>一方面增加并发下载量，另一方面能够和其他网站共享缓存。</li>
-    </ul>
-  </li>
-  <li>延长静态资源缓存时间
-    <ul>
-      <li>这样，频繁访问网站的访客就能够更快地访问。</li>
-      <li>不过，这里要通过修改文件名的方式，确保在资源更新的时候，用户会拉取到最新的内容。</li>
-    </ul>
-  </li>
-  <li>把CSS放在页面头部，把JavaScript放在页面底部</li>
-</ul>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa_you.pub
+</code></pre></div></div>
+<p>打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库2）</p>
 
-<h4 id="重视作品集">重视作品集</h4>
-<ul>
-  <li>作品集（portfolio），是指您个人的项目和作品的集合，一份精心准备的作品集比简历更能说服人。</li>
-</ul>
+<h1 id="三在ssh下创建config文件-内容如下">三、在.ssh/下创建config文件 内容如下：</h1>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host github.com
+HostName github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa
+Host github2
+HostName github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa_you
+</code></pre></div></div>
+<p>Host名字随意，接下来会用到。</p>
 
-<h4 id="设计模式">设计模式</h4>
-<ul>
-  <li>创建型模式
-    <ul>
-      <li>单例模式</li>
-      <li>工厂方法</li>
-      <li>抽象工厂</li>
-      <li>建造模式</li>
-      <li>原型模式</li>
-      <li>对象池模式</li>
-      <li>多例模式</li>
-    </ul>
-  </li>
-  <li>结构型模式
-    <ul>
-      <li>适配器模式</li>
-      <li>桥接模式</li>
-      <li>组合模式</li>
-      <li>装饰模式</li>
-      <li>外观模式</li>
-      <li>享元模式</li>
-      <li>代理模式</li>
-    </ul>
-  </li>
-  <li>行为型模式
-    <ul>
-      <li>观察者模式</li>
-      <li>黑板</li>
-      <li>责任链</li>
-      <li>命令</li>
-      <li>解释器</li>
-      <li>迭代器</li>
-      <li>中介者</li>
-      <li>备忘录</li>
-      <li>空对象</li>
-      <li>模板方法</li>
-      <li>访问者模式</li>
-    </ul>
-  </li>
-</ul>
+<h1 id="四修改本地git仓库配置">四、修改本地git仓库配置</h1>
 
-<h4 id="学习管理">学习管理</h4>
-<ul>
-  <li>在项目最开始做出合理的时间评估</li>
-  <li>根据人员的强项来安排任务</li>
-  <li>唤起团队对项目成功的渴望</li>
-  <li>保障沟通。理想沟通频率每周至少两次。</li>
-</ul>
+<h2 id="1本地已经创建或已经clone到本地">1、本地已经创建或已经clone到本地：</h2>
 
-<h4 id="扩展阅读书单">扩展阅读书单</h4>
-<ul>
-  <li>【思想类】
-    <ul>
-      <li>《黑客与画家》（美）保罗·格雷厄姆，人民邮电出版社</li>
-      <li>《专业主义》（日）大前研一，中信出版社</li>
-    </ul>
-  </li>
-  <li>【商业类】
-    <ul>
-      <li>《重来：更为简单有效的商业思维》 （美） 贾森·弗里德 / （丹） 戴维·海涅迈尔·汉森，中信出版社</li>
-      <li>《精益创业》（美） 埃里克·莱斯，中信出版社</li>
-    </ul>
-  </li>
-  <li>【面试类】
-    <ul>
-      <li>《编程之美：微软技术面试心得》《编程之美》小组，电子工业出版社</li>
-    </ul>
-  </li>
-  <li>【企业文化类】
-    <ul>
-      <li>《打造Facebook》王淮， 印刷工业出版社</li>
-    </ul>
-  </li>
-  <li>【个人展示类】
-    <ul>
-      <li>《您就是极客：软件开发人员生存指南》（美）Michael Lopp，人民邮电出版社</li>
-      <li>《代码整洁之道》（美）Robert C. Martin，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【性能优化类】
-    <ul>
-      <li>《图解HTTP》（日）上野宣，人民邮电出版社</li>
-      <li>《高性能网站建设进阶指南》（美）Steve Souders，电子工业出版社</li>
-      <li>《网站性能监测与优化》（美）Alistair Croll / Sean Power，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【前端工程师类】
-    <ul>
-      <li>《精通CSS:高级Web标准解决方案（第2版）》（英）Andy Budd/Simon Collison/Cameron Moll，人民邮电出版社</li>
-      <li>《单页Web应用：JavaScript从前端到后端》（美）Michael S. Mikowski /Josh C. Powell，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【服务器类】
-    <ul>
-      <li>《鸟哥的Linux私房菜.基础学习篇》鸟哥，人民邮电出版社</li>
-      <li>《只是为了好玩 : Linux之父林纳斯自传》（美）Linus Torvalds、David Diamond，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【版本控制类】
-    <ul>
-      <li>《Git版本控制管理》（美）Jon Loeliger/ Matthew McCullough，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【代码艺术类】
-    <ul>
-      <li>《代码大全》（美）Steve McConnell，电子工业出版社</li>
-      <li>《代码的未来》 （日）松本行弘，人民邮电出版社</li>
-      <li>《禅与摩托车维修艺术》（美）罗伯特·M.波西格，重庆出版社</li>
-    </ul>
-  </li>
-  <li>【设计模式类】
-    <ul>
-      <li>《设计模式：可复用面向对象软件的基础》（美）Erich Gamma / Richard Helm / Ralph Johnson / John Vlissides，机械工业出版社</li>
-      <li>《JavaScript设计模式》 （美）Addy Osmani，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【效率类】
-    <ul>
-      <li>《软件随想录：程序员部落酋长Joel谈软件》（美）Joel Spolsky，人民邮电出版社</li>
-      <li>《卓有成效的程序员》（美）Neal Ford，机械工业出版社</li>
-    </ul>
-  </li>
-  <li>【设计类】
-    <ul>
-      <li>《写给大家看的设计书（第3版）》Robin Williams ，人民邮电出版社</li>
-      <li>《写给大家看的设计书：实例与创意》Robin Williams ，人民邮电出版社</li>
-    </ul>
-  </li>
-  <li>【修为类】
-    <ul>
-      <li>《卓有成效的管理者》（美）彼得·德鲁克， 机械工业出版社</li>
-      <li>《麦肯锡教我的写作武器》（日）高杉尚孝， 北京联合出版公司·后浪出版公司</li>
-      <li>《金字塔原理》（美）巴巴拉·明托，民主与建设出版社</li>
-      <li>《安静：内向性格的竞争力》（美）苏珊·凯恩，中信出版社</li>
-    </ul>
-  </li>
-</ul>
+<p>打开.git/config文件</p>
+
+<h3 id="更改配置示例仓库1">更改配置示例(仓库1)</h3>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>remote <span class="s2">"origin"</span><span class="o">]</span> 
+url <span class="o">=</span> git@github.com:yisonli/yuchen.git
+</code></pre></div></div>
+
+<h3 id="更改配置示例仓库2">更改配置示例(仓库2)</h3>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>remote <span class="s2">"origin"</span><span class="o">]</span>
+url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
+</code></pre></div></div>
+
+<h2 id="2clone仓库时对应配置host对应的账户">2、clone仓库时对应配置host对应的账户</h2>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github2:yisonli/yisonli.github.io.git
+</code></pre></div></div>
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -355,7 +185,7 @@
   }) %>
   -->
   
-  <a class="article-category-link" href="/categories/#Web前端">Web前端</a>
+  <a class="article-category-link" href="/categories/#Git">Git</a>
   
 </div>
 
@@ -369,7 +199,7 @@
   <span></span> <!--<%- tags.join('') %>-->
   
   
-  <a href="/tags/#读书">读书</a>
+  <a href="/tags/#版本控制">版本控制</a>
   
   </div>
 
@@ -379,7 +209,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="/web%E5%89%8D%E7%AB%AF/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" data-title="《web全栈工程师的自我修养》读书笔记 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="/git/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/" data-title="同时使用多个github的key的配置 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -391,19 +221,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/cos/%E8%85%BE%E8%AE%AF%E4%BA%91/wordpress/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/" title="Wordpress如何使用ecs+cos">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Wordpress如何使用ecs+cos</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"  title="《现在就干：互联网时代的高效时间管理法》读书笔记">
+<a href="/php/nginx/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"  title="Php7和nginx安装记录">
  <strong>下一篇：</strong><br/> 
- <span>《现在就干：互联网时代的高效时间管理法》读书笔记
+ <span>Php7和nginx安装记录
 </span>
 </a>
 </div>

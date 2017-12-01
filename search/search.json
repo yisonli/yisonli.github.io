@@ -8,6 +8,46 @@
     
     
       {
+        "title": "同时使用多个github的key的配置",
+        "date": "2016 年 05 月",
+        "excerpt": "\n  github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。\n\n\n",
+        
+        "url": "/git/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"
+      },
+    
+      {
+        "title": "Php7和nginx安装记录",
+        "date": "2016 年 06 月",
+        "excerpt": "\n  本文主要记录 PHP7+Nginx的编译 以及 环境搭建 的操作步骤\n\n\n",
+        
+        "url": "/php/nginx/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"
+      },
+    
+      {
+        "title": "Linux新建用户与sudo权限",
+        "date": "2017 年 04 月",
+        "excerpt": "\n  如何用命令行新建一个带超管权限的账号\n\n\n",
+        
+        "url": "/linux/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"
+      },
+    
+      {
+        "title": "Mysql新建数据库和用户账号",
+        "date": "2017 年 05 月",
+        "excerpt": "\n  Mysql数据库账号的基本用法\n\n\n",
+        
+        "url": "/mysql/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"
+      },
+    
+      {
+        "title": "Wordpress如何使用ecs+cos",
+        "date": "2017 年 05 月",
+        "excerpt": "\n  COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。\n本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。\n\n\n",
+        
+        "url": "/cos/%E8%85%BE%E8%AE%AF%E4%BA%91/wordpress/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"
+      },
+    
+      {
         "title": "《web全栈工程师的自我修养》读书笔记",
         "date": "2017 年 10 月",
         "excerpt": "\n  当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。\n但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。\n\n\n",
