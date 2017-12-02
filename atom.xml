@@ -4,7 +4,7 @@
  <title>Yison's Blog</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2017-12-01T18:18:01+08:00</updated>
+ <updated>2017-12-02T15:28:48+08:00</updated>
  <id></id>
  <author>
    <name>yison</name>
@@ -1162,10 +1162,13 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
 &lt;h1 id=&quot;一cos开通配置&quot;&gt;一、COS开通&amp;amp;配置&lt;/h1&gt;
 
 &lt;h2 id=&quot;1开通对象存储服务比较简单根据提示开通即可&quot;&gt;1、开通对象存储服务，比较简单，根据提示开通即可&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2017/05/open_cos.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;2创建bucket注意所属地域要与服务器的一致否则不算内网&quot;&gt;2、创建Bucket，注意所属地域要与服务器的一致，否则不算内网&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2017/05/open_bucket.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;3获取秘钥配置&quot;&gt;3、获取秘钥配置&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2017/05/cos_secret.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;二选用wp的cos插件上传图片时可以同步到cos上&quot;&gt;二、选用wp的COS插件，上传图片时可以同步到COS上&lt;/h1&gt;
 
@@ -1290,6 +1293,8 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
 &lt;h2 id=&quot;问题a&quot;&gt;问题A.&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;不勾选后，媒体库的缩略图出不来。&lt;/strong&gt;&lt;/p&gt;
 
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2017/05/cos-sync-problem1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
 &lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：服务器不存储，无法得知图片size，导致默认成了1的宽高&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：&lt;/p&gt;
@@ -1308,7 +1313,7 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
 
 &lt;h2 id=&quot;问题b&quot;&gt;问题B.&lt;/h2&gt;
 
-&lt;p&gt;**写文章或页面时，插入媒体库的图片后，预览看不到图片。 **&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;写文章或页面时，插入媒体库的图片后，预览看不到图片。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：服务器不存储，无法得知图片size，导致默认成了1的宽高&lt;/p&gt;
 
