@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Yison's Blog</title>
- <link href="/atom.xml" rel="self"/>
- <link href=""/>
- <updated>2017-12-02T15:28:48+08:00</updated>
- <id></id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000"/>
+ <updated>2017-12-08T18:17:48+08:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
@@ -13,10 +13,143 @@
 
  
  <entry>
+   <title>使用composer安装lumen</title>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
+   <updated>2017-12-08T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;本文介绍如何搭建PHP的Laravel和Lumen环境&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;安装composer&quot;&gt;安装composer&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;copy('https://install.phpcomposer.com/installer', 'composer-setup.php');&quot;&lt;/span&gt;
+
+php composer-setup.php
+
+php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;unlink('composer-setup.php');&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;上述 3 条命令的作用依次是：&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;ol&gt;
+      &lt;li&gt;下载安装脚本 － composer-setup.php － 到当前目录。&lt;/li&gt;
+      &lt;li&gt;执行安装过程。&lt;/li&gt;
+      &lt;li&gt;删除安装脚本。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;打开命令行窗口并执行如下命令将前面下载的 composer.phar 文件移动到 /usr/local/bin/目录下面：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;mv composer.phar /usr/local/bin/composer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;修改镜像地址：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer config &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; repo.packagist composer https://packagist.phpcomposer.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;安装laravel&quot;&gt;安装laravel&lt;/h2&gt;
+&lt;p&gt;使用 Composer 下载 Laravel 安装包：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer global require &lt;span class=&quot;s2&quot;&gt;&quot;laravel/installer&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;安装lumen&quot;&gt;安装lumen&lt;/h2&gt;
+&lt;p&gt;使用下面命令下载 Lumen 命令:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer global require &lt;span class=&quot;s2&quot;&gt;&quot;laravel/lumen-installer&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;请确定把 ~/.composer/vendor/bin 路径放置于您的 PATH 里, 这样 Laravel/Lumen执行文件就会存在你的系统。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'export PATH=&quot;$PATH:~/.composer/vendor/bin&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bashrc
+
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;【我这边的目录是：export PATH=”$PATH:/home/yison/.config/composer/vendor/bin”;】&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;用laravel创建项目&quot;&gt;用laravel创建项目&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;laravel new blog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;用lumen创建项目&quot;&gt;用lumen创建项目&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lumen new lumen
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;你也可以通过 Composer 在命令行运行 create-project 命令来安装 Lumen：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer create-project &lt;span class=&quot;nt&quot;&gt;--prefer-dist&lt;/span&gt; laravel/lumen blog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>使用gd库给图片铺满水印</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
+   <updated>2017-12-08T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;PHP一个使用GD库生成水印的方法&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* 
+ * 图片加水印函数
+ * $dst_file : 处理完成后保存到此文件路径
+ * $src_file ：待处理的图片文件路径
+ * $logo_file：水印的图片文件路径
+ * $top      ：上间距
+ * $left     ：左间距
+ * $alpha    ：透明度(0-100)【特别注意：若logo_file本身已有透明效果，请务必传false】
+ */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fullFillLogos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//创建图片的实例
+&lt;/span&gt;        &lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;imagecreatefromstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file_get_contents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;imagecreatefromstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file_get_contents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//获取宽高
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;getimagesize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;getimagesize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//循环铺上水印
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;nb&quot;&gt;imagecopy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;nb&quot;&gt;imagecopymerge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//水印完成, 存档...
+&lt;/span&gt;        &lt;span class=&quot;nb&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type: image/jpeg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;imagejpeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;imagedestroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;imagedestroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>《集创思维设计矩阵》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-11-18T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;人的才识是装在瓶子里的，你的瓶子满了，就再也装不下新东西了。要想装下更多，你不能固守这个瓶子，你要打破它，换个更大的瓶子。如此反复，你才不是现在的你。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -612,9 +745,9 @@
  
  <entry>
    <title>《现在就干：互联网时代的高效时间管理法》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;感受一下时间流逝的速度，时间是没有声音的锉刀，最不善于利用时间的人最爱抱怨时光短暂，我们都没有时间去挥霍……时间是个盗贼……时间就是上帝给你的资本，让每一分每一秒都花在有意义的事情上，就是最好的时间管理了，最好的时间是现在。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -920,9 +1053,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>《web全栈工程师的自我修养》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。&lt;br /&gt;
 但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。&lt;/p&gt;
@@ -1151,9 +1284,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>Wordpress如何使用ecs+cos</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。&lt;br /&gt;
 本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。&lt;/p&gt;
@@ -1400,9 +1533,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Mysql新建数据库和用户账号</title>
-   <link href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
+   <link href="http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
+   <id>http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Mysql数据库账号的基本用法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1433,9 +1566,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Linux新建用户与sudo权限</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
    <updated>2017-04-10T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;如何用命令行新建一个带超管权限的账号&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1480,9 +1613,9 @@ adm cdrom &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dip plugdev lpadmin
  
  <entry>
    <title>Php7和nginx安装记录</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"/>
    <updated>2016-06-02T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7和Nginx安装记录</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7和Nginx安装记录</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;本文主要记录 PHP7+Nginx的编译 以及 环境搭建 的操作步骤&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1569,9 +1702,9 @@ location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&qu
  
  <entry>
    <title>同时使用多个github的key的配置</title>
-   <link href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
+   <link href="http://localhost:4000/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
    <updated>2016-05-29T00:00:00+08:00</updated>
-   <id>/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/同时使用多个GITHUB的KEY的配置</id>
+   <id>http://localhost:4000/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/同时使用多个GITHUB的KEY的配置</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。&lt;/p&gt;
 &lt;/blockquote&gt;
