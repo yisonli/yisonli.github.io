@@ -4,13 +4,697 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2017-12-08T18:17:48+08:00</updated>
+ <updated>2017-12-18T21:13:47+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>《从零开始学微信运营》读书笔记</title>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <updated>2017-12-18T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;这是最好的时代，这是最坏的时代；这是明智的时代，这是愚昧的时代；这是信仰的时期，这是怀疑的时期；这是光明的季节，这是黑暗的季节；这是希望之春，这是失望之冬；人们面前应有尽有，人们面前一无所有。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果一款应用不能在5到10秒内吸引住用户，用户就很可能抛弃这个应用。&lt;/li&gt;
+  &lt;li&gt;因此，一款产品的决胜期可能在一个月之内，如果一个月内不行，后面可能是死路一条。&lt;/li&gt;
+  &lt;li&gt;提供价值，而非吸引眼球，这是微信的态度，也是它能否成功的关键。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;微信能做什么&quot;&gt;微信能做什么&lt;/h2&gt;
+&lt;h3 id=&quot;微信中蕴藏的商业价值&quot;&gt;微信中蕴藏的商业价值&lt;/h3&gt;
+&lt;h4 id=&quot;微信id网络上的另类身份证&quot;&gt;微信ID：网络上的另类“身份证”&lt;/h4&gt;
+&lt;h4 id=&quot;类app-store-微型应用商店&quot;&gt;类APP Store： 微型应用商店&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;适合微信的应用类型
+    &lt;ul&gt;
+      &lt;li&gt;低频次强需求的App&lt;/li&gt;
+      &lt;li&gt;高频次低需求的App&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;微信应用商店的优势
+    &lt;ul&gt;
+      &lt;li&gt;技术门槛低，开发成本低&lt;/li&gt;
+      &lt;li&gt;能够更迅速的进行更新换代&lt;/li&gt;
+      &lt;li&gt;操作简单，更容易聚集用户&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;公众号全新的营销渠道&quot;&gt;公众号：全新的营销渠道&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;拥有庞大的潜在客户&lt;/li&gt;
+  &lt;li&gt;降低了营销成本&lt;/li&gt;
+  &lt;li&gt;营销定位更加精准&lt;/li&gt;
+  &lt;li&gt;营销方式更加多元化、更有趣&lt;/li&gt;
+  &lt;li&gt;营销方式以人为本&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;朋友圈亟待挖掘的sns营销金矿&quot;&gt;朋友圈：亟待挖掘的SNS营销“金矿”&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;沟通体系是单向的&lt;/li&gt;
+  &lt;li&gt;交流更加方便，可以无缝切换到私聊模式&lt;/li&gt;
+  &lt;li&gt;人店合一，有利于客户的积累&lt;/li&gt;
+  &lt;li&gt;基于情感的营销，更容易成功&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;闭环o2o从线上到线下&quot;&gt;闭环O2O：从线上到线下&lt;/h4&gt;
+
+&lt;h3 id=&quot;为什么应该重视微信营销&quot;&gt;为什么应该重视微信营销&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;用户的习惯&lt;/li&gt;
+  &lt;li&gt;用户的传播&lt;/li&gt;
+  &lt;li&gt;信息的载体&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;微信营销的优势在哪里&quot;&gt;微信营销的优势在哪里&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;内容至上&lt;/li&gt;
+  &lt;li&gt;成本低廉&lt;/li&gt;
+  &lt;li&gt;沟通无极限&lt;/li&gt;
+  &lt;li&gt;受众定位准&lt;/li&gt;
+  &lt;li&gt;主动推送&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;微信公众号的设计之道&quot;&gt;微信公众号的设计之道&lt;/h3&gt;
+&lt;h4 id=&quot;定位告诉受众你是谁&quot;&gt;定位：告诉受众你是谁&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;用户的心智运行模式决定着定位的重要性
+    &lt;ul&gt;
+      &lt;li&gt;心智的容量是有限的&lt;/li&gt;
+      &lt;li&gt;心智喜欢简单，排斥混乱&lt;/li&gt;
+      &lt;li&gt;心智不会轻易改变&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;微信公众账号的定位方向&quot;&gt;微信公众账号的定位方向&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;量体裁衣，以产品特点为基础&lt;/li&gt;
+  &lt;li&gt;充分聚焦，针对目标市场&lt;/li&gt;
+  &lt;li&gt;一切以用户为中心，提供“服务”而非“骚扰”&lt;/li&gt;
+  &lt;li&gt;充分关注竞争者&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;取名什么样的名字更亮眼&quot;&gt;取名：什么样的名字更亮眼&lt;/h4&gt;
+&lt;p&gt;原则：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;好记，能迅速传播&lt;/li&gt;
+  &lt;li&gt;包含目标关键词&lt;/li&gt;
+  &lt;li&gt;加上区域名称&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;忌讳：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;名字不应太短或太长&lt;/li&gt;
+  &lt;li&gt;尽量避免使用生疏、冷僻的词汇&lt;/li&gt;
+  &lt;li&gt;不要使用宽泛的词汇，越精准越好&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;id越简短越有效&quot;&gt;ID：越简短，越有效&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;与企业的品牌、公众账号的名字要有高度相关性&lt;/li&gt;
+  &lt;li&gt;好记并适合搜索&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;自我介绍让受众第一时间记住你&quot;&gt;自我介绍：让受众第一时间记住你&lt;/h4&gt;
+&lt;h4 id=&quot;欢迎语给用户一个导航图&quot;&gt;欢迎语：给用户一个导航图&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;态度热情真诚，语言诙谐风趣&lt;/li&gt;
+  &lt;li&gt;告诉用户下一步应该怎么做、能做什么&lt;/li&gt;
+  &lt;li&gt;为用户提供帮助，为他们解决问题&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;自定义回复从用户的角度出发&quot;&gt;自定义回复：从用户的角度出发&lt;/h4&gt;
+
+&lt;h2 id=&quot;内容价值是核心&quot;&gt;内容价值是核心&lt;/h2&gt;
+&lt;h3 id=&quot;什么内容才是用户关注的&quot;&gt;什么内容才是用户关注的&lt;/h3&gt;
+&lt;h4 id=&quot;什么样的内容分享率高&quot;&gt;什么样的内容分享率高&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;有价值，能为用户带来一定的帮助&lt;/li&gt;
+  &lt;li&gt;专业性强，具有较强的权威性&lt;/li&gt;
+  &lt;li&gt;时效性强，要善于把我社会热点话题&lt;/li&gt;
+  &lt;li&gt;具有吸引力的成功案例，能诱发人们的关注&lt;/li&gt;
+  &lt;li&gt;与众不同的观点&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;内容建设的三个步骤&quot;&gt;内容建设的三个步骤&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;定位&lt;/li&gt;
+  &lt;li&gt;提炼&lt;/li&gt;
+  &lt;li&gt;管理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;微信内容的六种类型&quot;&gt;微信内容的六种类型&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;倾听型&lt;/li&gt;
+  &lt;li&gt;好消息型&lt;/li&gt;
+  &lt;li&gt;故事型&lt;/li&gt;
+  &lt;li&gt;自爆隐私型&lt;/li&gt;
+  &lt;li&gt;互动型&lt;/li&gt;
+  &lt;li&gt;炒冷饭型&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;什么时间推送最有效&quot;&gt;什么时间推送最有效&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;早上：8点 ~ 9点&lt;/li&gt;
+  &lt;li&gt;中午：12点 ~ 13点&lt;/li&gt;
+  &lt;li&gt;晚上：21点 ~ 22点&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;如何让内容更有吸引力&quot;&gt;如何让内容更有吸引力&lt;/h3&gt;
+&lt;h4 id=&quot;标题的醒目技巧&quot;&gt;标题的醒目技巧&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;标题包含的要素
+    &lt;ul&gt;
+      &lt;li&gt;热门词汇&lt;/li&gt;
+      &lt;li&gt;权威人物&lt;/li&gt;
+      &lt;li&gt;体验式感受&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;标题字数&lt;/li&gt;
+  &lt;li&gt;拟定标题的具体方式
+    &lt;ul&gt;
+      &lt;li&gt;提问式&lt;/li&gt;
+      &lt;li&gt;借力式&lt;/li&gt;
+      &lt;li&gt;情感诱发式&lt;/li&gt;
+      &lt;li&gt;悬念式&lt;/li&gt;
+      &lt;li&gt;八卦式&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;内容写作的方法
+    &lt;ul&gt;
+      &lt;li&gt;情感真挚，方能动人&lt;/li&gt;
+      &lt;li&gt;体现创意，莫要千篇一律&lt;/li&gt;
+      &lt;li&gt;把故事讲好，也是一种技巧&lt;/li&gt;
+      &lt;li&gt;内容娱乐化，展现娱乐精神&lt;/li&gt;
+      &lt;li&gt;图文并茂，增加可读性&lt;/li&gt;
+      &lt;li&gt;让用户参与到内容创作的过程中&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;信息内容的四种优化形式&quot;&gt;信息内容的四种优化形式&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;文字优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;文字信息应该是真实可信的&lt;/li&gt;
+  &lt;li&gt;巧妙使用问号、感叹号等标点符号&lt;/li&gt;
+  &lt;li&gt;条理清晰&lt;/li&gt;
+  &lt;li&gt;多使用短句子&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;图片优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;配以适当的文字说明&lt;/li&gt;
+  &lt;li&gt;大小要进行控制&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;语音优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;确保语音清晰度&lt;/li&gt;
+  &lt;li&gt;配以适当的语气&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;视频优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;视频标题要吸引观众&lt;/li&gt;
+  &lt;li&gt;视频说明要留下想象空间&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;微信公众号的推广与运营&quot;&gt;微信公众号的推广与运营&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;微信公众号四大运营法则
+    &lt;ul&gt;
+      &lt;li&gt;挖掘精准用户&lt;/li&gt;
+      &lt;li&gt;增加用户信任度&lt;/li&gt;
+      &lt;li&gt;保证功能完善性&lt;/li&gt;
+      &lt;li&gt;运营要有计划&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;订阅号运营
+    &lt;ul&gt;
+      &lt;li&gt;Exact-信息量要精准，少即是多&lt;/li&gt;
+      &lt;li&gt;Echo-重视时效性，越快越好&lt;/li&gt;
+      &lt;li&gt;Easy-栏目不必过多，版式要简单明了&lt;/li&gt;
+      &lt;li&gt;Enjoyment-内容要有可读性，能引发阅读兴趣&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;服务号运营策略
+    &lt;ul&gt;
+      &lt;li&gt;促销策略&lt;/li&gt;
+      &lt;li&gt;品牌策略&lt;/li&gt;
+      &lt;li&gt;发掘需求策略&lt;/li&gt;
+      &lt;li&gt;沟通策略&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;微信粉丝从何而来&quot;&gt;微信粉丝从何而来&lt;/h3&gt;
+&lt;h4 id=&quot;qq&quot;&gt;QQ&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;QQ群
+    &lt;ul&gt;
+      &lt;li&gt;找到目标QQ群&lt;/li&gt;
+      &lt;li&gt;申请入群&lt;/li&gt;
+      &lt;li&gt;在QQ群中深耕细作&lt;/li&gt;
+      &lt;li&gt;制定具体的推广策略&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;QQ空间
+    &lt;ul&gt;
+      &lt;li&gt;QQ空间认证&lt;/li&gt;
+      &lt;li&gt;多发表一些有价值的精品文章&lt;/li&gt;
+      &lt;li&gt;善用朋友分享&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;微博&quot;&gt;微博&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;“按图索骥”,通过标签找粉丝&lt;/li&gt;
+  &lt;li&gt;主动对用户的微博进行转发与评论&lt;/li&gt;
+  &lt;li&gt;利用微博群来寻找目标用户&lt;/li&gt;
+  &lt;li&gt;努力使自己成为微博群里的“舆论领袖”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;百度&quot;&gt;百度&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;百度文库
+    &lt;ul&gt;
+      &lt;li&gt;标题越实用越好&lt;/li&gt;
+      &lt;li&gt;图文并茂&lt;/li&gt;
+      &lt;li&gt;有效分类&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;百度经验
+    &lt;ul&gt;
+      &lt;li&gt;以微信二维码作为头像&lt;/li&gt;
+      &lt;li&gt;在参考资料中留下你的联系方式&lt;/li&gt;
+      &lt;li&gt;在标题中添加更多的关键词&lt;/li&gt;
+      &lt;li&gt;在图片中添加你的微信二维码&lt;/li&gt;
+      &lt;li&gt;多提交&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;软文&quot;&gt;软文&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;极具吸引力的标题&lt;/li&gt;
+  &lt;li&gt;言之有物的内容&lt;/li&gt;
+  &lt;li&gt;定位于精准的目标群体&lt;/li&gt;
+  &lt;li&gt;精心选择发布渠道&lt;/li&gt;
+  &lt;li&gt;添加微信二维码&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;视频推广&quot;&gt;视频推广&lt;/h4&gt;
+&lt;h4 id=&quot;线下活动&quot;&gt;线下活动&lt;/h4&gt;
+
+&lt;h3 id=&quot;如何吧潜在用户转变为现实用户&quot;&gt;如何吧潜在用户转变为现实用户&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;潜在用户：&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;影响性&lt;br /&gt;
+相对性&lt;br /&gt;
+转化性&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;已用户为导向&quot;&gt;已用户为导向&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;提高服务质量&lt;/li&gt;
+  &lt;li&gt;赠送令用户满意的小礼物&lt;/li&gt;
+  &lt;li&gt;不定时举办一些感恩活动&lt;/li&gt;
+  &lt;li&gt;给每一个用户VIP的感觉&lt;/li&gt;
+  &lt;li&gt;为用户提供专业性的产品指南&lt;/li&gt;
+  &lt;li&gt;关于用户的想法和意见&lt;/li&gt;
+  &lt;li&gt;投其所好&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;激活粉丝的主动传播&quot;&gt;激活粉丝的主动传播&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;知己知彼，了解粉丝的“口味”&lt;/li&gt;
+  &lt;li&gt;折扣与优惠是最好的营销工具&lt;/li&gt;
+  &lt;li&gt;根据粉丝的属性来分组推送信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;如何留住老用户&quot;&gt;如何留住老用户&lt;/h3&gt;
+&lt;h4 id=&quot;建立用户档案提供针对性服务&quot;&gt;建立用户档案，提供针对性服务&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;用户基本信息&lt;/li&gt;
+  &lt;li&gt;用户偏好信息&lt;/li&gt;
+  &lt;li&gt;用户行为信息&lt;/li&gt;
+  &lt;li&gt;用户服务信息&lt;/li&gt;
+  &lt;li&gt;其他相关信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;以情动人对用户进行情感投资&quot;&gt;以情动人，对用户进行情感投资&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;给予老用户更多的优惠政策&lt;/li&gt;
+  &lt;li&gt;多与老用户进行沟通&lt;/li&gt;
+  &lt;li&gt;尊重老用户的意见&lt;/li&gt;
+  &lt;li&gt;多向老用户表达你的感谢&lt;/li&gt;
+  &lt;li&gt;重视20%的老用户&lt;/li&gt;
+  &lt;li&gt;多传播正面信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;促销时时有给用户多一些甜头&quot;&gt;促销时时有，给用户多一些甜头&lt;/h4&gt;
+
+&lt;h2 id=&quot;策略篇--如何做好微信营销&quot;&gt;策略篇 —— 如何做好微信营销&lt;/h2&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;微信营销的目标不能一味只关注利润，还要充分考虑消费者的利益、对社会的责任，并妥善处理企业与消费者、与社会的利益关系。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;设立微信营销目标&quot;&gt;设立微信营销目标&lt;/h3&gt;
+&lt;h4 id=&quot;目标设立的原则&quot;&gt;目标设立的原则&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;S（Specific）：明确性&lt;/li&gt;
+  &lt;li&gt;M（Measurable）：可衡量性&lt;/li&gt;
+  &lt;li&gt;A（Achievable）：可实现性&lt;/li&gt;
+  &lt;li&gt;R（Relevant）：现实性&lt;/li&gt;
+  &lt;li&gt;T（Time-based）：时限性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;目标设立的环节&quot;&gt;目标设立的环节&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;正确理解企业的总体目标&lt;/li&gt;
+  &lt;li&gt;根据SMART原则，制定出目标&lt;/li&gt;
+  &lt;li&gt;列出可能遇到的问题和阻碍&lt;/li&gt;
+  &lt;li&gt;列出实现目标所需要的资源&lt;/li&gt;
+  &lt;li&gt;确定目标完成的日期&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;五步制定营销策略&quot;&gt;五步制定营销策略&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;定位微信公众账号&lt;/li&gt;
+  &lt;li&gt;定位目标用户群&lt;/li&gt;
+  &lt;li&gt;调研目标用户群
+    &lt;ul&gt;
+      &lt;li&gt;更愿意接收哪种类型的内容&lt;/li&gt;
+      &lt;li&gt;更愿意在什么时候接收消息&lt;/li&gt;
+      &lt;li&gt;更愿意参加什么样的活动&lt;/li&gt;
+      &lt;li&gt;更愿意如何参加活动&lt;/li&gt;
+      &lt;li&gt;不喜欢什么内容、活动&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;制定具体营销计划
+    &lt;ul&gt;
+      &lt;li&gt;步骤
+        &lt;ul&gt;
+          &lt;li&gt;做什么&lt;/li&gt;
+          &lt;li&gt;怎么做&lt;/li&gt;
+          &lt;li&gt;谁来做&lt;/li&gt;
+          &lt;li&gt;什么时间做&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;注意事项
+        &lt;ul&gt;
+          &lt;li&gt;正确的营销目标是营销计划得以顺利实施的前提条件&lt;/li&gt;
+          &lt;li&gt;企业中有效的运行系统是微信营销计划得以实施的重要保证因素&lt;/li&gt;
+          &lt;li&gt;企业文化、价值观也是影响计划实施的重要因素&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;执行与跟踪
+    &lt;ul&gt;
+      &lt;li&gt;四项原则
+        &lt;ul&gt;
+          &lt;li&gt;适时发现问题&lt;/li&gt;
+          &lt;li&gt;跟踪重要目标&lt;/li&gt;
+          &lt;li&gt;明确你的跟踪目标&lt;/li&gt;
+          &lt;li&gt;实际主义，避免得不偿失&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;跟踪步骤
+        &lt;ul&gt;
+          &lt;li&gt;收集信息&lt;/li&gt;
+          &lt;li&gt;评估&lt;/li&gt;
+          &lt;li&gt;反馈&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;微信营销的原则方法技巧与误区&quot;&gt;微信营销的原则、方法、技巧与误区&lt;/h2&gt;
+&lt;h3 id=&quot;微信营销的四大原则&quot;&gt;微信营销的四大原则&lt;/h3&gt;
+&lt;h4 id=&quot;多号并行合理布局&quot;&gt;多号并行，合理布局&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;双号策略
+    &lt;ul&gt;
+      &lt;li&gt;服务号 + 订阅号&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;多号策略
+    &lt;h4 id=&quot;构建微信矩阵协同作战&quot;&gt;构建微信矩阵，协同作战&lt;/h4&gt;
+  &lt;/li&gt;
+  &lt;li&gt;微信矩阵的特点
+    &lt;ul&gt;
+      &lt;li&gt;多个微信公众账号协作&lt;/li&gt;
+      &lt;li&gt;统一化管理&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;微信公众账号的划分
+    &lt;ul&gt;
+      &lt;li&gt;品牌层级&lt;/li&gt;
+      &lt;li&gt;地域性&lt;/li&gt;
+      &lt;li&gt;功能定位&lt;/li&gt;
+      &lt;li&gt;业务需求&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;微信矩阵的常见模式
+    &lt;ul&gt;
+      &lt;li&gt;1+N 式微信矩阵
+        &lt;ul&gt;
+          &lt;li&gt;以主品牌、主业务的微信公众账号为主导，在其基础之上，再开设N个子品牌、子业务、子部门或下属地域的微信公众账号，形成一个完整的微信推广体系。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;AB 式微信矩阵
+        &lt;ul&gt;
+          &lt;li&gt;指的是以一个形象微信公众账号（Action）和一个品牌微信公众账号（Brand）的形式组成矩阵组合，从而达到塑造、维护企业的品牌形象的主要目的。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;三维式微信矩阵
+        &lt;ul&gt;
+          &lt;li&gt;从&lt;strong&gt;企业&lt;/strong&gt;、&lt;strong&gt;产品&lt;/strong&gt;及&lt;strong&gt;生活方式的培养&lt;/strong&gt;这三个维度来进行微信公众账号的布局。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;关注竞争对手善用他山之石&quot;&gt;关注竞争对手，善用“他山之石”&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;关注竞争对手的微信公众账号和个人微信号。&lt;/li&gt;
+  &lt;li&gt;扮演用户的角色，通过微信公众账号向竞争对手进行产品咨询、要求售后服务、订购产品等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;免费为诱饵赢利为目的&quot;&gt;免费为诱饵，赢利为目的&lt;/h4&gt;
+&lt;p&gt;“免费午餐法则”的心理定律。&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;让客户吃到“免费的午餐”，让他因此在心中对你怀有一种潜在的愧疚感，他购买你的产品的可能性就越大。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;微信营销的实用方法&quot;&gt;微信营销的实用方法&lt;/h3&gt;
+&lt;h4 id=&quot;如何提高关注度&quot;&gt;如何提高关注度&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;重视产品与服务的同时，增强信息资产的积累
+    &lt;ul&gt;
+      &lt;li&gt;品牌、心智占有率等无形资产。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;针对目标用户建立“信息银行”，开展个性化的数据库营销
+    &lt;ul&gt;
+      &lt;li&gt;更贴心的交流、更人性化的互动&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;注重与用户的双向沟通
+    &lt;ul&gt;
+      &lt;li&gt;获得认同与注意&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;多为用户提供一些增值服务
+    &lt;ul&gt;
+      &lt;li&gt;提高参与意识与合作兴趣&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;别做“垃圾制造者”&lt;/li&gt;
+  &lt;li&gt;珍惜用户的“碎片化时间”
+    &lt;ul&gt;
+      &lt;li&gt;碎片化阅读&lt;/li&gt;
+      &lt;li&gt;焦点&lt;/li&gt;
+      &lt;li&gt;记忆点&lt;/li&gt;
+      &lt;li&gt;卖点&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;如何提高浏览量&quot;&gt;如何提高浏览量&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;解答使用问题&lt;/li&gt;
+  &lt;li&gt;采取一定的激励手段&lt;/li&gt;
+  &lt;li&gt;成为用户的朋友&lt;/li&gt;
+  &lt;li&gt;自动回复&lt;/li&gt;
+  &lt;li&gt;重要的文章要重点展示&lt;/li&gt;
+  &lt;li&gt;策划专题&lt;/li&gt;
+  &lt;li&gt;在文章中加入“微链接”
+    &lt;ul&gt;
+      &lt;li&gt;其他文章的链接，感兴趣者可以点击阅读&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;栏目安排要清晰、合理&lt;/li&gt;
+  &lt;li&gt;不断更新&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;如何提高互动率&quot;&gt;如何提高互动率&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;趣味小测试&lt;/li&gt;
+  &lt;li&gt;小游戏&lt;/li&gt;
+  &lt;li&gt;有奖问答&lt;/li&gt;
+  &lt;li&gt;发放刮刮卡&lt;/li&gt;
+  &lt;li&gt;鼓励用户反馈意见&lt;/li&gt;
+  &lt;li&gt;二维码&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;如何提高曝光率&quot;&gt;如何提高曝光率&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;利用搜索引擎进行推广
+    &lt;ul&gt;
+      &lt;li&gt;付费搜索引擎广告策略
+        &lt;ul&gt;
+          &lt;li&gt;百度&lt;/li&gt;
+          &lt;li&gt;谷歌&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;免费搜索引擎推广策略
+        &lt;ul&gt;
+          &lt;li&gt;设计恰当的关键词组合&lt;/li&gt;
+          &lt;li&gt;对搜索引擎的关键词进行优化&lt;/li&gt;
+          &lt;li&gt;增加关键词密度&lt;/li&gt;
+          &lt;li&gt;注册免费会员&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;利用博客进行推广&lt;/li&gt;
+  &lt;li&gt;利用论坛进行手工推广&lt;/li&gt;
+  &lt;li&gt;利用“病毒”进行推广
+    &lt;ul&gt;
+      &lt;li&gt;发布一些有意思的、新奇的、有趣的，并与微信公众账号有关的信息。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;利用网络广告进行推广&lt;/li&gt;
+  &lt;li&gt;利用软件进行推广&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;如何提高活跃度&quot;&gt;如何提高活跃度&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;利用用户的社交关系&lt;/li&gt;
+  &lt;li&gt;线上、线下活动相结合&lt;/li&gt;
+  &lt;li&gt;提高沟通频率&lt;/li&gt;
+  &lt;li&gt;给用户一些温馨提示&lt;/li&gt;
+  &lt;li&gt;及时回复&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;如何在营销红海中游刃有余&quot;&gt;如何在营销红海中游刃有余&lt;/h3&gt;
+&lt;h4 id=&quot;善用事件营销借事发力&quot;&gt;善用事件营销，借事发力&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;公益&lt;/li&gt;
+  &lt;li&gt;聚焦&lt;/li&gt;
+  &lt;li&gt;危机&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;事件营销的策略运用&quot;&gt;事件营销的策略运用&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;造势策略&lt;/li&gt;
+  &lt;li&gt;借势策略&lt;/li&gt;
+  &lt;li&gt;概念炒作策略
+    &lt;ul&gt;
+      &lt;li&gt;把握分寸、以吸引用户注意力为目的的良性炒作&lt;/li&gt;
+      &lt;li&gt;取其利，避其害&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;用圈子圈住核心用户&quot;&gt;用“圈子”圈住核心用户&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;自己打造圈子，组织各类线上、线下活动&lt;/li&gt;
+  &lt;li&gt;支持或赞助目标圈子，与他们进行密切合作&lt;/li&gt;
+  &lt;li&gt;建立目标圈子数据库，挖掘用户数据价值&lt;/li&gt;
+  &lt;li&gt;善于利用圈子里的意见领袖，通过他们来辐射其他人&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;差异化策略与众不同才是卖点&quot;&gt;差异化策略，与众不同才是卖点&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;制定的途径
+    &lt;ul&gt;
+      &lt;li&gt;产品差异化&lt;/li&gt;
+      &lt;li&gt;细分市场差异化&lt;/li&gt;
+      &lt;li&gt;渠道差异化&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;实施注意问题
+    &lt;ul&gt;
+      &lt;li&gt;差异化要被用户认同并接受&lt;/li&gt;
+      &lt;li&gt;适时进行创新&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;微信营销效果的考核与评估&quot;&gt;微信营销效果的考核与评估&lt;/h2&gt;
+&lt;h3 id=&quot;微信营销的考核标准&quot;&gt;微信营销的考核标准&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;内容价值性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;标题&lt;/li&gt;
+  &lt;li&gt;导读&lt;/li&gt;
+  &lt;li&gt;正文&lt;/li&gt;
+  &lt;li&gt;栏目设计&lt;/li&gt;
+  &lt;li&gt;二维码&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;互动率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;浏览量&lt;/li&gt;
+  &lt;li&gt;评论量&lt;/li&gt;
+  &lt;li&gt;分享率&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;关注者数量&lt;/strong&gt;
+&lt;strong&gt;功能受欢迎度&lt;/strong&gt;
+&lt;strong&gt;转化率&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;如何进行微信营销的kpi考核&quot;&gt;如何进行微信营销的KPI考核&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;关注者数量
+    &lt;ul&gt;
+      &lt;li&gt;原有关注者数量 + 新增关注者数量&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;互动率
+    &lt;ul&gt;
+      &lt;li&gt;关注者数量 × 功能欢迎度&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;用户忠诚度
+    &lt;ul&gt;
+      &lt;li&gt;内容价值性 × 互动率 × 功能受欢迎度&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;转化率
+    &lt;ul&gt;
+      &lt;li&gt;用户忠诚度 × 关注者数量&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>使用composer安装lumen</title>
