@@ -4,13 +4,291 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2017-12-18T21:13:47+08:00</updated>
+ <updated>2018-01-20T11:57:41+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>《大数据时代下半场》读书笔记</title>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <updated>2018-01-20T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。&lt;br /&gt;
+如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。&lt;br /&gt;
+&lt;strong&gt;数据战争才刚刚开始，而我们每个人都已身在战场。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;引言&quot;&gt;引言&lt;/h1&gt;
+&lt;h2 id=&quot;大数据的三个v&quot;&gt;大数据的三个“V”&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.容量（Volume，这里指数据容量）&lt;/li&gt;
+  &lt;li&gt;2.速度（Velocity，这里指数据加工和变化动态的速度）&lt;/li&gt;
+  &lt;li&gt;3.多样性（Variety，这里指数据结构和类型）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;大数据的基本循环&quot;&gt;大数据的基本循环&lt;/h2&gt;
+&lt;p&gt;外环：数据使用者 –(我们所有人)–&amp;gt; 数据生产者 —-&amp;gt; 企业是数据加工者 —-&amp;gt; 数据使用者&lt;br /&gt;
+内环：相互作用的数据 —-&amp;gt; 观察数据 —-&amp;gt; 相互作用的数据&lt;/p&gt;
+
+&lt;h2 id=&quot;大数据与工业革命&quot;&gt;大数据与工业革命&lt;/h2&gt;
+&lt;p&gt;五个康德拉季耶夫周期：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.大约1780 - 1840年：早起机械化；德国工业革命的开端；蒸汽机&lt;/li&gt;
+  &lt;li&gt;2.大约1840 - 1890年：第二次工业革命；贝塞麦转炉钢和蒸汽船、铁路&lt;/li&gt;
+  &lt;li&gt;3.大约1890 - 1940年：电子技术和重型机器&lt;/li&gt;
+  &lt;li&gt;4.大约1940 - 1990年：专用自动仪器（汽车、合成电路、核能、晶体管、计算机）&lt;/li&gt;
+  &lt;li&gt;5.1990年开始：信息通信技术 —— 康德拉季耶夫周期与“全球化”紧密相连。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;“大数据现象”并没有一个通用的固定定义。&lt;/li&gt;
+  &lt;li&gt;第一个定义尝试聚焦于大数据的技术层面，如数据量、变化动态及数据结构和数据等级的差异性。&lt;/li&gt;
+  &lt;li&gt;大数据是所有生活领域大范围数字化所推动的具有高动态性的效应。&lt;/li&gt;
+  &lt;li&gt;大数据出现的原因及由此导致的总体主题的多层次性，赋予了“数字革命”持续变化的潜力，并有着深远的社会文化影响。&lt;/li&gt;
+  &lt;li&gt;大数据与我们每个人都相关，人人都扮演着不同的角色参与其中。&lt;/li&gt;
+  &lt;li&gt;大数据在21世纪属于企业资本。&lt;/li&gt;
+  &lt;li&gt;大数据是通过技术、工具和数学的结合，以及恰到好处地使用资本儿发展的，并且大数据的应用工具与其他主题是相互分离的。&lt;/li&gt;
+  &lt;li&gt;大数据的发展假设了一种不能被人控制的自身动态。&lt;/li&gt;
+  &lt;li&gt;大数据重要的特点之一便是进行行为分析的可能性，这能够通过新的数据等级及相互影响的数据关系来实现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;大数据时代的企业战略目标&quot;&gt;大数据时代的企业战略目标&lt;/h1&gt;
+&lt;h2 id=&quot;大数据的智能循环&quot;&gt;大数据的智能循环&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;原始数据的加工
+    &lt;ul&gt;
+      &lt;li&gt;组织&lt;/li&gt;
+      &lt;li&gt;协调&lt;/li&gt;
+      &lt;li&gt;巩固&lt;/li&gt;
+      &lt;li&gt;丰富&lt;/li&gt;
+      &lt;li&gt;高级数据&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;知识生产
+    &lt;ul&gt;
+      &lt;li&gt;定义分析模式&lt;/li&gt;
+      &lt;li&gt;阐释成果&lt;/li&gt;
+      &lt;li&gt;建议行动&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;行动
+    &lt;ul&gt;
+      &lt;li&gt;做出决定&lt;/li&gt;
+      &lt;li&gt;采取措施&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;反馈
+    &lt;ul&gt;
+      &lt;li&gt;成果反馈&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;企业变成分析型市场竞争者的过程&quot;&gt;企业变成分析型市场竞争者的过程&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.战略&lt;/li&gt;
+  &lt;li&gt;2.集成&lt;/li&gt;
+  &lt;li&gt;3.智能循环&lt;/li&gt;
+  &lt;li&gt;4.分析型竞争者&lt;/li&gt;
+  &lt;li&gt;5.信息主宰者&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;总结-1&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;企业利用大数据的首要目标即实现产量和销售量的增长，特别是通过大数据分析带来的知识增长来完成这一目标。&lt;/li&gt;
+  &lt;li&gt;大数据也能显示新的价值创造和新的商业模式的潜力。&lt;/li&gt;
+  &lt;li&gt;通过注重数据分析产生知识的能力，企业发展成具有分析能力的市场竞争者。&lt;/li&gt;
+  &lt;li&gt;一个企业作为具有分析能力的市场竞争者，可以通过掌握一个具体领域的信息主宰权和解释权，而使公众接受其商业模式，并且保障一个企业永久占据客观的市场份额。&lt;/li&gt;
+  &lt;li&gt;在企业内部，各个部门也都在竞争信息主宰权和解释权。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;社会生活中的大数据&quot;&gt;社会生活中的大数据&lt;/h1&gt;
+&lt;h2 id=&quot;大数据和开放运动&quot;&gt;大数据和“开放运动”&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;开放数据&lt;/li&gt;
+  &lt;li&gt;开放教育&lt;/li&gt;
+  &lt;li&gt;开放内容&lt;/li&gt;
+  &lt;li&gt;开放政府&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;德国联邦议会互联网和数字社会研究委员会&quot;&gt;德国联邦议会“互联网和数字社会”研究委员会&lt;/h2&gt;
+&lt;p&gt;该委员会的12个工作群体显示了该主题的多层次性&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.教育和研究&lt;/li&gt;
+  &lt;li&gt;2.数据保护和个人权益&lt;/li&gt;
+  &lt;li&gt;3.民主和国家&lt;/li&gt;
+  &lt;li&gt;4.国际和互联网管理&lt;/li&gt;
+  &lt;li&gt;5.协同工作、免费软件&lt;/li&gt;
+  &lt;li&gt;6.文化、媒体和公众&lt;/li&gt;
+  &lt;li&gt;7.媒体能力&lt;/li&gt;
+  &lt;li&gt;8.网络中立性&lt;/li&gt;
+  &lt;li&gt;9.著作权&lt;/li&gt;
+  &lt;li&gt;10.消费者保护&lt;/li&gt;
+  &lt;li&gt;11.经济、工作、绿色信息技术&lt;/li&gt;
+  &lt;li&gt;12.网络入口，结构和安全性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;总结-2&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;大数据是自下而上的推动。&lt;/li&gt;
+  &lt;li&gt;从“自下而上”这个角度看，大数据包含了另一种含义，即技术发展赋予了大数据集中型的结构，与大数据紧密相关的科技在此提供了许多深远的技术可能性。&lt;/li&gt;
+  &lt;li&gt;从整体上看，大数据是变幻莫测的社会变化产生的一个效应。这种变化是由各个生活领域大规模的数字化推动的，没有人能够全身而退。&lt;/li&gt;
+  &lt;li&gt;当前关于大数据和世界数字化的公开讨论改变了公众关于互联网使用和隐私保护的意识。&lt;/li&gt;
+  &lt;li&gt;这种已然改变的意识导致了产生的行为规则和期待也发生了变化，人们扮演着不同的角色，如客户、消费者、员工和公民，如今也向企业和国家机构提出了新的挑战。&lt;/li&gt;
+  &lt;li&gt;在这个过程中，经济层面上的道德问题也日益获得关注。&lt;/li&gt;
+  &lt;li&gt;这一系列的主题由于其广泛的社会意义，在更高的政治层面上也日益获得关注。&lt;/li&gt;
+  &lt;li&gt;该整体状况对于企业内外关系中的相关主题有着直接的影响。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;企业中的数据治理&quot;&gt;企业中的数据治理&lt;/h1&gt;
+&lt;h2 id=&quot;大数据和企业文化&quot;&gt;大数据和企业文化&lt;/h2&gt;
+&lt;p&gt;组织文化指的是组织内在的文化价值模式的形成和发展。在企业中这种现象也被称为企业文化&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.领导方式&lt;/li&gt;
+  &lt;li&gt;2.员工之间的关系&lt;/li&gt;
+  &lt;li&gt;3.内部合作的方式（合作模式）&lt;/li&gt;
+  &lt;li&gt;4.内部沟通（沟通方式）&lt;/li&gt;
+  &lt;li&gt;5.决策方式&lt;/li&gt;
+  &lt;li&gt;6.支持合作、沟通和决策的技术基础设施的价值&lt;/li&gt;
+  &lt;li&gt;7.对于内部矛盾及政治矛盾的处理（争论文化）&lt;/li&gt;
+  &lt;li&gt;8.与客户、供应方和其他外部合作者的关系&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;社交软件与企业20&quot;&gt;社交软件与企业2.0&lt;/h2&gt;
+&lt;p&gt;“社交软件”所指的是软件工具，它通过一个主题将所有的员工进行联合，为企业的某些大事件起到推动和支持作用。&lt;br /&gt;
+社交软件的投入使用是体现企业2.0的基本之一，它的目的就在于优化企业内部的团结合作。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;社交与商业一体化&lt;/li&gt;
+  &lt;li&gt;智能合作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;大数据时代下客户关系的封闭循环&quot;&gt;大数据时代下客户关系的封闭循环&lt;/h2&gt;
+&lt;p&gt;以客户为中心 | ➡️ | 数据保护
+:—:|:—:|:—:
+⬆️ |  | ⬇️
+&lt;strong&gt;客户关系&lt;/strong&gt; | ⬅️ | &lt;strong&gt;信任&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1.88%的互联网用户不愿意自己的网上行为被追踪。&lt;br /&gt;
+2.75%的用户希望企业不要备份用户的任何个人数据。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;目标冲突和内部阻力&quot;&gt;目标冲突和内部阻力&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;透明化 VS 不透明化&lt;/li&gt;
+  &lt;li&gt;结构化 VS 自由度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;总结-3&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;企业处于全社会性质变革的中心，这种变革通过生活全方面数字化驱动带来广泛的社会性循环。&lt;/li&gt;
+  &lt;li&gt;大数据是数字化和这种社会文化变革的技术表现形式，另外由于他们的交互依赖性以及相互的作用共同铸就变革。&lt;/li&gt;
+  &lt;li&gt;发展固有的文化对企业有直接的影响，它要求企业通过利用现代技术的潜力找到让企业文化适应21世纪商业世界新要求的方法，其关键词就是企业2.0。&lt;/li&gt;
+  &lt;li&gt;面对由像棱镜门等事件引起的广泛讨论，人们必须站在企业的角度思考是否有必要对这种潜在威胁采取行动。&lt;/li&gt;
+  &lt;li&gt;像数据保护、个人隐私保护，以及像信任这样的传统价值等方面变得意义重大，同时成为有决定性作用的市场竞争因素。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;大数据不仅仅是商业智能20&quot;&gt;大数据不仅仅是商业智能2.0&lt;/h1&gt;
+&lt;h2 id=&quot;商业智能的复杂性提高&quot;&gt;商业智能的复杂性提高&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.新的数据结构
+    &lt;ul&gt;
+      &lt;li&gt;并不存在“非结构化数据”，数据永远都是结构化的。&lt;/li&gt;
+      &lt;li&gt;大数据要求不同数据结构的整合，这个过程要求人们对不同层面的数据进行思考。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;2.类型化的关键字&lt;/li&gt;
+  &lt;li&gt;3.新数据等级和存储技术&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;数据质量&quot;&gt;数据质量&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;低数据质量如何产生&lt;/li&gt;
+  &lt;li&gt;人们应该如何持续得到高质量的数据&lt;/li&gt;
+  &lt;li&gt;维持高水准的数据质量需要花费多少&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;数据分析&quot;&gt;数据分析&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;描述性分析
+    &lt;ul&gt;
+      &lt;li&gt;现有的财政数据基础上的月度结算&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;预测性分析
+    &lt;ul&gt;
+      &lt;li&gt;现有的措施基础上的销售预测&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;处方性分析
+    &lt;ul&gt;
+      &lt;li&gt;描述中长期的未来&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;大数据分析法的四个条件因素&quot;&gt;大数据分析法的四个条件因素&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;大数据 —— 大量数据将被分析&lt;/li&gt;
+  &lt;li&gt;数据挖掘 —— 数学统计学工具将被使用，用以认知大量数据的模式。&lt;/li&gt;
+  &lt;li&gt;诊断式分析 —— 分析针对于未来不同的时间&lt;/li&gt;
+  &lt;li&gt;内存 —— 并不一定与大数据分析法有着直接联系&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;总结-4&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;大数据时代，商业智能的复杂性增加表面上是由技术层面上的数据容量、不同性质的数据结构和数据等级导致的。&lt;/li&gt;
+  &lt;li&gt;复杂性增加更大程度上是因为专业部门和信息技术需要大幅度协调。在整体战略和具体行为计划的框架下，这是非常必要的，这样数据的多层次性才能得到整体理解。&lt;/li&gt;
+  &lt;li&gt;战略性基本方针的缺失或者并不独立可能会导致摩擦损失，企业通过忍受高额成本和信息的不透明，投入资源并且建设“阴影信息技术”及“阴影化过程”，以此来弥补可能存在的摩擦损失。&lt;/li&gt;
+  &lt;li&gt;这种认知必然会导致意义斐然的合作模式的建立，能够连接所有的能力，将现有的资源引向目的。&lt;/li&gt;
+  &lt;li&gt;这个过程中要注意的是，提高大数据的潜力会导致人们对可测量的企业增值日益期待。这也要求有着不同专业知识背景的所有层次的参与者进行永恒且广泛的相互协调。&lt;/li&gt;
+  &lt;li&gt;与商业智能相比较，大数据分析法提出了一个新的要求，尤其是所形成的时间维度。&lt;/li&gt;
+  &lt;li&gt;传统方法的组合，比如数据挖掘，在商业智能中已经广为人知，比如诊断式数据分析，提升了大数据分析法的整体潜力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;内存&quot;&gt;内存&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;大数据和内存技术并不一定是紧密相关的，然而在涉及大数据潜力时，者两者常常会被同事列举出来。&lt;/li&gt;
+  &lt;li&gt;事实上，通过大量数据的实时分析，全新的应用可能诞生于世，这在没有大数据和内存技术时是不可想象的。&lt;/li&gt;
+  &lt;li&gt;这些可能性位人类的进步提供了巨大的潜力，然而同时也蕴藏着风险。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;大数据对企业的意义&quot;&gt;大数据对企业的意义&lt;/h1&gt;
+&lt;p&gt;1.大数据为企业的应变能力提供支持&lt;br /&gt;
+2.大数据可以提高企业与客户沟通的效率&lt;br /&gt;
+3.大数据会对企业的管理模式产生一定影响&lt;br /&gt;
+4.大数据会对企业的战略产生一定影响&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;为了描述企业中有关于大数据的话题，有目的地采取适当措施，需要企业在总体战略中确定不同主题。&lt;/li&gt;
+  &lt;li&gt;所有大数据活动应当给予主题相进性与商业智能能力中心（BICC）联系在一起，在大数据背景下，商业智能能力中心（BICC）需要继续发展成为数据分析能力中心（DACC）。这并不意味着大数据只是商业智能的拓展，而是尽可能地利用现有的结构。&lt;/li&gt;
+  &lt;li&gt;目前企业中还没有类似于BICC这样广泛意义上的组织单元，企业应当在大数据多样主题的压力下建立一个数据分析能力中心（DACC），为企业成为分析型市场竞争者提供支持。&lt;/li&gt;
+  &lt;li&gt;数据分析能力中心（DACC）的一个重要任务就是变革管理和通信管理，在数据分析能力的帮助下研究特定的培训内容。一方面，在整个企业范围内建立对大数据的普遍理解；另一方面，可以在具体的主题例如技术层面或者个人客户数据方面进行相关培训。&lt;/li&gt;
+  &lt;li&gt;大数据项目管理必须始终坚持使用商业智能的经验，在执行层面建立灵活性。&lt;/li&gt;
+  &lt;li&gt;实用主义和执行层面的灵活性并不违背战略一致性的要求；相反，这个战略为特定项目实现高自由度创造了前提，从而释放必要的创造力和生产力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;福兮祸兮&quot;&gt;福兮祸兮&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于一个真正存在的问题，其分析结果会因为增长的数据量、提高的结构复杂性、技术和逻辑上的清晰性儿变得愈加具有解释性。&lt;/li&gt;
+  &lt;li&gt;大数据需要一次全面的思想转换，因为这些多重结构并且内容复杂的大量数据在很大程度上时缺乏解释的，而涉及企业和社会决策的数据分析应该切合实际。&lt;/li&gt;
+  &lt;li&gt;这个世界时不可预测的，速度更快、连接更顺畅的IT系统当然能够使得愈加复杂的算法在越来越大的数据库中得以运用，并且也能够对具体问题的解决方面有所帮助。&lt;/li&gt;
+  &lt;li&gt;在大数据复杂的框架条件下，想要利用一个通过技术推动的、自动化的并且有算法控制的决策来解决现实问题，是不切实际的。&lt;/li&gt;
+  &lt;li&gt;在全球数字化的趋势下，越来越多方面的复杂性刚刚被人了解并且以数据的方式被存储起来，所以才产生了大数据。或者用另外一种表达方式来说，就是全球数字化正在高速运转并且在不久的将来会更加深入地渗透到人们生活的所有领域。&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>《从零开始学微信运营》读书笔记</title>
