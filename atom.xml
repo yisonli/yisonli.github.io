@@ -4,13 +4,64 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2018-01-20T11:57:41+08:00</updated>
+ <updated>2018-04-27T20:11:33+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>《php7内核剖析》之php基础架构</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+   <updated>2018-04-27T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;有幸最近在读秦朋的《PHP内核剖析》一书，收获良多，为了加深自己的理解，依照书中内容自己动手画了一些流程图。本文主要描述PHP的基本构成、生命周期、以及各个阶段的大体流程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;php的构成&quot;&gt;PHP的构成&lt;/h2&gt;
+&lt;p&gt;PHP的源代码下有几个主要目录：SAPI、main、Zend、ext。其中&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SAPI是PHP的应用接口层；&lt;/li&gt;
+  &lt;li&gt;main为PHP的主要代码；
+    &lt;ul&gt;
+      &lt;li&gt;主要是输入/输出、Web通信，以及PHP框架的初始化操作等，比如fastcgi协议的解析、扩展的加载、PHP配置的解析等工作。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Zend是PHP解析器的主要实现；
+    &lt;ul&gt;
+      &lt;li&gt;即ZendVM，它是PHP语言的核心实现，PHP代码的解释、执行就是由Zend完成的。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ext是PHP的扩展目录；&lt;/li&gt;
+  &lt;li&gt;TSRM为线程安全相关的实现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/0.PHP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%88%90.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;php的生命周期&quot;&gt;PHP的生命周期&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/0.PHP%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;1模块初始化阶段&quot;&gt;1.模块初始化阶段&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/1.%E6%A8%A1%E5%9D%97%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2请求初始化阶段&quot;&gt;2.请求初始化阶段&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/2.%E8%AF%B7%E6%B1%82%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;3执行脚本阶段&quot;&gt;3.执行脚本阶段&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/3.%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC%E9%98%B6%E6%AE%B5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;4请求关闭阶段&quot;&gt;4.请求关闭阶段&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/4.%E8%AF%B7%E6%B1%82%E5%85%B3%E9%97%AD%E9%98%B6%E6%AE%B5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;5模块关闭阶段&quot;&gt;5.模块关闭阶段&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/04/5.%E6%A8%A1%E5%9D%97%E5%85%B3%E9%97%AD%E9%98%B6%E6%AE%B5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>《大数据时代下半场》读书笔记</title>
