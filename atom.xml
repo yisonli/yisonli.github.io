@@ -4,13 +4,317 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2018-04-27T20:11:33+08:00</updated>
+ <updated>2018-05-04T22:37:51+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Xdebug源码安装</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
+   <updated>2018-05-04T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;PHP在Linux上(含MAC OS)安装xdebug的方法&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;1下载源码&quot;&gt;1.下载源码&lt;/h2&gt;
+&lt;p&gt;到&lt;a href=&quot;https://xdebug.org/download.php&quot;&gt;《xdebug官方网站》&lt;/a&gt;下载源代码，选择适合自己的版本，如版本2.6.0的下载地址：&lt;a href=&quot;https://xdebug.org/files/xdebug-2.6.0.tgz&quot;&gt;点击下载&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2解压源码包&quot;&gt;2.解压源码包&lt;/h2&gt;
+&lt;p&gt;打开终端，输入如下指令进行解压操作：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-xvf&lt;/span&gt; xdebug-2.6.0.tgz
+//切换到你解压出来的目录中
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;xdebug-2.6.0 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;3生成编译配置文件&quot;&gt;3.生成编译配置文件&lt;/h2&gt;
+&lt;p&gt;执行phpize生成configure配置文件&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;phpize
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如果报错未找到autoconf，请先安装autoconf即可&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get install autoconf
+//MAC下也可如此安装
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;brew install autoconf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;这里只介绍自动安装autoconf的方式，如果过程出问题，可以自行尝试百度/谷歌解决。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;4编译&quot;&gt;4.编译&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//生成Makefile
+./configure &lt;span class=&quot;nt&quot;&gt;--enable-xdebug&lt;/span&gt;
+//编译
+make
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;5移动到php扩展目录&quot;&gt;5.移动到PHP扩展目录&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//拷贝so到&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;PHP放置扩展&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;的目录中
+cp modules/xdebug.so /PHP放置扩展的路径/xdebug.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;6-phpini配置&quot;&gt;6. php.ini配置&lt;/h2&gt;
+&lt;p&gt;在 php.ini 中添加下列文件使xdebug扩展生效&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//使用xdebug
+&lt;span class=&quot;nv&quot;&gt;zend_extension&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;xdebug.so
+//远程调试，需要的话可以把这个也打开
+   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;xdebug]
+   xdebug.remote_enable&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;On
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;7-重启web服务&quot;&gt;7. 重启Web服务&lt;/h2&gt;
+&lt;p&gt;我这边使用的nginx，可以如下方式重新启动&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service nginx restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;附加福利：MAC OS下web开发常用文件目录&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;apache配置文件：/etc/apache2/httpd.conf&lt;br /&gt;
+apache默认根目录：/library/webserver/documents&lt;br /&gt;
+host 文件保存在：/Private/etc/&lt;br /&gt;
+php配置文件：/etc/php.ini&lt;br /&gt;
+php扩展目录：/usr/lib/php/extensions/**/&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Php代码覆盖率一起玩</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
+   <updated>2018-05-04T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;最近在玩PHP的单元测试，以及代码覆盖率这块，也遇到一些问题，所以摘出来记录一下，也算是简单入门了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;1安装phpunit&quot;&gt;1.安装PHPUnit&lt;/h2&gt;
+&lt;p&gt;可参考&lt;a href=&quot;http://www.phpunit.cn/manual/7.0/zh_cn/installation.html&quot;&gt;《PHPUnit官方安装教程》&lt;/a&gt;，比较简单，基本只要把文件下载到本地即可。&lt;br /&gt;
+&lt;strong&gt;同时可看看PHPUnit的官方教程，了解一些必要的基础知识。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2单元测试简单例子&quot;&gt;2.单元测试简单例子&lt;/h2&gt;
+&lt;p&gt;用 PHPUnit 编写测试的基本惯例与步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;针对类 Class 的测试写在类 ClassTest中。&lt;/li&gt;
+  &lt;li&gt;ClassTest（通常）继承自PHPUnit\Framework\TestCase。&lt;/li&gt;
+  &lt;li&gt;测试都是命名为 test* 的公用方法。&lt;br /&gt;
+也可以在方法的文档注释块(docblock)中使用 @test 标注将其标记为测试方法。&lt;/li&gt;
+  &lt;li&gt;在测试方法内，类似于 assertEquals()（参见 &lt;a href=&quot;http://www.phpunit.cn/manual/7.0/zh_cn/appendixes.assertions.html&quot;&gt;PHPUnit官方文档&lt;/a&gt;）这样的断言方法用来对实际值与预期值的匹配做出断言。&lt;/li&gt;
+  &lt;li&gt;@depends 标注来表达测试方法之间的依赖关系&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PHPUnit\Framework\TestCase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StackTest&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TestCase&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;testEmpty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertEmpty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;sd&quot;&gt;/**
+     * @depends testEmpty
+     */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;testPush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;array&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;array_push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertNotEmpty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;sd&quot;&gt;/**
+     * @depends testPush
+     */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;testPop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;array&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;array_pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertEmpty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行测试&amp;amp;结果：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;phpunit &lt;span class=&quot;nt&quot;&gt;--verbose&lt;/span&gt; StackTest.php 
+
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.1.14 with Xdebug 2.5.5
+
+...                                                                 3 / 3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Time: 149 ms, Memory: 10.00MB
+
+OK &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3 tests, 5 assertions&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;3代码覆盖率的报告&quot;&gt;3.代码覆盖率的报告&lt;/h2&gt;
+
+&lt;h3 id=&quot;1从一个github项目上开始玩&quot;&gt;1).从一个github项目上开始玩&lt;/h3&gt;
+&lt;p&gt;参考项目：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/sebastianbergmann/money.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;执行测试：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;phpunit &lt;span class=&quot;nt&quot;&gt;--configuration&lt;/span&gt; build/phpunit.xml
+//或者如下执行方式也行
+php build/tools/phpunit.phar &lt;span class=&quot;nt&quot;&gt;--configuration&lt;/span&gt; build/phpunit.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;报错如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PHPUnit 6.5.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.0.27
+Configuration: /alidata1/home/yisonli/test/money/build/phpunit.xml
+Error:         No code coverage driver is available
+
+...........S................................                      44 / 44 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Time: 198 ms, Memory: 8.00MB
+
+There was 1 skipped &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;:
+
+1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; SebastianBergmann&lt;span class=&quot;se&quot;&gt;\M&lt;/span&gt;oney&lt;span class=&quot;se&quot;&gt;\I&lt;/span&gt;ntlFormatterTest
+Extension intl is required.
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 44, Assertions: 69, Skipped: 1.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2安装xdebug&quot;&gt;2).安装xdebug&lt;/h3&gt;
+&lt;p&gt;具体安装可参考&lt;a href=&quot;../../04/xdebug源码安装/&quot;&gt;《xdebug源码安装》&lt;/a&gt;，之所以采用源码方式安装，是因为brew已经不提供自动安装了，只好下源码自行编译。&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;提示：PHP扩展目录(以自己安装PHP的path为准)&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/usr/local/php7.0/lib/php/extensions/no-debug-non-zts-20151012
+/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; MAC默认目录可能是:/usr/lib/php/extensions/no-debug-non-zts-20160303 &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3重新执行测试即可生成报告&quot;&gt;3).重新执行测试即可生成报告&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;phpunit &lt;span class=&quot;nt&quot;&gt;--configuration&lt;/span&gt; build/phpunit.xml 
+
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.1.14 with Xdebug 2.5.5
+Configuration: /Users/yison/GitProject/money/build/phpunit.xml
+
+...........S................................                      44 / 44 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Time: 775 ms, Memory: 18.00MB
+
+There was 1 skipped &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;:
+
+1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; SebastianBergmann&lt;span class=&quot;se&quot;&gt;\M&lt;/span&gt;oney&lt;span class=&quot;se&quot;&gt;\I&lt;/span&gt;ntlFormatterTest
+Extension intl is required.
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 44, Assertions: 69, Skipped: 1.
+
+Generating code coverage report &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;Clover XML format ... &lt;span class=&quot;k&quot;&gt;done
+
+&lt;/span&gt;Generating Crap4J report XML file ... &lt;span class=&quot;k&quot;&gt;done
+
+&lt;/span&gt;Generating code coverage report &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;HTML format ... &lt;span class=&quot;k&quot;&gt;done
+
+&lt;/span&gt;Generating code coverage report &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;PHPUnit XML format ... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;此时在build文件夹下就有你想要看的覆盖率报告了。&lt;/p&gt;
+
+&lt;h2 id=&quot;4phpunit指令和xml配置了解一下&quot;&gt;4.PHPUnit指令和xml配置，了解一下&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Whitelisting Files for Code Coverage&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;filter&amp;gt; 元素及其子元素用于配置代码覆盖率报告所使用的白名单。&lt;/p&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;filter&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;whitelist&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;processUncoveredFilesFromWhitelist=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;true&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;directory&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;suffix=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.php&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/path/to/files&lt;span class=&quot;nt&quot;&gt;&amp;lt;/directory&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;file&amp;gt;&lt;/span&gt;/path/to/file&lt;span class=&quot;nt&quot;&gt;&amp;lt;/file&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;exclude&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;directory&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;suffix=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.php&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/path/to/files&lt;span class=&quot;nt&quot;&gt;&amp;lt;/directory&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;file&amp;gt;&lt;/span&gt;/path/to/file&lt;span class=&quot;nt&quot;&gt;&amp;lt;/file&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/exclude&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/whitelist&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/filter&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Logging （日志记录）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;logging&amp;gt; 元素及其 &amp;lt;log&amp;gt; 子元素用于配置测试执行期间的日志记录。&lt;/p&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;logging&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;coverage-html&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/report&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lowUpperBound=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;35&quot;&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;highLowerBound=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;70&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;coverage-clover&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/coverage.xml&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;coverage-php&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/coverage.serialized&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;coverage-text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;php://stdout&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;showUncoveredFiles=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;false&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;junit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/logfile.xml&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;logIncompleteSkipped=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;false&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;testdox-html&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/testdox.html&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;log&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;testdox-text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/testdox.txt&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/logging&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;以上 XML 配置对应于以如下选项调用 TextUI 测试执行器：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;--coverage-html&lt;/span&gt; /tmp/report
+
+&lt;span class=&quot;nt&quot;&gt;--coverage-clover&lt;/span&gt; /tmp/coverage.xml
+
+&lt;span class=&quot;nt&quot;&gt;--coverage-php&lt;/span&gt; /tmp/coverage.serialized
+
+&lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/logfile.txt
+
+&lt;span class=&quot;nt&quot;&gt;--log-junit&lt;/span&gt; /tmp/logfile.xml
+
+&lt;span class=&quot;nt&quot;&gt;--testdox-html&lt;/span&gt; /tmp/testdox.html
+
+&lt;span class=&quot;nt&quot;&gt;--testdox-text&lt;/span&gt; /tmp/testdox.txt
+
+lowUpperBound、highLowerBound、logIncompleteSkipped 及 showUncoveredFiles 属性没有等价的 TextUI 测试执行器选项。
+
+lowUpperBound：视为“低”覆盖率的最大覆盖率百分比。
+
+highLowerBound：视为“高”覆盖率的最小覆盖率百分比。
+
+showUncoveredFiles：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&gt; 输出中显示所有符合白名单的文件，不仅限于有覆盖率信息的那些。
+
+showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&gt; 输出中只显示摘要
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;5最后展示一下报告的html效果吧&quot;&gt;5.最后展示一下报告的html效果吧&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_index.jpg&quot; alt=&quot;总览&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_currency.jpg&quot; alt=&quot;单个测试结果&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_intlFormatter.jpg&quot; alt=&quot;异常标注&quot; /&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>《php7内核剖析》之php基础架构</title>

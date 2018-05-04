@@ -8,7 +8,7 @@
     
     
     
-    <title>使用gd库给图片铺满水印 | Yison's Blog</title>
+    <title>Php代码覆盖率一起玩 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="使用gd库给图片铺满水印">
-    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/">
+    <meta property="og:title" content="Php代码覆盖率一起玩">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="使用gd库给图片铺满水印">
+    <meta name="twitter:title" content="Php代码覆盖率一起玩">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" title="使用gd库给图片铺满水印" itemprop="url">使用gd库给图片铺满水印</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/" title="Php代码覆盖率一起玩" itemprop="url">Php代码覆盖率一起玩</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-12-08 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-12-08</time>
+    <time datetime="2018-05-04 00:00:00 +0800" itemprop="datePublished"> 发表于 2018-05-04</time>
     
   </p>
 </header>
@@ -117,49 +117,223 @@
 		</div>
 		
 		<blockquote>
-  <p>PHP一个使用GD库生成水印的方法</p>
+  <p>最近在玩PHP的单元测试，以及代码覆盖率这块，也遇到一些问题，所以摘出来记录一下，也算是简单入门了。</p>
 </blockquote>
 
-<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 
- * 图片加水印函数
- * $dst_file : 处理完成后保存到此文件路径
- * $src_file ：待处理的图片文件路径
- * $logo_file：水印的图片文件路径
- * $top      ：上间距
- * $left     ：左间距
- * $alpha    ：透明度(0-100)【特别注意：若logo_file本身已有透明效果，请务必传false】
- */</span>
-<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fullFillLogos</span><span class="p">(</span><span class="nv">$dst_file</span><span class="p">,</span> <span class="nv">$src_file</span><span class="p">,</span> <span class="nv">$logo_file</span><span class="p">,</span> <span class="nv">$top</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$alpha</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="p">{</span>
-        <span class="c1">//创建图片的实例
-</span>        <span class="nv">$dst</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">));</span>
-        <span class="nv">$logo</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">));</span>
-        <span class="c1">//获取宽高
-</span>        <span class="k">list</span><span class="p">(</span><span class="nv">$logo_w</span><span class="p">,</span> <span class="nv">$logo_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">);</span>
-        <span class="k">list</span><span class="p">(</span><span class="nv">$dst_w</span><span class="p">,</span> <span class="nv">$dst_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">);</span>
-        <span class="c1">//循环铺上水印
-</span>        <span class="k">for</span><span class="p">(</span><span class="nv">$off_y</span><span class="o">=</span><span class="nv">$top</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+</span><span class="nv">$top</span><span class="o">&lt;</span><span class="nv">$dst_h</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+=</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span><span class="p">(</span><span class="nv">$off_x</span><span class="o">=</span><span class="nv">$left</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+</span><span class="nv">$left</span><span class="o">&lt;</span><span class="nv">$dst_w</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+=</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nv">$width</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_x</span><span class="o">+</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="o">&gt;</span><span class="nv">$dst_w</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_w</span><span class="o">-</span><span class="nv">$off_x</span><span class="o">-</span><span class="nv">$left</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_w</span><span class="p">;</span>
-                <span class="nv">$height</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_y</span><span class="o">+</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="o">&gt;</span><span class="nv">$dst_h</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_h</span><span class="o">-</span><span class="nv">$off_y</span><span class="o">-</span><span class="nv">$top</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_h</span><span class="p">;</span>
-                <span class="k">if</span><span class="p">(</span><span class="nv">$alpha</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="nb">imagecopy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">);</span>
-                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                    <span class="nb">imagecopymerge</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">,</span> <span class="nv">$alpha</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="c1">//水印完成, 存档...
-</span>        <span class="nb">header</span><span class="p">(</span><span class="s1">'Content-Type: image/jpeg'</span><span class="p">);</span>
-        <span class="nb">imagejpeg</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$dst_file</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$logo</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<h2 id="1安装phpunit">1.安装PHPUnit</h2>
+<p>可参考<a href="http://www.phpunit.cn/manual/7.0/zh_cn/installation.html">《PHPUnit官方安装教程》</a>，比较简单，基本只要把文件下载到本地即可。<br />
+<strong>同时可看看PHPUnit的官方教程，了解一些必要的基础知识。</strong></p>
+
+<h2 id="2单元测试简单例子">2.单元测试简单例子</h2>
+<p>用 PHPUnit 编写测试的基本惯例与步骤：</p>
+
+<ul>
+  <li>针对类 Class 的测试写在类 ClassTest中。</li>
+  <li>ClassTest（通常）继承自PHPUnit\Framework\TestCase。</li>
+  <li>测试都是命名为 test* 的公用方法。<br />
+也可以在方法的文档注释块(docblock)中使用 @test 标注将其标记为测试方法。</li>
+  <li>在测试方法内，类似于 assertEquals()（参见 <a href="http://www.phpunit.cn/manual/7.0/zh_cn/appendixes.assertions.html">PHPUnit官方文档</a>）这样的断言方法用来对实际值与预期值的匹配做出断言。</li>
+  <li>@depends 标注来表达测试方法之间的依赖关系</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StackTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testEmpty</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$stack</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$stack</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * @depends testEmpty
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testPush</span><span class="p">(</span><span class="k">array</span> <span class="nv">$stack</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nb">array_push</span><span class="p">(</span><span class="nv">$stack</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="nv">$stack</span><span class="p">[</span><span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$stack</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * @depends testPush
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testPop</span><span class="p">(</span><span class="k">array</span> <span class="nv">$stack</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="nb">array_pop</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+    <span class="p">}</span>
 <span class="p">}</span>
+<span class="cp">?&gt;</span>
 </code></pre></div></div>
+<p>运行测试&amp;结果：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpunit <span class="nt">--verbose</span> StackTest.php 
+
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.1.14 with Xdebug 2.5.5
+
+...                                                                 3 / 3 <span class="o">(</span>100%<span class="o">)</span>
+
+Time: 149 ms, Memory: 10.00MB
+
+OK <span class="o">(</span>3 tests, 5 assertions<span class="o">)</span>
+
+</code></pre></div></div>
+
+<h2 id="3代码覆盖率的报告">3.代码覆盖率的报告</h2>
+
+<h3 id="1从一个github项目上开始玩">1).从一个github项目上开始玩</h3>
+<p>参考项目：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/sebastianbergmann/money.git
+</code></pre></div></div>
+
+<p>执行测试：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpunit <span class="nt">--configuration</span> build/phpunit.xml
+//或者如下执行方式也行
+php build/tools/phpunit.phar <span class="nt">--configuration</span> build/phpunit.xml
+</code></pre></div></div>
+
+<p>报错如下：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PHPUnit 6.5.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.0.27
+Configuration: /alidata1/home/yisonli/test/money/build/phpunit.xml
+Error:         No code coverage driver is available
+
+...........S................................                      44 / 44 <span class="o">(</span>100%<span class="o">)</span>
+
+Time: 198 ms, Memory: 8.00MB
+
+There was 1 skipped <span class="nb">test</span>:
+
+1<span class="o">)</span> SebastianBergmann<span class="se">\M</span>oney<span class="se">\I</span>ntlFormatterTest
+Extension intl is required.
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 44, Assertions: 69, Skipped: 1.
+</code></pre></div></div>
+
+<h3 id="2安装xdebug">2).安装xdebug</h3>
+<p>具体安装可参考<a href="../../04/xdebug源码安装/">《xdebug源码安装》</a>，之所以采用源码方式安装，是因为brew已经不提供自动安装了，只好下源码自行编译。</p>
+
+<p><em>提示：PHP扩展目录(以自己安装PHP的path为准)</em></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/local/php7.0/lib/php/extensions/no-debug-non-zts-20151012
+/<span class="k">*</span> MAC默认目录可能是:/usr/lib/php/extensions/no-debug-non-zts-20160303 <span class="k">*</span>/
+</code></pre></div></div>
+
+<h3 id="3重新执行测试即可生成报告">3).重新执行测试即可生成报告</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpunit <span class="nt">--configuration</span> build/phpunit.xml 
+
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 7.1.14 with Xdebug 2.5.5
+Configuration: /Users/yison/GitProject/money/build/phpunit.xml
+
+...........S................................                      44 / 44 <span class="o">(</span>100%<span class="o">)</span>
+
+Time: 775 ms, Memory: 18.00MB
+
+There was 1 skipped <span class="nb">test</span>:
+
+1<span class="o">)</span> SebastianBergmann<span class="se">\M</span>oney<span class="se">\I</span>ntlFormatterTest
+Extension intl is required.
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 44, Assertions: 69, Skipped: 1.
+
+Generating code coverage report <span class="k">in </span>Clover XML format ... <span class="k">done
+
+</span>Generating Crap4J report XML file ... <span class="k">done
+
+</span>Generating code coverage report <span class="k">in </span>HTML format ... <span class="k">done
+
+</span>Generating code coverage report <span class="k">in </span>PHPUnit XML format ... <span class="k">done</span>
+</code></pre></div></div>
+<p>此时在build文件夹下就有你想要看的覆盖率报告了。</p>
+
+<h2 id="4phpunit指令和xml配置了解一下">4.PHPUnit指令和xml配置，了解一下</h2>
+
+<p><strong>Whitelisting Files for Code Coverage</strong></p>
+
+<p>&lt;filter&gt; 元素及其子元素用于配置代码覆盖率报告所使用的白名单。</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
+  <span class="nt">&lt;whitelist</span> <span class="na">processUncoveredFilesFromWhitelist=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">".php"</span><span class="nt">&gt;</span>/path/to/files<span class="nt">&lt;/directory&gt;</span>
+    <span class="nt">&lt;file&gt;</span>/path/to/file<span class="nt">&lt;/file&gt;</span>
+    <span class="nt">&lt;exclude&gt;</span>
+      <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">".php"</span><span class="nt">&gt;</span>/path/to/files<span class="nt">&lt;/directory&gt;</span>
+      <span class="nt">&lt;file&gt;</span>/path/to/file<span class="nt">&lt;/file&gt;</span>
+    <span class="nt">&lt;/exclude&gt;</span>
+  <span class="nt">&lt;/whitelist&gt;</span>
+<span class="nt">&lt;/filter&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Logging （日志记录）</strong></p>
+
+<p>&lt;logging&gt; 元素及其 &lt;log&gt; 子元素用于配置测试执行期间的日志记录。</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;logging&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"coverage-html"</span> <span class="na">target=</span><span class="s">"/tmp/report"</span> <span class="na">lowUpperBound=</span><span class="s">"35"</span>
+       <span class="na">highLowerBound=</span><span class="s">"70"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"coverage-clover"</span> <span class="na">target=</span><span class="s">"/tmp/coverage.xml"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"coverage-php"</span> <span class="na">target=</span><span class="s">"/tmp/coverage.serialized"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"coverage-text"</span> <span class="na">target=</span><span class="s">"php://stdout"</span> <span class="na">showUncoveredFiles=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"junit"</span> <span class="na">target=</span><span class="s">"/tmp/logfile.xml"</span> <span class="na">logIncompleteSkipped=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"testdox-html"</span> <span class="na">target=</span><span class="s">"/tmp/testdox.html"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;log</span> <span class="na">type=</span><span class="s">"testdox-text"</span> <span class="na">target=</span><span class="s">"/tmp/testdox.txt"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/logging&gt;</span>
+</code></pre></div></div>
+
+<p>以上 XML 配置对应于以如下选项调用 TextUI 测试执行器：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">--coverage-html</span> /tmp/report
+
+<span class="nt">--coverage-clover</span> /tmp/coverage.xml
+
+<span class="nt">--coverage-php</span> /tmp/coverage.serialized
+
+<span class="nt">--coverage-text</span>
+
+<span class="o">&gt;</span> /tmp/logfile.txt
+
+<span class="nt">--log-junit</span> /tmp/logfile.xml
+
+<span class="nt">--testdox-html</span> /tmp/testdox.html
+
+<span class="nt">--testdox-text</span> /tmp/testdox.txt
+
+lowUpperBound、highLowerBound、logIncompleteSkipped 及 showUncoveredFiles 属性没有等价的 TextUI 测试执行器选项。
+
+lowUpperBound：视为“低”覆盖率的最大覆盖率百分比。
+
+highLowerBound：视为“高”覆盖率的最小覆盖率百分比。
+
+showUncoveredFiles：在 <span class="nt">--coverage-text</span> 输出中显示所有符合白名单的文件，不仅限于有覆盖率信息的那些。
+
+showOnlySummary：在 <span class="nt">--coverage-text</span> 输出中只显示摘要
+</code></pre></div></div>
+
+<h2 id="5最后展示一下报告的html效果吧">5.最后展示一下报告的html效果吧</h2>
+
+<p><img src="http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_index.jpg" alt="总览" /></p>
+
+<p><img src="http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_currency.jpg" alt="单个测试结果" /></p>
+
+<p><img src="http://p0bmvhxkc.bkt.clouddn.com/img/2018/05/coverage_intlFormatter.jpg" alt="异常标注" /></p>
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -192,6 +366,8 @@
   
   <a href="/tags/#PHP">PHP</a>
   
+  <a href="/tags/#单元测试">单元测试</a>
+  
   </div>
 
 </div>
@@ -200,7 +376,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" data-title="使用gd库给图片铺满水印 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/" data-title="Php代码覆盖率一起玩 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -213,18 +389,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="《集创思维设计矩阵》读书笔记">
+ <a href="/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="《php7内核剖析》之php基础架构">
   <strong>上一篇：</strong><br/>
   <span>
-  《集创思维设计矩阵》读书笔记</span>
+  《php7内核剖析》之php基础架构</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"  title="使用composer安装lumen">
+<a href="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"  title="Xdebug源码安装">
  <strong>下一篇：</strong><br/> 
- <span>使用composer安装lumen
+ <span>Xdebug源码安装
 </span>
 </a>
 </div>

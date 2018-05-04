@@ -8,7 +8,7 @@
     
     
     
-    <title>使用gd库给图片铺满水印 | Yison's Blog</title>
+    <title>Xdebug源码安装 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="使用gd库给图片铺满水印">
-    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/">
+    <meta property="og:title" content="Xdebug源码安装">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="使用gd库给图片铺满水印">
+    <meta name="twitter:title" content="Xdebug源码安装">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" title="使用gd库给图片铺满水印" itemprop="url">使用gd库给图片铺满水印</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/" title="Xdebug源码安装" itemprop="url">Xdebug源码安装</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-12-08 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-12-08</time>
+    <time datetime="2018-05-04 00:00:00 +0800" itemprop="datePublished"> 发表于 2018-05-04</time>
     
   </p>
 </header>
@@ -117,49 +117,75 @@
 		</div>
 		
 		<blockquote>
-  <p>PHP一个使用GD库生成水印的方法</p>
+  <p>PHP在Linux上(含MAC OS)安装xdebug的方法</p>
 </blockquote>
 
-<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 
- * 图片加水印函数
- * $dst_file : 处理完成后保存到此文件路径
- * $src_file ：待处理的图片文件路径
- * $logo_file：水印的图片文件路径
- * $top      ：上间距
- * $left     ：左间距
- * $alpha    ：透明度(0-100)【特别注意：若logo_file本身已有透明效果，请务必传false】
- */</span>
-<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fullFillLogos</span><span class="p">(</span><span class="nv">$dst_file</span><span class="p">,</span> <span class="nv">$src_file</span><span class="p">,</span> <span class="nv">$logo_file</span><span class="p">,</span> <span class="nv">$top</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$alpha</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="p">{</span>
-        <span class="c1">//创建图片的实例
-</span>        <span class="nv">$dst</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">));</span>
-        <span class="nv">$logo</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">));</span>
-        <span class="c1">//获取宽高
-</span>        <span class="k">list</span><span class="p">(</span><span class="nv">$logo_w</span><span class="p">,</span> <span class="nv">$logo_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">);</span>
-        <span class="k">list</span><span class="p">(</span><span class="nv">$dst_w</span><span class="p">,</span> <span class="nv">$dst_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">);</span>
-        <span class="c1">//循环铺上水印
-</span>        <span class="k">for</span><span class="p">(</span><span class="nv">$off_y</span><span class="o">=</span><span class="nv">$top</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+</span><span class="nv">$top</span><span class="o">&lt;</span><span class="nv">$dst_h</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+=</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span><span class="p">(</span><span class="nv">$off_x</span><span class="o">=</span><span class="nv">$left</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+</span><span class="nv">$left</span><span class="o">&lt;</span><span class="nv">$dst_w</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+=</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nv">$width</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_x</span><span class="o">+</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="o">&gt;</span><span class="nv">$dst_w</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_w</span><span class="o">-</span><span class="nv">$off_x</span><span class="o">-</span><span class="nv">$left</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_w</span><span class="p">;</span>
-                <span class="nv">$height</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_y</span><span class="o">+</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="o">&gt;</span><span class="nv">$dst_h</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_h</span><span class="o">-</span><span class="nv">$off_y</span><span class="o">-</span><span class="nv">$top</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_h</span><span class="p">;</span>
-                <span class="k">if</span><span class="p">(</span><span class="nv">$alpha</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="nb">imagecopy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">);</span>
-                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                    <span class="nb">imagecopymerge</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">,</span> <span class="nv">$alpha</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="c1">//水印完成, 存档...
-</span>        <span class="nb">header</span><span class="p">(</span><span class="s1">'Content-Type: image/jpeg'</span><span class="p">);</span>
-        <span class="nb">imagejpeg</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$dst_file</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$logo</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-<span class="p">}</span>
+<h2 id="1下载源码">1.下载源码</h2>
+<p>到<a href="https://xdebug.org/download.php">《xdebug官方网站》</a>下载源代码，选择适合自己的版本，如版本2.6.0的下载地址：<a href="https://xdebug.org/files/xdebug-2.6.0.tgz">点击下载</a></p>
+
+<h2 id="2解压源码包">2.解压源码包</h2>
+<p>打开终端，输入如下指令进行解压操作：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tar</span> <span class="nt">-xvf</span> xdebug-2.6.0.tgz
+//切换到你解压出来的目录中
+<span class="nb">cd </span>xdebug-2.6.0 
 </code></pre></div></div>
+
+<h2 id="3生成编译配置文件">3.生成编译配置文件</h2>
+<p>执行phpize生成configure配置文件</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpize
+</code></pre></div></div>
+<p>如果报错未找到autoconf，请先安装autoconf即可</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get install autoconf
+//MAC下也可如此安装
+<span class="nb">sudo </span>brew install autoconf
+</code></pre></div></div>
+<blockquote>
+  <p>这里只介绍自动安装autoconf的方式，如果过程出问题，可以自行尝试百度/谷歌解决。</p>
+</blockquote>
+
+<h2 id="4编译">4.编译</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//生成Makefile
+./configure <span class="nt">--enable-xdebug</span>
+//编译
+make
+</code></pre></div></div>
+
+<h2 id="5移动到php扩展目录">5.移动到PHP扩展目录</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//拷贝so到<span class="o">{</span>PHP放置扩展<span class="o">}</span>的目录中
+cp modules/xdebug.so /PHP放置扩展的路径/xdebug.so
+</code></pre></div></div>
+
+<h2 id="6-phpini配置">6. php.ini配置</h2>
+<p>在 php.ini 中添加下列文件使xdebug扩展生效</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//使用xdebug
+<span class="nv">zend_extension</span><span class="o">=</span>xdebug.so
+//远程调试，需要的话可以把这个也打开
+   <span class="o">[</span>xdebug]
+   xdebug.remote_enable<span class="o">=</span>On
+</code></pre></div></div>
+
+<h2 id="7-重启web服务">7. 重启Web服务</h2>
+<p>我这边使用的nginx，可以如下方式重新启动</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service nginx restart
+</code></pre></div></div>
+
+<blockquote>
+  <p>附加福利：MAC OS下web开发常用文件目录</p>
+  <blockquote>
+    <p>apache配置文件：/etc/apache2/httpd.conf<br />
+apache默认根目录：/library/webserver/documents<br />
+host 文件保存在：/Private/etc/<br />
+php配置文件：/etc/php.ini<br />
+php扩展目录：/usr/lib/php/extensions/**/</p>
+  </blockquote>
+</blockquote>
+
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -200,7 +226,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" data-title="使用gd库给图片铺满水印 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/" data-title="Xdebug源码安装 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -213,21 +239,13 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="《集创思维设计矩阵》读书笔记">
+ <a href="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/" title="Php代码覆盖率一起玩">
   <strong>上一篇：</strong><br/>
   <span>
-  《集创思维设计矩阵》读书笔记</span>
+  Php代码覆盖率一起玩</span>
 </a>
 </div>
 
-
-<div class="next">
-<a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"  title="使用composer安装lumen">
- <strong>下一篇：</strong><br/> 
- <span>使用composer安装lumen
-</span>
-</a>
-</div>
 
 </nav>
 
