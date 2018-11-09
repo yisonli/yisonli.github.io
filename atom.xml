@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Yison's Blog</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <link href="http://localhost:4000"/>
- <updated>2018-07-25T14:59:11+08:00</updated>
- <id>http://localhost:4000</id>
+ <link href="/atom.xml" rel="self"/>
+ <link href=""/>
+ <updated>2018-11-09T21:36:34+08:00</updated>
+ <id></id>
  <author>
    <name>yison</name>
    <email></email>
@@ -13,10 +13,531 @@
 
  
  <entry>
+   <title>Docker从零构建php Nginx Alpine镜像</title>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/"/>
+   <updated>2018-11-09T00:00:00+08:00</updated>
+   <id>/%E7%BC%96%E7%A8%8B/2018/11/09/Docker从零构建php-nginx-alpine镜像</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;虽然之前也曾用docker环境运行了一些项目，但对于镜像这块还不是很理解，且鉴于网上现成的镜像都包含太多用不到的库，所以决定从零开始构建一个自己的镜像。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;alpine-linux为基础镜像&quot;&gt;alpine linux为基础镜像&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker pull gliderlabs/alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hub.docker.com/r/gliderlabs/alpine/&quot;&gt;alpine linux 镜像地址&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;目前最新的tag是3.8版本，镜像只有4M的大小，非常的精简。&lt;/p&gt;
+
+&lt;h2 id=&quot;运行镜像&quot;&gt;运行镜像&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -it gliderlabs/alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行后可以看到里面有基本的linux文件系统，这里不做演示，有兴趣者可自行尝试。&lt;/p&gt;
+
+&lt;h2 id=&quot;安装php-和-nginx&quot;&gt;安装php 和 nginx&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apk update
+apk add php7 nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;接下来，根据自己的需要可以继续安装php相关扩展包，或者其他linux扩展包。&lt;/p&gt;
+
+&lt;p&gt;搜索扩展包，如php7工具包，可通过以下指令：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# apk search php7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;安装php扩展&quot;&gt;安装php扩展&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apk add php7-mysqli php7-pdo_mysql php7-mbstring php7-json php7-zlib php7-gd php7-intl php7-session php7-fpm php7-memcached
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;目录结构&quot;&gt;目录结构&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;php7目录: /etc/php7&lt;/li&gt;
+  &lt;li&gt;nginx目录: /etc/nginx&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;启动php-fpm和nginx&quot;&gt;启动php-fpm和nginx&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 先创建pid文件，否则nginx运行不了&lt;/span&gt;
+mkdir /run/nginx  
+touch /run/nginx/nginx.pid
+
+&lt;span class=&quot;c&quot;&gt;# 先运行php，再运行nginx&lt;/span&gt;
+/usr/sbin/php-fpm7
+/usr/sbin/nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;至此，能看到php和nginx正常运行，镜像环境已经基本完成了。
+接下来，可以看看怎么把这个镜像保存起来。&lt;/p&gt;
+
+&lt;h2 id=&quot;创建镜像&quot;&gt;创建镜像&lt;/h2&gt;
+&lt;p&gt;另起一个终端，用&lt;code class=&quot;highlighter-rouge&quot;&gt;docker ps&lt;/code&gt;查看镜像ID，如下指令可以保存镜像：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker commit -a &quot;yisonli&quot; -m &quot;my first php7-nginx&quot; 9d9c6030e5e9 yisonli/php7-nginx-alpine:0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;注：9d9c6030e5e9为镜像ID，yisonli/php7-nginx-alpine为保存的镜像名，版本定义为0.1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;运行新生成的镜像&quot;&gt;运行新生成的镜像&lt;/h2&gt;
+&lt;p&gt;绑定8080端口看看效果&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -it -p 8080:8080 yisonli/php7-nginx-alpine:0.1 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;手动启动php-fpm和nginx后，浏览器就可看到效果了。&lt;br /&gt;
+http://127.0.0.1:8080/index.php&lt;/p&gt;
+
+&lt;h2 id=&quot;docker补充记录&quot;&gt;docker补充记录&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;【共享文件夹】&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -v `pwd`/www:/var/www/html -it -p 8080:8080 yisonli/php7-nginx-alpine:0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;【删除未运行的容器】&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker rm $(docker ps -a -q)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;【用Dockerfile方式构建镜像】&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker build -t yisonli/php7-nginx-alpine:0.2 .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;0.2是本文流程稍作优化后，写成Dockerfile后build出来的，而且带启动脚本。&lt;br /&gt;
+已上传到 &lt;a href=&quot;https://hub.docker.com/r/yisonli/php7-nginx-alpine/&quot;&gt;Docker Hub&lt;/a&gt;，可供下载研究。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;【给镜像添加额外的tag标签】&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker tag 9d9c6030e5e9 test/mytag
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Php7内存管理 谁动了我的内存</title>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/"/>
+   <updated>2018-11-05T00:00:00+08:00</updated>
+   <id>/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7内存管理-谁动了我的内存</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;来源：Laruence&lt;br /&gt;
+Zend 引擎提供为了处理请求相关数据提供了一种特殊的内存管理器。请求相关数据是指只需要服务于单个请求，最迟会在请求结束时释放的数据。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;首先让我们看一个问题&quot;&gt;首先让我们看一个问题:&lt;/h2&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;laruence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;unset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出(在我的个人电脑上, 可能会因为系统,PHP版本,载入的扩展不同而不同):&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90440&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90640&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90472&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;注意到 90472-90440=32, 于是就有了各种的结论：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;有的人说PHP的unset并不真正释放内存&lt;/li&gt;
+  &lt;li&gt;有的说, PHP的unset只是在释放大变量(大量字符串, 大数组)的时候才会真正free内存&lt;/li&gt;
+  &lt;li&gt;更有人说, 在PHP层面讨论内存是没有意义的.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;那么, 到底unset会不会释放内存?&lt;/p&gt;
+
+&lt;h2 id=&quot;这32个字节去哪里了&quot;&gt;这32个字节去哪里了&lt;/h2&gt;
+&lt;p&gt;首先我们要打破一个思维:&lt;br /&gt;
+PHP不像C语言那样,只有你显示的调用内存分配相关API才会有内存的分配. &lt;br /&gt;
+也就是说, 在PHP中, 有很多我们看不到的内存分配过程.&lt;/p&gt;
+
+&lt;p&gt;比如对于:&lt;/p&gt;
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;laruence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;隐式的内存分配点就有:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;为变量名分配内存, 存入符号表&lt;/li&gt;
+  &lt;li&gt;为变量值分配内存&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以, 不能只看表象.&lt;/p&gt;
+
+&lt;p&gt;第二, 别怀疑, PHP的unset确实会释放内存(当然, 还要结合引用和计数), 但这个释放不是C编程意义上的释放, 不是交回给OS.&lt;br /&gt;
+对于PHP来说, 它自身提供了一套和C语言对内存分配相似的内存管理API:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;emalloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;efree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;ecalloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nmemb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;erealloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;estrdup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;estrndup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这些API和C的API意义对应, 在PHP内部都是通过这些API来管理内存的.&lt;br /&gt;
+当我们调用emalloc申请内存的时候, PHP并不是简单的向OS要内存, 而是会像OS要一个大块的内存, 然后把其中的一块分配给申请者。&lt;br /&gt;
+这样当再有逻辑来申请内存的时候, 就不再需要向OS申请内存了, 避免了频繁的系统调用.&lt;/p&gt;
+
+&lt;p&gt;比如如下的例子:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//注意获取的是real_size
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;laruence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;unset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;262144&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;262144&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;262144&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;也就是我们在定义变量$a的时候, PHP并没有向系统申请新内存.&lt;/p&gt;
+
+&lt;p&gt;同样的, 在我们调用efree释放内存的时候, PHP也不会把内存还给OS, 而会把这块内存, 归入自己维护的空闲内存列表.&lt;/p&gt;
+
+&lt;p&gt;现在让我来回答这32个字节跑哪里去了, 就向我刚才说的, 很多内存分配的过程不是显式的, 看了下面的代码你就明白了:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;I am Laruence, From http://www.laruence.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;laruence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;unset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;string&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;43&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;I am Laruence, From http://www.laruence.com&quot;&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90808&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; //赋值前
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90976&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;90808&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; //是的, 内存正常释放了
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;90808-90808 = 0, 正常了, 也就是说这32个字节是被输出函数给占用了(严格来说, 是被输出的Header占用了)&lt;/p&gt;
+
+&lt;h2 id=&quot;只增不减的数组&quot;&gt;只增不减的数组&lt;/h2&gt;
+&lt;p&gt;Hashtable是PHP的核心结构, 数组也是用她来表示的, 而符号表也是一种关联数组, 对于如下代码:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;I am Laruence, From http://www.laruence.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;array_fill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;laruence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$array&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$array&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;unset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;memory_get_usage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;我们定义了100个变量, 然后又按个Unset了他们, 来看看输出:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;string&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;43&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;I am Laruence, From http://www.laruence.com&quot;&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;93560&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;118848&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+int&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;104448&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Wow, 怎么少了这么多内存?&lt;/p&gt;
+
+&lt;p&gt;这是因为对于Hashtable来说, 定义它的时候, 不可能一次性分配足够多的内存块, 来保存未知个数的元素。&lt;/p&gt;
+
+&lt;p&gt;所以PHP会在初始化的时候, 只是分配一小部分内存块给HashTable, 当不够用的时候再RESIZE扩容。&lt;/p&gt;
+
+&lt;p&gt;而Hashtable, 只能扩容, 不会减少, 对于上面的例子, 当我们存入100个变量的时候, 符号表不够用了, 做了一次扩容。&lt;/p&gt;
+
+&lt;p&gt;而当我们依次unset掉这100个变量以后, 变量占用的内存是释放了(118848 – 104448), 但是符号表并没有缩小, 所以这些少的内存是被符号表本身占去了…&lt;/p&gt;
+
+&lt;p&gt;现在, 你是不是对PHP的内存管理有了一个初步的认识了呢?&lt;/p&gt;
+
+&lt;h2 id=&quot;1zend内存池&quot;&gt;1.Zend内存池&lt;/h2&gt;
+&lt;p&gt;内存池是内核中最底层的内存操作，定义了三种粒度的内存块：chunk、page、slot。&lt;/p&gt;
+
+&lt;p&gt;每个chunk的大小为2M，page大小为4KB，一个chunk被切割为512个page，而一个或若干个page被切割为多个slot，所以申请内存时按照不同的申请大小决定具体的分配策略：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Huge(chunk): 申请内存大于2M，直接调用系统分配，分配若干个chunk
+Large(page): 申请内存大于3K(3/4 page_size)，小于2044K(511 page_size)，分配若干个page
+Small(slot): 申请内存小于等于3K(3/4 page_size)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;2zend堆结构&quot;&gt;2.zend堆结构&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/11/1.jpg&quot; alt=&quot;image&quot; /&gt;&lt;br /&gt;
+chunk由512个page组成，其中第一个page用于保存chunk结构，剩下的511个page用于内存分配，page主要用于Large、Small两种内存的分配；&lt;/p&gt;
+
+&lt;p&gt;heap是表示内存池的一个结构，它是最主要的一个结构，用于管理上面三种内存的分配，Zend中只有一个heap结构。但在多线程模式下(ZTS)会有多个heap，也就是说每个线程都有一个独立的内存池&lt;/p&gt;
+
+&lt;h2 id=&quot;3内存分配&quot;&gt;3.内存分配&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Huge分配&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;超过2M内存的申请，与通用的内存申请没有太大差别，只是将申请的内存块通过单链表进行了管理。&lt;/p&gt;
+
+&lt;p&gt;huge的分配实际就是分配多个chunk，chunk的分配也是large、small内存分配的基础，它是ZendMM向系统申请内存的唯一粒度。&lt;/p&gt;
+
+&lt;p&gt;在申请chunk内存时有一个关键操作，那就是将内存地址对齐到ZEND_MM_CHUNK_SIZE，也就是说申请的chunk地址都是ZEND_MM_CHUNK_SIZE的整数倍&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Large分配&lt;/strong&gt;
+大于3/4的page_size(4KB)且小于等于511个page_size的内存申请，也就是一个chunk的大小够用(之所以是511个page而不是512个是因为第一个page始终被chunk结构占用)，如果申请多个page的话分配的时候这些page都是连续的。&lt;/p&gt;
+
+&lt;p&gt;如果直到最后一个chunk也没找到则重新分配一个新的chunk并插入chunk链表,chunk-&amp;gt;free_map利用bitmap来记录每组的page的使用情况&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/11/2.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;a.首先会直接跳过group1，直接到group2检索&lt;/li&gt;
+  &lt;li&gt;b.在group2中找到第一个可用page位置：67，然后向下找第一个不可用page位置：69，找到的可用内存块长度为2，小于3，表示此内存块不可用&lt;/li&gt;
+  &lt;li&gt;c.接着再次在group2中查找到第一个可用page位置：71,然后向下找到第一个不可用page位置：75,内存块长度为4，大于3，表示找到一个符合的位置，虽然已经找到可用内存块但并不”完美”，先将这个并不完美的page_num及len保存到best、best_len，如果后面没有比它更完美的就用它了&lt;/li&gt;
+  &lt;li&gt;d.再次检索，发现group2已无可用page，进入group3，找到可用内存位置：page 130-132，大小比c中找到的合适，所以最终返回的page就是130-132&lt;/li&gt;
+  &lt;li&gt;e.page分配完成后会将free_map对应整数的bit位从page_num至(page_num+page_count)置为1&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Small分配&lt;/strong&gt;&lt;br /&gt;
+small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申请了1个或多个page，然后再将这些page按固定大小切割了，所以第一步与上一节Large分配完全相同。&lt;/p&gt;
+
+&lt;p&gt;small内存总共有30种固定大小的规格：8,16,24,32,40,48,56,64,80,96,112,128 … 1792,2048,2560,3072 Byte。&lt;br /&gt;
+我们把这称之为slot，这些slot的大小是有规律的:最小的slot大小为8byte，前8个slot依次递增8byte，后面每隔4个递增值乘以2&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://p0bmvhxkc.bkt.clouddn.com/img/2018/11/3.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;step1: 首先根据申请内存的大小在heap-&amp;gt;free_slot中找到对应的slot规格bin_num，如果当前slot为空则首先分配对应的page，free_slot[bin_num]始终指向第一个可用的slot&lt;/li&gt;
+  &lt;li&gt;step2: 如果申请内存大小对应的的slot链表不为空则直接返回free_slot[bin_num]，然后将free_slot[bin_num]指向下一个空闲位置&lt;/li&gt;
+  &lt;li&gt;step3: 释放内存时先将此内存的next_free_slot指向free_slot[bin_num]，然后将free_slot[bin_num]指向释放的内存，也就是将释放的内存插到链表头部&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>1024挑战赛题解</title>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/10/29/1024%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/"/>
+   <updated>2018-10-29T00:00:00+08:00</updated>
+   <id>/%E7%BC%96%E7%A8%8B/2018/10/29/1024挑战赛题解</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;离开学校出社会工作已久，甚是怀念大学时代ACM的时光，偶遇组织于10.24举行编程挑战赛，遂前去试了一下，很幸运地也拿了点小奖，后于此简单分享。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;1024挑战赛题解&quot;&gt;10.24挑战赛题解&lt;/h1&gt;
+
+&lt;h2 id=&quot;题目描述&quot;&gt;题目描述：&lt;/h2&gt;
+&lt;p&gt;某客户来到我司，购买了N份保单，每份保单都有一个起始时间和终止时间。 为了简化计算，这两个时间使用两个整数来表示，取值范围为0到1,000,000,000。 例如，其中一份保单的起始时间t=3且终止时间t=9，那么这份保单的有效区间则覆盖了6个单位时间。 
+可是，由于个人原因，该客户想退掉其中1份保单，求剩余保单能覆盖的最大单位时间总量是多少？&lt;/p&gt;
+
+&lt;h3 id=&quot;输入输出格式&quot;&gt;输入输出格式：&lt;/h3&gt;
+
+&lt;p&gt;我们会在当前目录给定一个输入文件 “input.txt”&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;该文件第一行是一个整数N（0&amp;lt;N&amp;lt;=100,000），表示接下来总共有N行。 接下来的N行，每行表示一份保单在0到1,000,000,000范围内的起始以及终止时间（以空格分割）。 所有的终止时间都是不同的。不同的保单能覆盖的时间也可能会重叠。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;请给出一个输出文件 “output.txt”&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;该文件中请输出一个数，表示客户退保1份保单仍能得到覆盖的最大单位时间总量。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;输入输出举例：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;输入文件(input.txt)：&lt;br /&gt;
+3&lt;br /&gt;
+6 9&lt;br /&gt;
+1 5&lt;br /&gt;
+3 7&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;输出文件(output.txt)：&lt;br /&gt;
+7&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;题目分析&quot;&gt;题目分析&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;最多会有10万个区间，循环、排序起来的耗时还在能接受的范围&lt;/li&gt;
+  &lt;li&gt;区间的两个端点数值，符合32位int型范围，不会溢出&lt;/li&gt;
+  &lt;li&gt;题目未涉及到大数的运算，应该主要是考算法实现，只要理解题目，加以适当算法嵌套，解题应该不难。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;暴破原理读懂题目：&lt;br /&gt;
+假设分配10亿个桶，分别对应10亿段小区间（数组可实现），每个保单读入时便在对应桶里加一个球（+1操作），录完之后，再找到最无用的保单剔除，最终根据有多少个桶有球，就是题目的答案。&lt;/p&gt;
+
+&lt;h2 id=&quot;解题思路&quot;&gt;解题思路&lt;/h2&gt;
+&lt;p&gt;这道题其实是一个动态规划的题，因为每次保单的录入，都会影响最优选择。&lt;/p&gt;
+
+&lt;p&gt;最无用的保单怎么找，其实分两种情况：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;每个保单都不重叠，直接找跨越区间最短的即可&lt;/li&gt;
+  &lt;li&gt;保单交叉重叠。
+    &lt;ul&gt;
+      &lt;li&gt;这里我选择徒手画多个圆形，任意交叉来帮助理解（因为本题是多个圆形重叠的简化版）。&lt;/li&gt;
+      &lt;li&gt;最终发现，只需要计算出每个圆自己独立拥有的区域大小（本题是区间大小）即可，算出来后再筛选最小值，就得到最无用的保单，剔除即可。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;我采用的算法逻辑&quot;&gt;我采用的算法逻辑&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.依次读取N个保单，并计算保存每个保单的区间长度&lt;/li&gt;
+  &lt;li&gt;2.按保单起点、终点递增方式，进行二级快速排序，便于后面做大区段拆分。&lt;/li&gt;
+  &lt;li&gt;3.划分成大区间，每个大区间都不重合（多个重叠的小区间则取最小&amp;amp;最大值作为大区间），这样只要最后进行累加计算即可。&lt;/li&gt;
+  &lt;li&gt;4.重叠的小区间逐个计算权重（独立拥有的区域大小），权重最小的为最无用的保单。&lt;/li&gt;
+  &lt;li&gt;5.权重计算优化，当重叠区域出现权重为0时（类似同心圆情况，即被包含了），直接返回此项为最无用保单，减去此权重就是答案了。&lt;/li&gt;
+  &lt;li&gt;6.本来还想考虑如何省略快排所占用(复杂度NLogN)的时间，想了一些逻辑没有深入，总感觉如果区间段很多的话还是划分大区间会好一点，所以没有再做优化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;代码实现&quot;&gt;代码实现&lt;/h3&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cmp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calWeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overlap_pre&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overlap_next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;universe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overlap_pre&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;overlap_pre&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overlap_next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;overlap_next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;universe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overlap_pre&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overlap_next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;universe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;universe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;distinctRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9999&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calWeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9999&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;useless_weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;FILE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_min_range&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fopen&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;input.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r+&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;rewind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fscanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;fscanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;%d %d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;qsort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;distinctRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g_min_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_min_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;g_min_range&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_min_range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;FILE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fpt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fpt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fopen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;output.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;w&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fpt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;total&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fclose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fpt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;fclose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
    <title>Php的openssl加密扩展使用小结</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
    <updated>2018-07-25T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
+   <id>/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;互联网的发展史上，安全性一直是开发者们相当重视的一个主题，为了实现数据传输安全，我们需要保证：数据来源（非伪造请求）、数据完整性（没有被人修改过）、数据私密性（密文，无法直接读取）等。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -237,9 +758,9 @@
  
  <entry>
    <title>Xdebug源码安装</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
+   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;PHP在Linux上(含MAC OS)安装xdebug的方法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -315,9 +836,9 @@ php扩展目录：/usr/lib/php/extensions/**/&lt;/p&gt;
  
  <entry>
    <title>Php代码覆盖率一起玩</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
+   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;最近在玩PHP的单元测试，以及代码覆盖率这块，也遇到一些问题，所以摘出来记录一下，也算是简单入门了。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -541,9 +1062,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《php7内核剖析》之php基础架构</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
    <updated>2018-04-27T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
+   <id>/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;有幸最近在读秦朋的《PHP内核剖析》一书，收获良多，为了加深自己的理解，依照书中内容自己动手画了一些流程图。本文主要描述PHP的基本构成、生命周期、以及各个阶段的大体流程。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -592,9 +1113,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《大数据时代下半场》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2018-01-20T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
+   <id>/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。&lt;br /&gt;
 如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。&lt;br /&gt;
@@ -870,9 +1391,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《从零开始学微信运营》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-12-18T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
+   <id>/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;这是最好的时代，这是最坏的时代；这是明智的时代，这是愚昧的时代；这是信仰的时期，这是怀疑的时期；这是光明的季节，这是黑暗的季节；这是希望之春，这是失望之冬；人们面前应有尽有，人们面前一无所有。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1554,9 +2075,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>使用composer安装lumen</title>
-   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
+   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
    <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
+   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;本文介绍如何搭建PHP的Laravel和Lumen环境&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1635,9 +2156,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>使用gd库给图片铺满水印</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
    <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
+   <id>/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;PHP一个使用GD库生成水印的方法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1687,9 +2208,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>《集创思维设计矩阵》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-11-18T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
+   <id>/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;人的才识是装在瓶子里的，你的瓶子满了，就再也装不下新东西了。要想装下更多，你不能固守这个瓶子，你要打破它，换个更大的瓶子。如此反复，你才不是现在的你。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2285,9 +2806,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>《现在就干：互联网时代的高效时间管理法》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
+   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;感受一下时间流逝的速度，时间是没有声音的锉刀，最不善于利用时间的人最爱抱怨时光短暂，我们都没有时间去挥霍……时间是个盗贼……时间就是上帝给你的资本，让每一分每一秒都花在有意义的事情上，就是最好的时间管理了，最好的时间是现在。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2593,9 +3114,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>《web全栈工程师的自我修养》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
+   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。&lt;br /&gt;
 但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。&lt;/p&gt;
@@ -2824,9 +3345,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>Wordpress如何使用ecs+cos</title>
-   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
+   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
+   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。&lt;br /&gt;
 本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。&lt;/p&gt;
@@ -3073,9 +3594,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Mysql新建数据库和用户账号</title>
-   <link href="http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
+   <link href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
+   <id>/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Mysql数据库账号的基本用法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3106,9 +3627,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Linux新建用户与sudo权限</title>
-   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
+   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
    <updated>2017-04-10T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
+   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;如何用命令行新建一个带超管权限的账号&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3153,9 +3674,9 @@ adm cdrom &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dip plugdev lpadmin
  
  <entry>
    <title>Php7和nginx安装记录</title>
-   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"/>
+   <link href="/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"/>
    <updated>2016-06-02T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7和Nginx安装记录</id>
+   <id>/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7和Nginx安装记录</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;本文主要记录 PHP7+Nginx的编译 以及 环境搭建 的操作步骤&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3242,9 +3763,9 @@ location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&qu
  
  <entry>
    <title>同时使用多个github的key的配置</title>
-   <link href="http://localhost:4000/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
+   <link href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
    <updated>2016-05-29T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/同时使用多个GITHUB的KEY的配置</id>
+   <id>/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/同时使用多个GITHUB的KEY的配置</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。&lt;/p&gt;
 &lt;/blockquote&gt;

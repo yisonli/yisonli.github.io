@@ -8,7 +8,7 @@
     
     
     
-    <title>同时使用多个github的key的配置 | Yison's Blog</title>
+    <title>Docker从零构建php Nginx Alpine镜像 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="同时使用多个github的key的配置">
-    <meta property="og:url" content="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/">
+    <meta property="og:title" content="Docker从零构建php Nginx Alpine镜像">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="同时使用多个github的key的配置">
+    <meta name="twitter:title" content="Docker从零构建php Nginx Alpine镜像">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/" title="同时使用多个github的key的配置" itemprop="url">同时使用多个github的key的配置</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/" title="Docker从零构建php Nginx Alpine镜像" itemprop="url">Docker从零构建php Nginx Alpine镜像</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2016-05-29 00:00:00 +0800" itemprop="datePublished"> 发表于 2016-05-29</time>
+    <time datetime="2018-11-09 00:00:00 +0800" itemprop="datePublished"> 发表于 2018-11-09</time>
     
   </p>
 </header>
@@ -117,57 +117,98 @@
 		</div>
 		
 		<blockquote>
-  <p>github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。</p>
+  <p>虽然之前也曾用docker环境运行了一些项目，但对于镜像这块还不是很理解，且鉴于网上现成的镜像都包含太多用不到的库，所以决定从零开始构建一个自己的镜像。</p>
 </blockquote>
 
-<h1 id="一生成并添加第一个ssh-key">一、生成并添加第一个ssh key</h1>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-C</span><span class="s2">"youremail@xxx.com"</span>
-</code></pre></div></div>
-<p>执行命令一路回车，会在~/.ssh/目录下生成id_rsa和id_rsa.pub两个文件</p>
+<h2 id="alpine-linux为基础镜像">alpine linux为基础镜像</h2>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub
-</code></pre></div></div>
-<p>打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库1）</p>
-
-<h1 id="二生成并添加第二个ssh-key">二、生成并添加第二个ssh key</h1>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-C</span><span class="s2">"youremail@xxx.com"</span>
-</code></pre></div></div>
-<p>这次不要一路回车了，给这个文件起一个名字，假如起名叫idb_rsa_you</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa_you.pub
-</code></pre></div></div>
-<p>打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库2）</p>
-
-<h1 id="三在ssh下创建config文件-内容如下">三、在.ssh/下创建config文件 内容如下：</h1>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host github.com
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile ~/.ssh/id_rsa
-Host github2
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile ~/.ssh/id_rsa_you
-</code></pre></div></div>
-<p>Host名字随意，接下来会用到。</p>
-
-<h1 id="四修改本地git仓库配置">四、修改本地git仓库配置</h1>
-
-<h2 id="1本地已经创建或已经clone到本地">1、本地已经创建或已经clone到本地：</h2>
-
-<p>打开.git/config文件</p>
-
-<h3 id="更改配置示例仓库1">更改配置示例(仓库1)</h3>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>remote <span class="s2">"origin"</span><span class="o">]</span> 
-url <span class="o">=</span> git@github.com:yisonli/yuchen.git
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull gliderlabs/alpine
 </code></pre></div></div>
 
-<h3 id="更改配置示例仓库2">更改配置示例(仓库2)</h3>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>remote <span class="s2">"origin"</span><span class="o">]</span>
-url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
+<p><a href="https://hub.docker.com/r/gliderlabs/alpine/">alpine linux 镜像地址</a></p>
+
+<p>目前最新的tag是3.8版本，镜像只有4M的大小，非常的精简。</p>
+
+<h2 id="运行镜像">运行镜像</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -it gliderlabs/alpine
+</code></pre></div></div>
+<p>运行后可以看到里面有基本的linux文件系统，这里不做演示，有兴趣者可自行尝试。</p>
+
+<h2 id="安装php-和-nginx">安装php 和 nginx</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk update
+apk add php7 nginx
 </code></pre></div></div>
 
-<h2 id="2clone仓库时对应配置host对应的账户">2、clone仓库时对应配置host对应的账户</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github2:yisonli/yisonli.github.io.git
+<p>接下来，根据自己的需要可以继续安装php相关扩展包，或者其他linux扩展包。</p>
+
+<p>搜索扩展包，如php7工具包，可通过以下指令：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># apk search php7
+</code></pre></div></div>
+
+<h2 id="安装php扩展">安装php扩展</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk add php7-mysqli php7-pdo_mysql php7-mbstring php7-json php7-zlib php7-gd php7-intl php7-session php7-fpm php7-memcached
+</code></pre></div></div>
+
+<h2 id="目录结构">目录结构</h2>
+<ul>
+  <li>php7目录: /etc/php7</li>
+  <li>nginx目录: /etc/nginx</li>
+</ul>
+
+<h2 id="启动php-fpm和nginx">启动php-fpm和nginx</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 先创建pid文件，否则nginx运行不了</span>
+mkdir /run/nginx  
+touch /run/nginx/nginx.pid
+
+<span class="c"># 先运行php，再运行nginx</span>
+/usr/sbin/php-fpm7
+/usr/sbin/nginx
+</code></pre></div></div>
+
+<p>至此，能看到php和nginx正常运行，镜像环境已经基本完成了。
+接下来，可以看看怎么把这个镜像保存起来。</p>
+
+<h2 id="创建镜像">创建镜像</h2>
+<p>另起一个终端，用<code class="highlighter-rouge">docker ps</code>查看镜像ID，如下指令可以保存镜像：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker commit -a "yisonli" -m "my first php7-nginx" 9d9c6030e5e9 yisonli/php7-nginx-alpine:0.1
+</code></pre></div></div>
+<blockquote>
+  <p>注：9d9c6030e5e9为镜像ID，yisonli/php7-nginx-alpine为保存的镜像名，版本定义为0.1</p>
+</blockquote>
+
+<h2 id="运行新生成的镜像">运行新生成的镜像</h2>
+<p>绑定8080端口看看效果</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -it -p 8080:8080 yisonli/php7-nginx-alpine:0.1 
+</code></pre></div></div>
+
+<p>手动启动php-fpm和nginx后，浏览器就可看到效果了。<br />
+http://127.0.0.1:8080/index.php</p>
+
+<h2 id="docker补充记录">docker补充记录</h2>
+<p><strong>【共享文件夹】</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -v `pwd`/www:/var/www/html -it -p 8080:8080 yisonli/php7-nginx-alpine:0.1
+</code></pre></div></div>
+
+<p><strong>【删除未运行的容器】</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker rm $(docker ps -a -q)
+</code></pre></div></div>
+
+<p><strong>【用Dockerfile方式构建镜像】</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build -t yisonli/php7-nginx-alpine:0.2 .
+</code></pre></div></div>
+<blockquote>
+  <p>0.2是本文流程稍作优化后，写成Dockerfile后build出来的，而且带启动脚本。<br />
+已上传到 <a href="https://hub.docker.com/r/yisonli/php7-nginx-alpine/">Docker Hub</a>，可供下载研究。</p>
+</blockquote>
+
+<p><strong>【给镜像添加额外的tag标签】</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker tag 9d9c6030e5e9 test/mytag
 </code></pre></div></div>
   
 	</div>
@@ -185,7 +226,7 @@ url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
   }) %>
   -->
   
-  <a class="article-category-link" href="/categories/#版本控制">版本控制</a>
+  <a class="article-category-link" href="/categories/#编程">编程</a>
   
 </div>
 
@@ -199,7 +240,9 @@ url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
   <span></span> <!--<%- tags.join('') %>-->
   
   
-  <a href="/tags/#Git">Git</a>
+  <a href="/tags/#PHP">PHP</a>
+  
+  <a href="/tags/#Docker">Docker</a>
   
   </div>
 
@@ -209,7 +252,7 @@ url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/" data-title="同时使用多个github的key的配置 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/" data-title="Docker从零构建php Nginx Alpine镜像 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -221,14 +264,14 @@ url <span class="o">=</span> git@github2:yisonli/yisonli.github.io.git
 	
 <nav class="article-nav clearfix">
  
-
-<div class="next">
-<a href="/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"  title="Php7和nginx安装记录">
- <strong>下一篇：</strong><br/> 
- <span>Php7和nginx安装记录
-</span>
+ <div class="prev" >
+ <a href="/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/" title="Php7内存管理 谁动了我的内存">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Php7内存管理 谁动了我的内存</span>
 </a>
 </div>
+
 
 </nav>
 
