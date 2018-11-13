@@ -235,7 +235,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
 <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script src="/assets/js/md5.js"></script>
-<div id="gitalk-container"></div>
+<div id="gitalk-container" style="padding:0 4%;"></div>
 <script type="text/javascript">
   var gitalk = new Gitalk({
     clientID: '6e26f3ed90af4176bf66',
@@ -563,6 +563,11 @@ $(document).ready(function(){
 
 
 
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
 <script type="text/javascript">
 $(document).ready(function(){
   var $this = $('.share'),
@@ -571,18 +576,18 @@ $(document).ready(function(){
       title = $this.attr('data-title'),
       tsina = $this.attr('data-tsina'),
       description = $this.attr('description');
-  // var html = [
-  // '<div class="hoverqrcode clearfix"></div>',
-  // '<a class="overlay" id="qrcode"></a>',
-  // '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
   // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
   // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  // '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
-  // '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
-  // '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
-  // '<span title="Share to"></span>'
-  // ].join('');
-  var html = '<div class="bdsharebuttonbox"><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a></div><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":["weixin","tqq","kaixin001","tieba","bdhome","thx","meilishuo","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","fbook","twi","linkedin","h163","evernotecn","copy","print"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName(\'head\')[0]||body).appendChild(createElement(\'script\')).src=\'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=\'+~(-new Date()/36e5)];<\/script>';
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
   $this.append(html);
 
   $('.article-share-qrcode').click(function(){
