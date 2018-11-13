@@ -827,7 +827,7 @@ $(document).ready(function(){
 <script type="text/javascript">
 $(document).ready(function(){
   var $this = $('.share'),
-      url = $this.attr('data-url'),
+      url = location.href,//$this.attr('data-url'),
       encodedUrl = encodeURIComponent(url),
       title = $this.attr('data-title'),
       tsina = $this.attr('data-tsina'),
@@ -844,6 +844,8 @@ $(document).ready(function(){
   '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
   '<span title="Share to"></span>'
   ].join('');
+  // var html = '<div class="bdsharebuttonbox hoverqrcode clearfix"><a href="#" class="article-share-qrcode" data-cmd="weixin" title="分享到微信"></a><a href="#" class="article-share-qq" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="article-share-renren" data-cmd="renren" title="分享到人人网"></a></div>'+
+  // '<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":["weixin","tqq","kaixin001","tieba","bdhome","thx","meilishuo","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","fbook","twi","linkedin","h163","evernotecn","copy","print"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName(\'head\')[0]||body).appendChild(createElement(\'script\')).src=\'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=\'+~(-new Date()/36e5)];<\/script>';
   $this.append(html);
 
   $('.article-share-qrcode').click(function(){
