@@ -1,0 +1,1116 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>分库分表de那些事【理论篇】 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="分库分表de那些事【理论篇】">
+    <meta property="og:url" content="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="分库分表de那些事【理论篇】">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/" title="分库分表de那些事【理论篇】" itemprop="url">分库分表de那些事【理论篇】</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2018-12-22 00:00:00 +0800" itemprop="datePublished"> 发表于 2018-12-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>关系型数据库本身比较容易成为系统瓶颈，单机存储容量、连接数、处理能力都有限。当单表的数据量达到1000万或100GB以后，由于查询维度较多，即使添加从库、优化索引，做很多操作时性能仍下降严重。</p>
+</blockquote>
+
+<h1 id="概念">概念</h1>
+
+<h2 id="什么是分库分表">什么是分库分表</h2>
+<p>​顾名思义，分库分表就是按照一定的规则，对原有的数据库和表进行拆分，把原本存储于一个库的数据分块存储到多个库上，把原本存储于一个表的数据分块存储到多个表上。
+​</p>
+<h2 id="为什么需要分库分表">为什么需要分库分表</h2>
+<p>​随着时间和业务的发展，数据库中的数据量增长是不可控的，库和表中的数据会越来越大，随之带来的是更高的磁盘、IO、系统开销，甚至性能上的瓶颈，而一台服务的资源终究是有限的，因此需要对数据库和表进行拆分，从而更好的提供数据服务。</p>
+
+<h2 id="数据切分">数据切分</h2>
+<p>数据库分布式核心内容无非就是数据切分（Sharding），以及切分后对数据的定位、整合。</p>
+
+<p>数据切分就是将数据分散存储到多个数据库中，使得单一数据库中的数据量变小，通过扩充主机的数量缓解单一数据库的性能问题，从而达到提升数据库操作性能的目的。</p>
+
+<p>数据切分根据其切分类型，可以分为两种方式：垂直（纵向）切分和水平（横向）切分</p>
+
+<h1 id="切分方式">切分方式</h1>
+
+<h2 id="垂直切分">垂直切分</h2>
+
+<p>简单来说就是竖着切，试想一下，把一个库中很多张表竖着切，这些表就会散开。其实垂直切分就是这个意思，将不同模块的表放到不同的数据库中。</p>
+
+<p>比如支付的放在支付数据库，用户的放在用户数据库，会员的放在会员数据库等等，可以减少耦合性。</p>
+
+<p>常见有 垂直分库 和 垂直分表 两种。</p>
+
+<ul>
+  <li>垂直分库
+    <ul>
+      <li>就是根据业务耦合性，将关联度低的不同表存储在不同的数据库。</li>
+      <li>做法与大系统拆分为多个小系统类似，按业务分类进行独立划分。</li>
+      <li>与”微服务治理”的做法相似，每个微服务使用单独的一个数据库。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/assets/img/article/2018-12-22/垂直分库_01.png" alt="" /></p>
+
+<ul>
+  <li>垂直分表
+    <ul>
+      <li>基于数据库中的”列”进行，某个表字段较多，可以新建一张扩展表，将不经常用或字段长度较大的字段拆分出去到扩展表中。</li>
+      <li>在字段很多的情况下（例如一个大表有100多个字段），通过”大表拆小表”，更便于开发与维护，也能避免跨页问题。</li>
+      <li>MySQL底层是通过数据页存储的，一条记录占用空间过大会导致跨页，造成额外的性能开销。</li>
+      <li>另外数据库以行为单位将数据加载到内存中，这样表中字段长度较短且访问频率较高，内存能加载更多的数据，命中率更高，减少了磁盘IO，从而提升了数据库性能。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/assets/img/article/2018-12-22/垂直分表_01.png" alt="" /></p>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>解决业务系统层面的耦合，业务清晰</li>
+  <li>与微服务的治理类似，也能对不同业务的数据进行分级管理、维护、监控、扩展等</li>
+  <li>高并发场景下，垂直切分一定程度的提升IO、数据库连接数、单机硬件资源的瓶颈</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>部分表无法join，只能通过接口聚合方式解决，提升了开发的复杂度</li>
+  <li>分布式事务处理复杂</li>
+  <li>依然存在单表数据量过大的问题（需要水平切分）</li>
+</ul>
+
+<h2 id="水平切分">水平切分</h2>
+
+<p>将某张访问非常频繁的表，按照某个特定的规则（通常是某个字段进行hash），然后将数据分散到多个表，甚至是多个数据库中，这样每张表或者每张库都含有一部分数据。</p>
+
+<p><img src="/assets/img/article/2018-12-22/水平切分_01.png" alt="" /></p>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>不存在单库数据量过大、高并发的性能瓶颈，提升系统稳定性和负载能力</li>
+  <li>应用端改造较小，不需要拆分业务模块</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>跨分片的事务一致性难以保证</li>
+  <li>跨库的join关联查询性能较差</li>
+  <li>数据多次扩展难度和维护量极大</li>
+</ul>
+
+<p>水平切分后同一张表会出现在多个数据库/表中，每个库/表的内容不同。</p>
+
+<h2 id="数据分片规则">数据分片规则</h2>
+
+<h3 id="i-查询切分">I. 查询切分</h3>
+
+<p>首先数据库分片，将sharding key记录在一个单独的库中，你每次要查询数据库的时候，请先到mapping db里面去查一下你应该到那个数据库去拿数据。</p>
+
+<p><img src="/assets/img/article/2018-12-22/sharding_01.png" alt="" /></p>
+
+<blockquote>
+  <p>这个mapping db是否真的有需要，是否shading key提供一种约定，比如说根据用户id来进行hash进行分散到不同的数据库中。<br />
+当然这只是一种分片策略，如果你觉得慢，可以把这个表结构缓存在内存中。这样就很快了</p>
+</blockquote>
+
+<h3 id="ii-范围切分">II. 范围切分</h3>
+
+<p>按照范围来切分，比如说按照时间范围和ID的范围来进行切分</p>
+
+<p>例如：按日期将不同月甚至是日的数据分散到不同的库中；将userId为1 ~ 9999的记录分到第一个库，10000 ~ 20000的分到第二个库，以此类推。</p>
+
+<p><img src="/assets/img/article/2018-12-22/sharding_02.png" alt="" /></p>
+
+<blockquote>
+  <p>某种意义上，某些系统中使用的”冷热数据分离”，将一些使用较少的历史数据迁移到其他库中，业务功能上只提供热点数据的查询，也是类似的实践。</p>
+</blockquote>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>单表大小可控</li>
+  <li>天然便于水平扩展，后期如果想对整个分片集群扩容时，只需要添加节点即可，无需对其他分片的数据进行迁移</li>
+  <li>使用分片字段进行范围查找时，连续分片可快速定位分片进行快速查询，有效避免跨分片查询的问题。</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>热点数据成为性能瓶颈。
+    <ul>
+      <li>连续分片可能存在数据热点，例如按时间字段分片，有些分片存储最近时间段内的数据，可能会被频繁的读写，而有些分片存储的历史数据，则很少被查询</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="iii-hash切分">III. Hash切分</h3>
+<p>一般使用取模运算来进行切分，也就是Mod切分，图中db mod代表db取模，tb mod代表tb取模</p>
+
+<p><img src="/assets/img/article/2018-12-22/sharding_03.png" alt="" /></p>
+
+<blockquote>
+  <p>比如分库分表的方案是32个数据库实例，通过userId进行取模的话就是，将UserId后面4位模32然后丢到32个数据库中，同时又将UserId后面4位除以32再mod32丢到32张表里面，这样就有1024张表，然后线上部署8个主从实例，每个实例4个数据库。完毕。</p>
+</blockquote>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>数据分片相对比较均匀，不容易出现热点和并发访问的瓶颈</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>后期分片集群扩容时，需要迁移旧的数据（使用一致性hash算法能较好的避免这个问题）</li>
+  <li>容易面临跨分片查询的复杂问题。
+    <ul>
+      <li>如果频繁用到的查询条件中不带sharding key时，将会导致无法定位数据库，从而需要同时向多个库发起查询，再在内存中合并数据，取最小集返回给应用，分库反而成为拖累。</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="潜在问题">潜在问题</h1>
+
+<h2 id="事务问题">事务问题</h2>
+<p>当更新内容同时分布在不同库中，不可避免会带来跨库事务问题。</p>
+
+<p>解决事务问题目前有两种可行的方案：</p>
+
+<h3 id="方案一使用分布式事务">方案一：使用分布式事务</h3>
+<p>跨分片事务也是分布式事务，没有简单的方案，一般可使用”XA协议”和”两阶段提交”处理。</p>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>交由数据库管理，简单有效</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>性能代价高，特别是shard越来越多时</li>
+</ul>
+
+<h3 id="方案二由应用程序和数据库共同控制">方案二：由应用程序和数据库共同控制</h3>
+
+<p>原理：将一个跨多个数据库的分布式事务分拆成多个仅处 于单个数据库上面的小事务，并通过应用程序来总控 各个小事务。</p>
+
+<p><strong>【优点】</strong></p>
+
+<ul>
+  <li>性能上有优势</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>需要应用程序在事务控制上做灵活设计。</li>
+  <li>如果使用 了spring的事务管理，改动起来会面临一定的困难。</li>
+</ul>
+
+<h3 id="一致性">一致性</h3>
+<p>对于那些性能要求很高，但对一致性要求不高的系统，往往不苛求系统的实时一致性，只要在允许的时间段内达到最终一致性即可，可采用事务补偿的方式。</p>
+
+<blockquote>
+  <p>与事务在执行中发生错误后立即回滚的方式不同，事务补偿是一种事后检查补救的措施。<br />
+一些常见的实现方法有：对数据进行对账检查，基于日志进行对比，定期同标准数据来源进行同步等等。事务补偿还要结合业务系统来考虑。</p>
+</blockquote>
+
+<h2 id="跨节点join的问题">跨节点Join的问题</h2>
+
+<p>只要是进行切分，跨节点Join的问题是不可避免的。但是良好的设计和切分却可以减少此类情况的发生。</p>
+
+<h3 id="1全局表">1）全局表</h3>
+
+<p>全局表，也可看做是”数据字典表”，就是系统中所有模块都可能依赖的一些表，为了避免跨库join查询，可以将这类表在每个数据库中都保存一份。</p>
+
+<p>这些数据通常很少会进行修改，所以也不担心一致性的问题。</p>
+
+<h3 id="2字段冗余">2）字段冗余</h3>
+
+<p>一种典型的反范式设计，利用空间换时间，为了性能而避免join查询。</p>
+<blockquote>
+  <p>例如：订单表保存userId时候，也将userName冗余保存一份，这样查询订单详情时就不需要再去查询”买家user表”了。</p>
+</blockquote>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>但这种方法适用场景也有限，比较适用于依赖字段比较少的情况。</li>
+  <li>而冗余字段的数据一致性也较难保证，就像上面订单表的例子，买家修改了userName后，是否需要在历史订单中同步更新呢？这也要结合实际业务场景进行考虑。</li>
+</ul>
+
+<h3 id="3数据组装">3）数据组装</h3>
+
+<p>在系统层面，分两次查询。</p>
+
+<ul>
+  <li>第一次查询的结果集中找出关联数据id，</li>
+  <li>然后根据id发起第二次请求得到关联数据。</li>
+  <li>最后将获得到的数据进行字段拼装。</li>
+</ul>
+
+<h3 id="4er分片">4）ER分片</h3>
+
+<p>关系型数据库中，如果可以先确定表之间的关联关系，并将那些存在关联关系的表记录存放在同一个分片上，那么就能较好的避免跨分片join问题。</p>
+
+<p>在1:1或1:n的情况下，通常按照主表的ID主键切分。</p>
+
+<p><img src="/assets/img/article/2018-12-22/ER分片_01.png" alt="" /></p>
+
+<p>这样一来，Data Node1上面的order订单表与orderdetail订单详情表，就可以通过orderId进行局部的关联查询了，Data Node2上也一样。</p>
+
+<h2 id="数据迁移容量规划扩容等问题">数据迁移，容量规划，扩容等问题</h2>
+
+<p><strong>【方案】</strong></p>
+
+<ul>
+  <li>利用对2的倍数取余具有向前兼容的特性（如：对4取余得1、对2取余也是1的数）来分配数据。</li>
+  <li>避免了行级别的数据迁移，但是依然需要进行表级别的迁移，同时对扩容规模和分表数量都有限制。</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>总的来说，这些方案都不是十分的理想，多多少少都存在一些缺点，这也从一个侧面反映出了Sharding扩容的难度。</li>
+</ul>
+
+<h2 id="主键id问题">主键ID问题</h2>
+
+<p>一旦数据库被切分到多个物理结点上，我们将不能再依赖数据库自身的主键生成机制。</p>
+
+<ul>
+  <li>一方面，某个分区数据库自生成的ID无法保证在全局上是唯一的；</li>
+  <li>另一方面，应用程序在插入数据之前需要先获得ID，以便进行SQL路由。</li>
+</ul>
+
+<h3 id="1-uuid">1) UUID</h3>
+
+<p>UUID标准形式包含32个16进制数字，分为5段，形式为8-4-4-4-12的36个字符，例如：550e8400-e29b-41d4-a716-446655440000</p>
+
+<p>UUID是主键是最简单的方案，本地生成，性能高，没有网络耗时。</p>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>由于UUID非常长，会占用大量的存储空间；</li>
+  <li>另外，作为主键建立索引和基于索引进行查询时都会存在性能问题;</li>
+  <li>在InnoDB下，UUID的无序性会引起数据位置频繁变动，导致分页。</li>
+</ul>
+
+<h3 id="2-结合数据库维护一个sequence表">2) 结合数据库维护一个Sequence表</h3>
+
+<p>此方案的思路也很简单，在数据库中建立一个Sequence表，表的结构类似于：</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`SEQUENCE`</span> <span class="p">(</span>  
+    <span class="nv">`table_name`</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>  
+    <span class="nv">`nextid`</span> <span class="n">bigint</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>  
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`table_name`</span><span class="p">)</span>  
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span>   
+</code></pre></div></div>
+
+<p>每当需要为某个表的新纪录生成ID时就从Sequence表中取出对应表的nextid，并将nextid的值加1后更新到数据库中以备下次使用。</p>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>由于所有插入任何都需要访问该表，该表很容易成为系统性能瓶颈。</li>
+  <li>同时它也存在单点问题，一旦该表数据库失效，整个应用程序将无法工作。</li>
+  <li>有人提出使用Master-Slave进行主从同步，但这也只能解决单点问题，并不能解决读写比为1:1的访问压力问题。</li>
+</ul>
+
+<h3 id="3-snowflake分布式自增id算法">3) Snowflake分布式自增ID算法</h3>
+
+<p>Twitter的snowflake算法解决了分布式系统生成全局ID的需求，生成64位的Long型数字，组成部分：</p>
+
+<ul>
+  <li>第一位未使用</li>
+  <li>接下来41位是毫秒级时间，41位的长度可以表示69年的时间</li>
+  <li>5位datacenterId，5位workerId。10位的长度最多支持部署1024个节点</li>
+  <li>最后12位是毫秒内的计数，12位的计数顺序号支持每个节点每毫秒产生4096个ID序列</li>
+</ul>
+
+<p><img src="/assets/img/article/2018-12-22/snowflake_01.png" alt="" /></p>
+
+<p><strong>【优点】</strong></p>
+<ul>
+  <li>毫秒数在高位，生成的ID整体上按时间趋势递增；</li>
+  <li>不依赖第三方系统，稳定性和效率较高，理论上QPS约为409.6w/s（1000*2^12）；</li>
+  <li>并且整个分布式系统内不会产生ID碰撞；</li>
+  <li>可根据自身业务灵活分配bit位。</li>
+</ul>
+
+<p><strong>【缺点】</strong></p>
+
+<ul>
+  <li>强依赖机器时钟，如果时钟回拨，则可能导致生成ID重复。</li>
+</ul>
+
+<h2 id="跨分片的排序分页">跨分片的排序分页</h2>
+
+<p>一般来讲，分页时需要按照指定字段进行排序。当排序字段就是分片字段的时候，我们通过分片规则可以比较容易定位到指定的分片，而当排序字段非分片字段的时候，情况就会变得比较复杂了。</p>
+
+<p>为了最终结果的准确性，我们需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。</p>
+
+<p><img src="/assets/img/article/2018-12-22/跨分片排序_01.png" alt="" /></p>
+
+<p>如果取得页数很大，情况则变得复杂很多，因为各分片节点中的数据可能是随机的，为了排序的准确性，需要将所有节点的前N页数据都排序好做合并，最后再进行整体的排序，这样的操作时很耗费CPU和内存资源的，所以页数越大，系统的性能也会越差。</p>
+
+<p><img src="/assets/img/article/2018-12-22/跨分片排序_02.png" alt="" /></p>
+
+<p><strong>【方案】</strong></p>
+
+<ul>
+  <li>如果是在前台应用提供分页，则限定用户只能看前面n页，这个限制在业务上也是合理的，一般看后面的分页意义不大（如果一定要看，可以要求用户缩小范围重新查询）。</li>
+  <li>如果是后台批处理任务要求分批获取数据，则可以加大page size，比如每次获取5000条记录，有效减少分页数（当然离线访问一般走备库，避免冲击主库）。</li>
+  <li>分库设计时，一般还有配套大数据平台汇总所有分库的记录，有些分页查询可以考虑走大数据平台。</li>
+</ul>
+
+<h1 id="原则">原则</h1>
+
+<h2 id="能不切分尽量不要切分">能不切分尽量不要切分</h2>
+
+<p>并不是所有表都需要进行切分，主要还是看数据的增长速度。</p>
+
+<ul>
+  <li>切分后会在某种程度上提升业务的复杂度，数据库除了承载数据的存储和查询外，协助业务更好的实现需求也是其重要工作之一。</li>
+  <li>不到万不得已不用轻易使用分库分表这个大招，避免”过度设计”和”过早优化”。</li>
+  <li>分库分表之前，不要为分而分，先尽力去做力所能及的事情，例如：升级硬件、升级网络、读写分离、索引优化等等。</li>
+  <li>当数据量达到单表的瓶颈时候，再考虑分库分表。</li>
+</ul>
+
+<h2 id="数据量过大正常运维影响业务访问">数据量过大，正常运维影响业务访问</h2>
+
+<h3 id="1对数据库备份如果单表太大备份时需要大量的磁盘io和网络io">1）对数据库备份，如果单表太大，备份时需要大量的磁盘IO和网络IO。</h3>
+<ul>
+  <li>例如1T的数据，网络传输占50MB时候，需要20000秒才能传输完毕，整个过程的风险都是比较高的</li>
+</ul>
+
+<h3 id="2对一个很大的表进行ddl修改时mysql会锁住全表">2）对一个很大的表进行DDL修改时，MySQL会锁住全表。</h3>
+<ul>
+  <li>这个时间会很长，这段时间业务不能访问此表，影响很大。</li>
+  <li>如果使用pt-online-schema-change，使用过程中会创建触发器和影子表，也需要很长的时间。</li>
+  <li>在此操作过程中，都算为风险时间。将数据表拆分，总量减少，有助于降低这个风险。</li>
+</ul>
+
+<h3 id="3大表会经常访问与更新就更有可能出现锁等待">3）大表会经常访问与更新，就更有可能出现锁等待。</h3>
+<ul>
+  <li>将数据切分，用空间换时间，变相降低访问压力</li>
+</ul>
+
+<h2 id="随着业务发展需要对某些字段垂直拆分">随着业务发展，需要对某些字段垂直拆分</h2>
+
+<p>举个例子，假如项目一开始设计的用户表如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>id                   bigint             #用户的ID
+name                 varchar            #用户的名字
+last_login_time      datetime           #最近登录时间
+personal_info        text               #私人信息
+.....                                   #其他信息字段
+</code></pre></div></div>
+
+<p>在项目初始阶段，这种设计是满足简单的业务需求的，也方便快速迭代开发。</p>
+
+<p>而当业务快速发展时，用户量从10w激增到10亿，用户非常的活跃。</p>
+
+<ul>
+  <li>每次登录会更新 <code class="highlighter-rouge">last_login_name</code> 字段，使得 <code class="highlighter-rouge">user</code> 表被不断update，压力很大。</li>
+  <li>而其他字段：<code class="highlighter-rouge">id, name, personal_info</code> 是不变的或很少更新的。
+    <ul>
+      <li>此时在业务角度，就要将 <code class="highlighter-rouge">last_login_time</code> 拆分出去，新建一个 <code class="highlighter-rouge">user_time</code> 表。</li>
+      <li><code class="highlighter-rouge">personal_info</code> 属性是更新和查询频率较低的，并且text字段占据了太多的空间，这时候就要对此垂直拆分出 <code class="highlighter-rouge">user_ext</code> 表了。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="数据量快速增长">数据量快速增长</h2>
+
+<p>随着业务的快速发展，单表中的数据量会持续增长，当性能接近瓶颈时，就需要考虑水平切分，做分库分表了。此时一定要选择合适的切分规则，提前预估好数据容量</p>
+
+<h2 id="分库数量">分库数量</h2>
+
+<p>分库数量首先和单库能处理的记录数有关。</p>
+
+<p>一般来说，Mysql 单库超过5000万条记录，Oracle单库超过1亿条记录，DB压力就很大(当然处理能力和字段数量/访问模式/记录长度有进一步关系)。</p>
+
+<ul>
+  <li>在满足上述前提下，如果分库数量少，达不到分散存储和减轻DB性能压力的目的；</li>
+  <li>如果分库的数量多，好处是每个库记录少，单库访问性能好，但对于跨多个库的访问，应用程序需要访问多个库，如果是并发模式，要消耗宝贵的线程资源；</li>
+  <li>如果是串行模式，执行时间会急剧增加。</li>
+</ul>
+
+<p>最后分库数量还直接影响硬件的投入，一般每个分库跑在单独物理机上，多一个库意味多一台设备。</p>
+
+<p>所以具体分多少个库，要综合评估，一般初次分库建议分4-8个库。</p>
+
+<h2 id="路由透明">路由透明</h2>
+
+<p>分库从某种意义上来说，意味着DB schema改变了，必然影响应用，但这种改变和业务无关，所以要尽量保证分库对应用代码透明，分库逻辑尽量在数据访问层处理。</p>
+
+<p>当然完全做到这一点很困难，具体哪些应该由DAL负责，哪些由应用负责，这里有一些建议：</p>
+
+<ul>
+  <li>对于单库访问，比如查询条件指定用户Id，则该SQL只需访问特定库。
+    <ul>
+      <li>此时应该由DAL层自动路由到特定库，当库二次分裂时，也只要修改mod 因子，应用代码不受影响。</li>
+    </ul>
+  </li>
+  <li>对于简单的多库查询，DAL负责汇总各个数据库返回的记录，此时仍对上层应用透明。</li>
+</ul>
+
+<h2 id="安全性和可用性">安全性和可用性</h2>
+
+<p>在业务层面上垂直切分，将不相关的业务的数据库分隔。</p>
+<blockquote>
+  <p>因为每个业务的数据量、访问量都不同，不能因为一个业务把数据库搞挂而牵连到其他业务。</p>
+</blockquote>
+
+<p>利用水平切分，当一个数据库出现问题时，不会影响到100%的用户，每个库只承担业务的一部分数据，这样整体的可用性就能提高。</p>
+
+<h1 id="开源中间件">开源中间件</h1>
+<p>站在巨人的肩膀上能省力很多，目前分库分表已经有一些较为成熟的开源解决方案：</p>
+
+<ul>
+  <li><a href="https://github.com/sharding-sphere/sharding-sphere">sharding-jdbc（当当）</a></li>
+  <li><a href="https://github.com/baihui212/tsharding">TSharding（蘑菇街）</a></li>
+  <li><a href="https://github.com/Qihoo360/Atlas">Atlas（奇虎360）</a></li>
+  <li><a href="https://github.com/alibaba/cobar">Cobar（阿里巴巴）</a></li>
+  <li><a href="http://www.mycat.io">MyCAT（基于Cobar）</a></li>
+  <li><a href="https://github.com/58code/Oceanus">Oceanus（58同城）</a></li>
+  <li><a href="https://github.com/vitessio/vitess">Vitess（谷歌）</a></li>
+  <li><a href="https://github.com/alibaba/tb_tddl">TDDL Smart Client的方式（淘宝）</a></li>
+</ul>
+
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#数据库">数据库</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/" data-title="分库分表de那些事【理论篇】 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/" title="Docker从零构建php Nginx Alpine镜像">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Docker从零构建php Nginx Alpine镜像</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>5</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
