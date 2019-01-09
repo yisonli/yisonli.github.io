@@ -1,6 +1,6 @@
 
 
- <!DOCTYPE HTML>
+        <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
     
     
     
-    <title>Mysql新建数据库和用户账号 | Yison's Blog</title>
+    <title>Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -21,14 +21,14 @@
 
     <meta name="description" content="page.description">
     
-    <meta property="og:type" content="article">
+    <meta property="og:type" content="website">
     
-    <meta property="og:title" content="Mysql新建数据库和用户账号">
-    <meta property="og:url" content="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/">
+    <meta property="og:title" content="">
+    <meta property="og:url" content="/page3/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Mysql新建数据库和用户账号">
+    <meta name="twitter:title" content="">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -87,63 +87,45 @@
 
     </header>
     <div id="container">
-      
+      <div id="main">
 
-
-
-<div id="main" class="post" itemscope itemprop="blogPost">
   
-	<article itemprop="articleBody"> 
-	<header class="article-info clearfix">
+  
+  
+  
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/" title="Mysql新建数据库和用户账号" itemprop="url">Mysql新建数据库和用户账号</a>
+      <a href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/" title="同时使用多个github的key的配置" itemprop="url">同时使用多个github的key的配置</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-05-03 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-05-03</time>
+    <time datetime="2016-05-29 00:00:00 +0800" itemprop="datePublished">  2016-05-29</time>
     
   </p>
 </header>
-	<div class="article-content">
-		
-		<div id="toc" class="toc-article toc-content" style="display: none;">
-		
-			<!--<%- toc(item.content) %>-->
-		
-		</div>
-		
-		<blockquote>
-  <p>Mysql数据库账号的基本用法</p>
+    <div class="article-content">
+        
+        <blockquote>
+  <p>github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。</p>
 </blockquote>
 
-<h2 id="登陆数据库">登陆数据库：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mysql</span> <span class="o">-</span><span class="n">h</span><span class="err">数据库</span><span class="k">HOST</span> <span class="o">-</span><span class="n">P</span><span class="err">端口</span> <span class="o">-</span><span class="n">u</span> <span class="err">管理员账户</span> <span class="o">-</span><span class="n">p</span>
-</code></pre></div></div>
 
-<p>然后按提示输入密码即可</p>
-
-<h2 id="显示数据库">显示数据库：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">show</span> <span class="n">databases</span><span class="p">;</span>
-</code></pre></div></div>
-<h2 id="创建数据库">创建数据库：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">database</span> <span class="err">新数据库名</span><span class="p">;</span>
-</code></pre></div></div>
-<h2 id="进入某个数据库">进入某个数据库：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">use</span> <span class="err">新数据库名</span><span class="p">;</span>
-</code></pre></div></div>
-<h2 id="插入新的用户">插入新的用户：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">insert</span> <span class="k">into</span> <span class="n">mysql</span><span class="p">.</span><span class="k">user</span><span class="p">(</span><span class="k">Host</span><span class="p">,</span><span class="k">User</span><span class="p">,</span><span class="n">Password</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="nv">"使用者IP"</span><span class="p">,</span><span class="nv">"新用户名"</span><span class="p">,</span><span class="n">password</span><span class="p">(</span><span class="nv">"密码"</span><span class="p">));</span>
-</code></pre></div></div>
-<h2 id="给用户分配数据库权限">给用户分配数据库权限：</h2>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">all</span> <span class="k">privileges</span> <span class="k">on</span> <span class="err">数据库名</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="err">新用户名</span><span class="o">@</span><span class="err">使用者</span><span class="n">IP</span> <span class="n">identified</span> <span class="k">by</span> <span class="nv">"密码"</span>
-</code></pre></div></div>
-  
-	</div>
-	<footer class="article-footer clearfix">
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/#more">Read More</a>
+          
+       </p>
+    </div>
+    
+    <footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
@@ -157,7 +139,7 @@
   }) %>
   -->
   
-  <a class="article-category-link" href="/categories/#数据库">数据库</a>
+  <a class="article-category-link" href="/categories/#版本控制">版本控制</a>
   
 </div>
 
@@ -171,7 +153,7 @@
   <span></span> <!--<%- tags.join('') %>-->
   
   
-  <a href="/tags/#Mysql">Mysql</a>
+  <a href="/tags/#Git">Git</a>
   
   </div>
 
@@ -179,69 +161,46 @@
 
 
 
-	<div class="article-share" id="share">
-	
-	  <div data-url="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/" data-title="Mysql新建数据库和用户账号 | Yison's Blog" data-tsina="" class="share clearfix">
-	  </div>
-	
-	</div>
 
+<div class="comments-count">
+	
+</div>
 
 </footer>
-   
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev" >
- <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/" title="Linux新建用户与sudo权限">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Linux新建用户与sudo权限</span>
-</a>
+
+    </article>
+
+
+
+
+
+
+
+  <nav id="page-nav" class="clearfix">
+  <nav id="page-nav" class="clearfix">
+    
+    <a class="extend prev" rel="prev" href="/page2"><span></span>Prev</a>
+    
+    
+    <a class="page-number" href="/">1</a>
+    
+    
+    
+    <a class="page-number" href="/page2">2</a>
+    
+    
+    
+    <span class="page-number current">3</span>
+    
+    
+     
+  </nav>
+  </nav>
+
 </div>
-
-
-<div class="next">
-<a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"  title="Wordpress如何使用ecs+cos">
- <strong>下一篇：</strong><br/> 
- <span>Wordpress如何使用ecs+cos
-</span>
-</a>
-</div>
-
-</nav>
-
-	
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script src="/assets/js/md5.js"></script>
-<div id="gitalk-container" style="padding:0 4%;"></div>
-<script type="text/javascript">
-  var gitalk = new Gitalk({
-    clientID: '6e26f3ed90af4176bf66',
-    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
-    repo: 'comment',
-    owner: 'yisonli',
-    admin: ['yisonli'],
-    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-  gitalk.render('gitalk-container')
-</script>
-
-
-</div>  
-
       
       
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
-
-  <div id="toc" class="toc-aside toc-content">
- 
- <!--<%- toc(item.content) %>-->
- 
-  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
@@ -458,8 +417,6 @@ $(document).ready(function(){
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
       
-      $('#toc.toc-aside').css('display', 'none');
-      
     }
   });
 });
@@ -468,114 +425,9 @@ $(document).ready(function(){
 
 
 
-<script type="text/javascript">
-$(document).ready(function(){
-  $('#toc.toc-aside').toc({
-    title: "文章目录",
-    showEffect: "none"
-  });
-  $('#toc.toc-article').toc({
-    title: "文章目录",
-    showEffect: "show",
-    showSpeed: 0
-  });
-});
-</script>
 
 
 
-<script type="text/javascript">
-$(document).ready(function(){
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  c.click(function(){
-    ta.css('display', 'block').addClass('fadeIn');
-  });
-  o.click(function(){
-    ta.css('display', 'none');
-  });
-  $(window).scroll(function(){
-    ta.css("top",Math.max(140,320-$(this).scrollTop()));
-  });
-});
-</script>
-
-
-
-<style type="text/css">
-  .article-share-qq:before { content: "\f1d6"; }
-  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
-  .bdshare-button-style1-16 {}
-</style>
-<script type="text/javascript">
-$(document).ready(function(){
-  var $this = $('.share'),
-      url = location.href,//$this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina'),
-      description = $this.attr('description');
-  var html = [
-  '<div class="hoverqrcode clearfix"></div>',
-  '<a class="overlay" id="qrcode"></a>',
-  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
-  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
-  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-
-  $('.article-share-qrcode').click(function(){
-    var imgSrc = $('#qrcode-pic').attr('data-src');
-    $('#qrcode-pic').attr('src', imgSrc);
-    $('#qrcode-pic').load(function(){
-        $('.qrcode strong').text(' ');
-    });
-  });
-/*
-  $('.hoverqrcode').hide();
-
-  var myWidth = 0;
-  function updatehoverqrcode(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-    var qrsize = myWidth > 1024 ? 200:100;
-    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
-    var p = $('.article-share-qrcode').position();
-    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
-                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
-                          .qrcode(options);
-  };
-  $(window).resize(function(){
-    $('.hoverqrcode').hide();
-  });
-  $('.article-share-qrcode').click(function(){
-    updatehoverqrcode();
-    $('.hoverqrcode').toggle();
-  });
-  $('.article-share-qrcode').hover(function(){}, function(){
-      //$('.hoverqrcode').hide();
-  });
-  */
-});
-</script>
 
 
 
@@ -677,5 +529,5 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- Tiny_search End -->
 
   </body>
-</html>
+ </html>
 

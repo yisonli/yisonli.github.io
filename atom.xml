@@ -4,13 +4,333 @@
  <title>Yison's Blog</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2018-12-22T16:39:35+08:00</updated>
+ <updated>2019-01-09T14:50:23+08:00</updated>
  <id></id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>你应该了解的php缓存技术</title>
+   <link href="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/"/>
+   <updated>2019-01-09T00:00:00+08:00</updated>
+   <id>/%E7%BC%96%E7%A8%8B/2019/01/09/你应该了解的PHP缓存技术</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;缓存是现在系统中必不可少的模块，并且已经成为了高并发高性能架构的一个关键组件。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;概念&quot;&gt;概念&lt;/h2&gt;
+&lt;h3 id=&quot;缓存&quot;&gt;缓存&lt;/h3&gt;
+&lt;p&gt;所谓的缓存，就是将程序或系统经常要调用的对象存在内存中，一遍其使用时可以快速调用，不必再去创建新的重复的实例。这样做可以减少系统开销，提高系统效率。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-09/cache_why_01.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1、通过文件缓存；
+    &lt;ul&gt;
+      &lt;li&gt;顾名思义文件缓存是指把数据存储在磁盘上，不管你是以XML格式，序列化文件DAT格式还是其它文件格式；&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;2、内存缓存；
+    &lt;ul&gt;
+      &lt;li&gt;也就是创建一个静态内存区域，将数据存储进去，例如我们B/S架构的将数据存储在Application中或者存储在一个静态Map中。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;3、分布式缓存机制；
+    &lt;ul&gt;
+      &lt;li&gt;可能存在跨进程，跨域访问缓存数据&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于分布式的缓存，此时因为缓存的数据是放在缓存服务器中的，或者说，此时应用程序需要跨进程的去访问分布式缓存服务器。&lt;/p&gt;
+
+&lt;h3 id=&quot;php缓存&quot;&gt;PHP缓存&lt;/h3&gt;
+&lt;p&gt;PHP缓存包括PHP编译缓存和PHP数据缓存两种。&lt;/p&gt;
+
+&lt;p&gt;PHP是一种解释型语言，属于边编译边运行的那种。这种运行模式的优点是程序修改很方便，但是运行效率却很低下。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-09/php7_vs_php5_01.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;PHP编译缓存针对这种情况做改进处理，使得PHP语言只要运行一次，就可以把程序的编译结果缓存起来。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;【PHP编译缓存】&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;PHP是一种解释型语言，在PHP语言执行代码的时候，需要下面两步：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1、编译过程。
+    &lt;ul&gt;
+      &lt;li&gt;PHP读取文件，并编译该文件，然后生成能够在Zend Engine虚拟机上执行的中间码。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;2、执行过程。
+    &lt;ul&gt;
+      &lt;li&gt;PHP直接执行中间码。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;效率低下的场景：&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1、即使PHP代码文件没有发生改变，也会被PHP重新编译。&lt;/li&gt;
+  &lt;li&gt;2、如有引用文件，PHP也要花费时间重新编译这些被引用的文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;因此，需要PHP编译缓存工具对PHP程序的编译结果做缓存处理。&lt;br /&gt;
+这样，PHP程序只要编译一次，就不要重新再做无意义的编译了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;【PHP数据缓存】&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;PHP的数据缓存包括针对数据库数据进行缓存和针对PHP模板数据进行缓存。&lt;/p&gt;
+
+&lt;p&gt;针对数据库数据进行缓存的工具有memcache等。&lt;/p&gt;
+
+&lt;p&gt;针对PHP模板数据进行缓存的工具主要有smarty等。&lt;/p&gt;
+
+&lt;h2 id=&quot;优势&quot;&gt;优势&lt;/h2&gt;
+&lt;h3 id=&quot;提升性能&quot;&gt;提升性能&lt;/h3&gt;
+
+&lt;p&gt;绝大多数情况下，select 是出现性能问题最大的地方。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一方面，select 会有很多像 join、group、order、like 等这样丰富的语义，而这些语义是非常耗性能的；&lt;/li&gt;
+  &lt;li&gt;另一方面，大多 数应用都是读多写少，所以加剧了慢查询的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;分布式系统中远程调用也会耗很多性能，因为有网络开销，会导致整体的响应时间下降。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;为了挽救这样的性能开销，在业务允许的情况（不需要太实时的数据）下，使用缓存是非常必要的事情。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;缓解数据库压力&quot;&gt;缓解数据库压力&lt;/h3&gt;
+
+&lt;p&gt;当用户请求增多时，数据库的压力将大大增加，通过缓存能够大大降低数据库的压力。&lt;/p&gt;
+
+&lt;h3 id=&quot;缓存的适用场景&quot;&gt;缓存的适用场景&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;对于数据实时性要求不高&lt;/li&gt;
+  &lt;li&gt;对于一些经常访问但是很少改变的数据，读明显多于写，适用缓存就很有必要。
+    &lt;ul&gt;
+      &lt;li&gt;比如一些网站配置项。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;对于性能要求高
+    &lt;ul&gt;
+      &lt;li&gt;比如一些秒杀活动场景。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;生存期&quot;&gt;生存期&lt;/h2&gt;
+&lt;p&gt;生存期是指数据保持有效性的时间区间，也就是从创建到移除的时间间隔。&lt;/p&gt;
+
+&lt;p&gt;通常的生存期有以下几种：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;永久状态Permanent State——应用程序使用的永久数据；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;进程状态Process State——只在进程周期内有效；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;会话状态Session State——和特定的用户会话有关；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;消息状态Message State——处理某个消息的时间内有效；&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;缓存技术&quot;&gt;缓存技术&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-09/cache_banner_01.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;memcached&quot;&gt;【memcached】&lt;/h3&gt;
+&lt;p&gt;Memcached是一个自由开源的，高性能，分布式内存对象缓存系统。&lt;/p&gt;
+
+&lt;p&gt;Memcached是以LiveJournal旗下Danga Interactive公司的Brad Fitzpatric为首开发的一款软件。现在已成为mixi、hatena、Facebook、Vox、LiveJournal等众多服务中提高Web应用扩展性的重要因素。&lt;/p&gt;
+
+&lt;p&gt;Memcached是一种基于内存的key-value存储，用来存储小块的任意数据（字符串、对象）。这些数据可以是数据库调用、API调用或者是页面渲染的结果。&lt;/p&gt;
+
+&lt;p&gt;Memcached简洁而强大。它的简洁设计便于快速开发，减轻开发难度，解决了大数据量缓存的很多问题。它的API兼容大部分流行的开发语言。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;本质上，它是一个简洁的key-value存储系统。&lt;br /&gt;
+一般的使用目的是，通过缓存数据库查询结果，减少数据库访问次数，以提高动态Web应用的速度、提高可扩展性。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;特征&quot;&gt;特征&lt;/h3&gt;
+&lt;p&gt;memcached作为高速运行的分布式缓存服务器，具有以下的特点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;协议简单&lt;/li&gt;
+  &lt;li&gt;基于libevent的事件处理&lt;/li&gt;
+  &lt;li&gt;内置内存存储方式&lt;/li&gt;
+  &lt;li&gt;memcached不互相通信的分布式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;支持的语言&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;许多语言都实现了连接memcached的客户端，其中以Perl、PHP为主。&lt;br /&gt;
+仅仅memcached网站上列出的有：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Perl&lt;br /&gt;
+PHP&lt;br /&gt;
+Python&lt;br /&gt;
+Ruby&lt;br /&gt;
+C#&lt;br /&gt;
+C/C++&lt;br /&gt;
+Lua&lt;br /&gt;
+……&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;原生PHP使用memcached示例：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;error_reporting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;E_ALL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;E_NOTICE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;\Memcached&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;XXXX.memcache.rds.aliyuncs.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11211&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Memcached...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$arr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$mc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;###【redis】
+Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。&lt;/p&gt;
+
+&lt;p&gt;它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;特点：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。&lt;/li&gt;
+  &lt;li&gt;Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。&lt;/li&gt;
+  &lt;li&gt;Redis支持数据的备份，即master-slave模式的数据备份。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Redis 优势&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。&lt;/li&gt;
+  &lt;li&gt;丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。&lt;/li&gt;
+  &lt;li&gt;原子 – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行。单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。&lt;/li&gt;
+  &lt;li&gt;丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Redis与其他key-value存储有什么不同？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Redis有着更为复杂的数据结构并且提供对他们的原子性操作，这是一个不同于其他数据库的进化路径。Redis的数据类型都是基于基本数据结构的同时对程序员透明，无需进行额外的抽象。&lt;/li&gt;
+  &lt;li&gt;Redis运行在内存中但是可以持久化到磁盘，所以在对不同数据集进行高速读写时需要权衡内存，因为数据量不能大于硬件内存。在内存数据库方面的另一个优点是，相比在磁盘上相同的复杂的数据结构，在内存中操作起来非常简单，这样Redis可以做很多内部复杂性很强的事情。同时，在磁盘格式方面他们是紧凑的以追加的方式产生的，因为他们并不需要进行随机访问。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;lumen下使用memcached&quot;&gt;lumen下使用memcached&lt;/h2&gt;
+&lt;p&gt;Laravel 为各种缓存系统提供了统一的 API，缓存配置位于 .env 文件中，在该文件中你可以指定应用默认使用哪个缓存驱动。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 缓存配置
+CACHE_DRIVER=memcached
+
+MEMCACHED_HOST=XXXX.memcache.rds.aliyuncs.com
+MEMCACHED_PORT=11211
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Lumen 缓存驱动与 Laravel 缓存驱动使用了完全相同的代码。&lt;br /&gt;
+除配置之外，在 Lumen 中使用缓存和在 Laravel 中使用缓存没有区别；&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置文件：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-09/config_memcached_01.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图可看出，lumen自带的配置框架让我们直接在.env配置对应参数即可。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意: 在使用 Cache Facade 之前，请确保在 bootstrap/app.php 文件中没有注释掉 $app-&amp;gt;withFacades() 方法的调用。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;lumen下使用redis&quot;&gt;lumen下使用redis&lt;/h2&gt;
+&lt;p&gt;在使用 Lumen 的 Redis 缓存之前，你需要通过 Composer 安装 illuminate/redis (5.5.*) 包。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer require illuminate/redis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后，你需要在 bootstrap/app.php 文件中注册 Illuminate\Redis\RedisServiceProvider。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$app-&amp;gt;register(Illuminate\Redis\RedisServiceProvider::class);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;如果你没有在 bootstrap/app.php 文件中调用 $app-&amp;gt;withEloquent()，那么你应该在 bootstrap/app.php 文件中调用 $app-&amp;gt;configure(‘database’); 以确保正确加载 Redis 数据库配置。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;配置文件：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-09/config_redis_01.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到，lumen自带的配置框架让我们直接在.env配置对应参数即可。&lt;/p&gt;
+
+&lt;p&gt;所以应该使用的.env配置如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 缓存配置
+CACHE_DRIVER=redis
+
+## redis配置
+REDIS_HOST=XXXX.redis.rds.aliyuncs.com
+REDIS_PASSWORD=XXXX
+REDIS_PORT=6379
+REDIS_DB=1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;使用示例&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Illuminate\Support\Facades\Cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Illuminate\Support\Facades\Redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestController&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_test_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_test_'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$expire&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;Cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'redis'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_test_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Y-m-d H:i:s'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$expire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;nv&quot;&gt;$success&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'redis'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;has&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_test_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'redis'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_test_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_test_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s1&quot;&gt;'value'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;以上，还只是帮助大家简单入门，想要了解更多相关技术，快来关注我吧，让我们成为更优秀的自己！！！&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>分库分表de那些事【理论篇】</title>
@@ -3843,6 +4163,7 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
+
 </content>
  </entry>
  
@@ -4261,67 +4582,6 @@ location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&qu
 &lt;blockquote&gt;
   &lt;p&gt;最后：注意腾讯云安全组的问题，要把对外80端口打开&lt;/p&gt;
 &lt;/blockquote&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>同时使用多个github的key的配置</title>
-   <link href="/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAGITHUB%E7%9A%84KEY%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
-   <updated>2016-05-29T00:00:00+08:00</updated>
-   <id>/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/2016/05/29/同时使用多个GITHUB的KEY的配置</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;github中一个deploy key只能用在一个仓库内，如果一台机器要管理多个仓库，就得配置多个deploy key。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;一生成并添加第一个ssh-key&quot;&gt;一、生成并添加第一个ssh key&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh-keygen &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; rsa &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;youremail@xxx.com&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;执行命令一路回车，会在~/.ssh/目录下生成id_rsa和id_rsa.pub两个文件&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; ~/.ssh/id_rsa.pub
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库1）&lt;/p&gt;
-
-&lt;h1 id=&quot;二生成并添加第二个ssh-key&quot;&gt;二、生成并添加第二个ssh key&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh-keygen &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; rsa &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;youremail@xxx.com&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;这次不要一路回车了，给这个文件起一个名字，假如起名叫idb_rsa_you&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; ~/.ssh/id_rsa_you.pub
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;打开id_rsa.pub里的内容，在Github中添加SSH Keys（仓库2）&lt;/p&gt;
-
-&lt;h1 id=&quot;三在ssh下创建config文件-内容如下&quot;&gt;三、在.ssh/下创建config文件 内容如下：&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Host github.com
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile ~/.ssh/id_rsa
-Host github2
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile ~/.ssh/id_rsa_you
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Host名字随意，接下来会用到。&lt;/p&gt;
-
-&lt;h1 id=&quot;四修改本地git仓库配置&quot;&gt;四、修改本地git仓库配置&lt;/h1&gt;
-
-&lt;h2 id=&quot;1本地已经创建或已经clone到本地&quot;&gt;1、本地已经创建或已经clone到本地：&lt;/h2&gt;
-
-&lt;p&gt;打开.git/config文件&lt;/p&gt;
-
-&lt;h3 id=&quot;更改配置示例仓库1&quot;&gt;更改配置示例(仓库1)&lt;/h3&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote &lt;span class=&quot;s2&quot;&gt;&quot;origin&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; 
-url &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; git@github.com:yisonli/yuchen.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;更改配置示例仓库2&quot;&gt;更改配置示例(仓库2)&lt;/h3&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote &lt;span class=&quot;s2&quot;&gt;&quot;origin&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-url &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; git@github2:yisonli/yisonli.github.io.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;2clone仓库时对应配置host对应的账户&quot;&gt;2、clone仓库时对应配置host对应的账户&lt;/h2&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone git@github2:yisonli/yisonli.github.io.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </content>
  </entry>
  

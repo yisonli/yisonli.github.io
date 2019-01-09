@@ -1,0 +1,962 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>你应该了解的php缓存技术 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="你应该了解的php缓存技术">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="你应该了解的php缓存技术">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/" title="你应该了解的php缓存技术" itemprop="url">你应该了解的php缓存技术</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2019-01-09 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-01-09</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>缓存是现在系统中必不可少的模块，并且已经成为了高并发高性能架构的一个关键组件。</p>
+</blockquote>
+
+<h2 id="概念">概念</h2>
+<h3 id="缓存">缓存</h3>
+<p>所谓的缓存，就是将程序或系统经常要调用的对象存在内存中，一遍其使用时可以快速调用，不必再去创建新的重复的实例。这样做可以减少系统开销，提高系统效率。</p>
+
+<p><img src="/assets/img/article/2019-01-09/cache_why_01.jpg" alt="" /></p>
+
+<ul>
+  <li>1、通过文件缓存；
+    <ul>
+      <li>顾名思义文件缓存是指把数据存储在磁盘上，不管你是以XML格式，序列化文件DAT格式还是其它文件格式；</li>
+    </ul>
+  </li>
+  <li>2、内存缓存；
+    <ul>
+      <li>也就是创建一个静态内存区域，将数据存储进去，例如我们B/S架构的将数据存储在Application中或者存储在一个静态Map中。</li>
+    </ul>
+  </li>
+  <li>3、分布式缓存机制；
+    <ul>
+      <li>可能存在跨进程，跨域访问缓存数据</li>
+    </ul>
+  </li>
+</ul>
+
+<p>对于分布式的缓存，此时因为缓存的数据是放在缓存服务器中的，或者说，此时应用程序需要跨进程的去访问分布式缓存服务器。</p>
+
+<h3 id="php缓存">PHP缓存</h3>
+<p>PHP缓存包括PHP编译缓存和PHP数据缓存两种。</p>
+
+<p>PHP是一种解释型语言，属于边编译边运行的那种。这种运行模式的优点是程序修改很方便，但是运行效率却很低下。</p>
+
+<p><img src="/assets/img/article/2019-01-09/php7_vs_php5_01.jpg" alt="" /></p>
+
+<p>PHP编译缓存针对这种情况做改进处理，使得PHP语言只要运行一次，就可以把程序的编译结果缓存起来。</p>
+
+<p><strong>【PHP编译缓存】</strong></p>
+
+<p>PHP是一种解释型语言，在PHP语言执行代码的时候，需要下面两步：</p>
+
+<ul>
+  <li>1、编译过程。
+    <ul>
+      <li>PHP读取文件，并编译该文件，然后生成能够在Zend Engine虚拟机上执行的中间码。</li>
+    </ul>
+  </li>
+  <li>2、执行过程。
+    <ul>
+      <li>PHP直接执行中间码。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><em>效率低下的场景：</em></p>
+
+<ul>
+  <li>1、即使PHP代码文件没有发生改变，也会被PHP重新编译。</li>
+  <li>2、如有引用文件，PHP也要花费时间重新编译这些被引用的文件。</li>
+</ul>
+
+<blockquote>
+  <p>因此，需要PHP编译缓存工具对PHP程序的编译结果做缓存处理。<br />
+这样，PHP程序只要编译一次，就不要重新再做无意义的编译了。</p>
+</blockquote>
+
+<p><strong>【PHP数据缓存】</strong></p>
+
+<p>PHP的数据缓存包括针对数据库数据进行缓存和针对PHP模板数据进行缓存。</p>
+
+<p>针对数据库数据进行缓存的工具有memcache等。</p>
+
+<p>针对PHP模板数据进行缓存的工具主要有smarty等。</p>
+
+<h2 id="优势">优势</h2>
+<h3 id="提升性能">提升性能</h3>
+
+<p>绝大多数情况下，select 是出现性能问题最大的地方。</p>
+
+<ul>
+  <li>一方面，select 会有很多像 join、group、order、like 等这样丰富的语义，而这些语义是非常耗性能的；</li>
+  <li>另一方面，大多 数应用都是读多写少，所以加剧了慢查询的问题。</li>
+</ul>
+
+<p>分布式系统中远程调用也会耗很多性能，因为有网络开销，会导致整体的响应时间下降。</p>
+
+<blockquote>
+  <p>为了挽救这样的性能开销，在业务允许的情况（不需要太实时的数据）下，使用缓存是非常必要的事情。</p>
+</blockquote>
+
+<h3 id="缓解数据库压力">缓解数据库压力</h3>
+
+<p>当用户请求增多时，数据库的压力将大大增加，通过缓存能够大大降低数据库的压力。</p>
+
+<h3 id="缓存的适用场景">缓存的适用场景</h3>
+
+<ul>
+  <li>对于数据实时性要求不高</li>
+  <li>对于一些经常访问但是很少改变的数据，读明显多于写，适用缓存就很有必要。
+    <ul>
+      <li>比如一些网站配置项。</li>
+    </ul>
+  </li>
+  <li>对于性能要求高
+    <ul>
+      <li>比如一些秒杀活动场景。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="生存期">生存期</h2>
+<p>生存期是指数据保持有效性的时间区间，也就是从创建到移除的时间间隔。</p>
+
+<p>通常的生存期有以下几种：</p>
+
+<ul>
+  <li>
+    <p>永久状态Permanent State——应用程序使用的永久数据；</p>
+  </li>
+  <li>
+    <p>进程状态Process State——只在进程周期内有效；</p>
+  </li>
+  <li>
+    <p>会话状态Session State——和特定的用户会话有关；</p>
+  </li>
+  <li>
+    <p>消息状态Message State——处理某个消息的时间内有效；</p>
+  </li>
+</ul>
+
+<h2 id="缓存技术">缓存技术</h2>
+
+<p><img src="/assets/img/article/2019-01-09/cache_banner_01.jpg" alt="" /></p>
+
+<h3 id="memcached">【memcached】</h3>
+<p>Memcached是一个自由开源的，高性能，分布式内存对象缓存系统。</p>
+
+<p>Memcached是以LiveJournal旗下Danga Interactive公司的Brad Fitzpatric为首开发的一款软件。现在已成为mixi、hatena、Facebook、Vox、LiveJournal等众多服务中提高Web应用扩展性的重要因素。</p>
+
+<p>Memcached是一种基于内存的key-value存储，用来存储小块的任意数据（字符串、对象）。这些数据可以是数据库调用、API调用或者是页面渲染的结果。</p>
+
+<p>Memcached简洁而强大。它的简洁设计便于快速开发，减轻开发难度，解决了大数据量缓存的很多问题。它的API兼容大部分流行的开发语言。</p>
+
+<blockquote>
+  <p>本质上，它是一个简洁的key-value存储系统。<br />
+一般的使用目的是，通过缓存数据库查询结果，减少数据库访问次数，以提高动态Web应用的速度、提高可扩展性。</p>
+</blockquote>
+
+<h3 id="特征">特征</h3>
+<p>memcached作为高速运行的分布式缓存服务器，具有以下的特点：</p>
+
+<ul>
+  <li>协议简单</li>
+  <li>基于libevent的事件处理</li>
+  <li>内置内存存储方式</li>
+  <li>memcached不互相通信的分布式</li>
+</ul>
+
+<p><strong>支持的语言</strong></p>
+
+<p>许多语言都实现了连接memcached的客户端，其中以Perl、PHP为主。<br />
+仅仅memcached网站上列出的有：</p>
+<blockquote>
+  <p>Perl<br />
+PHP<br />
+Python<br />
+Ruby<br />
+C#<br />
+C/C++<br />
+Lua<br />
+……</p>
+</blockquote>
+
+<p><strong>原生PHP使用memcached示例：</strong></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">error_reporting</span><span class="p">(</span><span class="k">E_ALL</span> <span class="o">&amp;</span> <span class="o">~</span><span class="nx">E_NOTICE</span><span class="p">);</span>
+
+<span class="nv">$mc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Memcached</span><span class="p">();</span>
+<span class="nv">$mc</span><span class="o">-&gt;</span><span class="na">addServer</span><span class="p">(</span><span class="s2">"XXXX.memcache.rds.aliyuncs.com"</span><span class="p">,</span> <span class="mi">11211</span><span class="p">);</span>
+
+<span class="nv">$mc</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">);</span>
+<span class="nv">$mc</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s2">"bar"</span><span class="p">,</span> <span class="s2">"Memcached..."</span><span class="p">);</span>
+
+<span class="nv">$arr</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="nv">$mc</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">),</span>
+    <span class="nv">$mc</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s2">"bar"</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$arr</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>###【redis】
+Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+
+<p>它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。</p>
+
+<p><strong>特点：</strong></p>
+
+<ul>
+  <li>Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。</li>
+  <li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
+  <li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+</ul>
+
+<p><strong>Redis 优势</strong></p>
+
+<ul>
+  <li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
+  <li>丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
+  <li>原子 – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行。单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。</li>
+  <li>丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。</li>
+</ul>
+
+<p><strong>Redis与其他key-value存储有什么不同？</strong></p>
+
+<ul>
+  <li>Redis有着更为复杂的数据结构并且提供对他们的原子性操作，这是一个不同于其他数据库的进化路径。Redis的数据类型都是基于基本数据结构的同时对程序员透明，无需进行额外的抽象。</li>
+  <li>Redis运行在内存中但是可以持久化到磁盘，所以在对不同数据集进行高速读写时需要权衡内存，因为数据量不能大于硬件内存。在内存数据库方面的另一个优点是，相比在磁盘上相同的复杂的数据结构，在内存中操作起来非常简单，这样Redis可以做很多内部复杂性很强的事情。同时，在磁盘格式方面他们是紧凑的以追加的方式产生的，因为他们并不需要进行随机访问。</li>
+</ul>
+
+<h2 id="lumen下使用memcached">lumen下使用memcached</h2>
+<p>Laravel 为各种缓存系统提供了统一的 API，缓存配置位于 .env 文件中，在该文件中你可以指定应用默认使用哪个缓存驱动。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 缓存配置
+CACHE_DRIVER=memcached
+
+MEMCACHED_HOST=XXXX.memcache.rds.aliyuncs.com
+MEMCACHED_PORT=11211
+</code></pre></div></div>
+
+<p>Lumen 缓存驱动与 Laravel 缓存驱动使用了完全相同的代码。<br />
+除配置之外，在 Lumen 中使用缓存和在 Laravel 中使用缓存没有区别；</p>
+
+<p><strong>配置文件：</strong></p>
+
+<p><img src="/assets/img/article/2019-01-09/config_memcached_01.jpg" alt="" /></p>
+
+<p>如图可看出，lumen自带的配置框架让我们直接在.env配置对应参数即可。</p>
+
+<blockquote>
+  <p>注意: 在使用 Cache Facade 之前，请确保在 bootstrap/app.php 文件中没有注释掉 $app-&gt;withFacades() 方法的调用。</p>
+</blockquote>
+
+<h2 id="lumen下使用redis">lumen下使用redis</h2>
+<p>在使用 Lumen 的 Redis 缓存之前，你需要通过 Composer 安装 illuminate/redis (5.5.*) 包。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require illuminate/redis
+</code></pre></div></div>
+
+<p>然后，你需要在 bootstrap/app.php 文件中注册 Illuminate\Redis\RedisServiceProvider。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$app-&gt;register(Illuminate\Redis\RedisServiceProvider::class);
+</code></pre></div></div>
+
+<blockquote>
+  <p>如果你没有在 bootstrap/app.php 文件中调用 $app-&gt;withEloquent()，那么你应该在 bootstrap/app.php 文件中调用 $app-&gt;configure(‘database’); 以确保正确加载 Redis 数据库配置。</p>
+</blockquote>
+
+<p><strong>配置文件：</strong></p>
+
+<p><img src="/assets/img/article/2019-01-09/config_redis_01.jpg" alt="" /></p>
+
+<p>可以看到，lumen自带的配置框架让我们直接在.env配置对应参数即可。</p>
+
+<p>所以应该使用的.env配置如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 缓存配置
+CACHE_DRIVER=redis
+
+## redis配置
+REDIS_HOST=XXXX.redis.rds.aliyuncs.com
+REDIS_PASSWORD=XXXX
+REDIS_PORT=6379
+REDIS_DB=1
+</code></pre></div></div>
+
+<p><strong>使用示例</strong></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Support\Facades\Cache</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Support\Facades\Redis</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TestController</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="nv">$_test_key</span> <span class="o">=</span> <span class="s1">'_test_'</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">set</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$expire</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="nx">Cache</span><span class="o">::</span><span class="na">store</span><span class="p">(</span><span class="s1">'redis'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">put</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$_test_key</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s1">'Y-m-d H:i:s'</span><span class="p">),</span> <span class="nv">$expire</span><span class="p">);</span>
+
+        <span class="nv">$success</span> <span class="o">=</span> <span class="nx">Cache</span><span class="o">::</span><span class="na">store</span><span class="p">(</span><span class="s1">'redis'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$_test_key</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$success</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">get</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$value</span> <span class="o">=</span> <span class="nx">Cache</span><span class="o">::</span><span class="na">store</span><span class="p">(</span><span class="s1">'redis'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$_test_key</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">'key'</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$_test_key</span><span class="p">,</span>
+            <span class="s1">'value'</span> <span class="o">=&gt;</span> <span class="nv">$value</span><span class="p">,</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>以上，还只是帮助大家简单入门，想要了解更多相关技术，快来关注我吧，让我们成为更优秀的自己！！！</p>
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#编程">编程</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  <a href="/tags/#PHP">PHP</a>
+  
+  <a href="/tags/#Cache">Cache</a>
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/" data-title="你应该了解的php缓存技术 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/" title="分库分表de那些事【理论篇】">
+  <strong>上一篇：</strong><br/>
+  <span>
+  分库分表de那些事【理论篇】</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>5</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Cache" title="Cache">Cache<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
