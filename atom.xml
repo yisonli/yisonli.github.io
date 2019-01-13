@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Yison's Blog</title>
- <link href="/atom.xml" rel="self"/>
- <link href=""/>
- <updated>2019-01-09T14:50:23+08:00</updated>
- <id></id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000"/>
+ <updated>2019-01-13T20:02:10+08:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
@@ -13,10 +13,154 @@
 
  
  <entry>
+   <title>Opcache是怎么一回事</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache%E6%98%AF%E6%80%8E%E4%B9%88%E4%B8%80%E5%9B%9E%E4%BA%8B/"/>
+   <updated>2019-01-13T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache是怎么一回事</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;作为PHP10年来最大的版本升级, 最大的性能升级, PHP7在多放的测试中都表现出很明显的性能提升, 然而, 为了让它能发挥出最大的性能, 有几件事你应该知道。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;什么是opcache&quot;&gt;什么是Opcache&lt;/h2&gt;
+
+&lt;p&gt;Opcache 的前生是 Optimizer+ ，它是PHP的官方公司 Zend 开发的一款闭源但可以免费使用的 PHP 优化加速组件。&lt;/p&gt;
+
+&lt;p&gt;Optimizer+ 将PHP代码预编译生成的脚本文件 Opcode 缓存在共享内存中供以后反复使用，从而避免了从磁盘读取代码再次编译的时间消耗。同时，它还应用了一些代码优化模式，使得代码执行更快，从而加速PHP的执行。&lt;/p&gt;
+
+&lt;p&gt;在php 5.5版本后，opcache集成到了php的官方组件中，所以也就没有必要安装其他的APC,eAccelerator等了。。&lt;/p&gt;
+
+&lt;p&gt;APC与Opcache都是字节码缓存，PHP在被编译的时候，首先会把php代码转换为字节码，字节码然后被执行。&lt;/p&gt;
+
+&lt;p&gt;php文件第二次执行时，同样还是会重新转换为字节码，但是很多时候，文件内容几乎是一样的，比如静态HTML文件，生成后内容许久都不会改变，用户访问请求直接由服务器读取响应给客户端浏览器。都不用经过PHP进行解析构建了。&lt;/p&gt;
+
+&lt;p&gt;内存中的字节码数据，可以直接缓存进行二次编译。这样程序就会快一些，cpu的消耗也少了。&lt;/p&gt;
+
+&lt;h2 id=&quot;opcache的运作流程&quot;&gt;Opcache的运作流程&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-01-13/opcache_flow_01.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;request请求（nginx,apache,cli等）–&amp;gt;Zend引擎读取.php文件–&amp;gt;扫描其词典和表达式 –&amp;gt;解析文件–&amp;gt;创建要执行的计算机代码(称为Opcode)–&amp;gt;最后执行Opcode–&amp;gt; response 返回&lt;/p&gt;
+
+&lt;p&gt;每一次请求PHP脚本都会执行一遍以上步骤，如果PHP源代码没有变化，那么Opcode也不会变化，显然没有必要每次都重新生成Opcode，结合在Web中无所不在的缓存机制，我们可以把Opcode缓存下来，以后直接访问缓存的Opcode即可。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Opcode cache 的目地是避免重复编译，减少 CPU 和内存开销。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;opcache的最佳配置&quot;&gt;Opcache的最佳配置&lt;/h2&gt;
+&lt;h3 id=&quot;启用zend-opcache&quot;&gt;启用Zend Opcache&lt;/h3&gt;
+&lt;p&gt;因为PHP7即使不启用Opcache速度也比PHP-5.6启用了Opcache快, 所以之前测试时期就发生了有人一直没有启用Opcache的事情。&lt;/p&gt;
+
+&lt;p&gt;启用Opcache非常简单, 在php.ini配置文件中加入:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;配置参考&quot;&gt;配置参考&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;开发模式下&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;推荐直接禁用opcache扩展&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;多台机器集群模式或者代码更新频繁时&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;推荐如下配置，可以兼顾性能，方便代码更新&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;opcache.revalidate_freq=300
+opcache.validate_timestamps=1
+opcache.max_accelerated_files=7963
+opcache.memory_consumption=192
+opcache.interned_strings_buffer=16
+opcache.fast_shutdown=1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;稳定项目配置&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;推荐配置如下，性能最好&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;opcache.revalidate_freq=0
+opcache.validate_timestamps=0
+opcache.max_accelerated_files=7963
+opcache.memory_consumption=192
+opcache.interned_strings_buffer=16
+opcache.fast_shutdown=1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;配置参数说明&quot;&gt;配置参数说明&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.revalidate_freq&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这个选项用于设置缓存的过期时间（单位是秒），当这个时间达到后，opcache会检查你的代码是否改变，如果改变了PHP会重新编译它，生成新的opcode，并且更新缓存。&lt;/p&gt;
+
+&lt;p&gt;值为“0”表示每次请求都会检查你的PHP代码是否更新（这意味着会增加很多次stat系统调用）。可以在开发环境中把它设置为0，生产环境下不用管，因为下面会介绍另外一个设置选项。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;译注：stat系统调用是读取文件的状态，这里主要是获取最近修改时间，这个系统调用会发生磁盘I/O，所以必然会消耗一些CPU时间，当然系统调用本身也会消耗一些CPU时间&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.validate_timestamps&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;当这个选项被启用（设置为1），PHP会在&lt;code class=&quot;highlighter-rouge&quot;&gt;opcache.revalidate_freq&lt;/code&gt;设置的时间到达后检测文件的时间戳（timestamp）。&lt;/p&gt;
+
+&lt;p&gt;如果这个选项被禁用（设置为0），&lt;code class=&quot;highlighter-rouge&quot;&gt;opcache.revalidate_freq&lt;/code&gt;会被忽略，PHP文件永远不会被检查。这意味着如果你修改了你的代码，然后你把它更新到服务器上，再在浏览器上请求更新的代码对应的功能，你会看不到更新的效果，你必须得重新加载你的PHP（使用kill -SIGUSR2强制重新加载）。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;这个设定是不是有些蛋疼，但是我强烈建议你在生产环境中使用，why？因为当你在更新服务器代码的时候，如果代码较多，更新操作是有些延迟的，在这个延迟的过程中必然出现老代码和新代码混合的情况，这个时候对用户请求的处理必然存在不确定性。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.max_accelerated_files&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这个选项用于控制内存中最多可以缓存多少个PHP文件。这个选项必须得设置得足够大，大于你的项目中的所有PHP文件的总和。&lt;/p&gt;
+
+&lt;p&gt;真实的取值是在质数集合 { 223, 463, 983, 1979, 3907, 7963, 16229, 32531, 65407, 130987 } 中找到的第一个比设置值大的质数。 设置值取值范围最小值是 200，最大值在 PHP 5.5.6 之前是 100000，PHP 5.5.6 及之后是 1000000。&lt;/p&gt;
+
+&lt;p&gt;听起来好复杂，但用下面的命令就妥啦，这个命令来快速计算你的代码库中的PHP文件数。:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;find . -type f -print | grep php | wc -l
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.memory_consumption&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这个选项的默认值为64MB，如果代码量很大，可以把它设置为192MB。&lt;br /&gt;
+你可以通过调用&lt;code class=&quot;highlighter-rouge&quot;&gt;opcachegetstatus()&lt;/code&gt;来获取opcache使用的内存的总量，如果这个值很大，你可以把这个选项设置得更大一些。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.interned_strings_buffer&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这是一个很有用的选项，但是似乎完全没有文档说明。PHP使用了一种叫做字符串驻留（string interning）的技术来改善性能。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;例如，如果你在代码中使用了1000次字符串“foobar”，在PHP内部只会在第一使用这个字符串的时候分配一个不可变的内存区域来存储这个字符串，其他的999次使用都会直接指向这个内存区域。&lt;br /&gt;
+这个选项则会把这个特性提升一个层次——默认情况下这个不可变的内存区域只会存在于单个php-fpm的进程中，如果设置了这个选项，那么它将会在所有的php-fpm进程中共享。&lt;br /&gt;
+在比较大的应用中，这可以非常有效地节约内存，提高应用的性能。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这个选项的值是以兆字节（megabytes）作为单位，如果把它设置为16，则表示16MB，默认是4MB，这是一个比较低的值。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;opcache.fast_shutdown&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;另外一个很有用但也没有文档说明的选项，从字面上理解就是“允许更快速关闭”。&lt;br /&gt;
+它的作用是在单个请求结束时提供一种更快速的机制来调用代码中的析构器，从而加快PHP的响应速度和PHP进程资源的回收速度，这样应用程序可以更快速地响应下一个请求。把它设置为1就可以使用这个机制了。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;最后，在开启opcache的情况下，如果更新了php代码，则需要重启PHP进程才能生效&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;想要了解更多相关技术，快来关注我吧，聪明出于勤奋，天才在于积累，让我们成为更优秀的自己！！！&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>你应该了解的php缓存技术</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/"/>
    <updated>2019-01-09T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/01/09/你应该了解的PHP缓存技术</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/09/你应该了解的PHP缓存技术</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;缓存是现在系统中必不可少的模块，并且已经成为了高并发高性能架构的一个关键组件。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -209,8 +353,8 @@ Lua&lt;br /&gt;
 &lt;span class=&quot;nb&quot;&gt;var_dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;###【redis】
-Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。&lt;/p&gt;
+&lt;h3 id=&quot;redis&quot;&gt;【redis】&lt;/h3&gt;
+&lt;p&gt;Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。&lt;/p&gt;
 
 &lt;p&gt;它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。&lt;/p&gt;
 
@@ -334,9 +478,9 @@ REDIS_DB=1
  
  <entry>
    <title>分库分表de那些事【理论篇】</title>
-   <link href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/"/>
+   <link href="http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/"/>
    <updated>2018-12-22T00:00:00+08:00</updated>
-   <id>/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/分库分表de那些事【理论篇】</id>
+   <id>http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/分库分表de那些事【理论篇】</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;关系型数据库本身比较容易成为系统瓶颈，单机存储容量、连接数、处理能力都有限。当单表的数据量达到1000万或100GB以后，由于查询维度较多，即使添加从库、优化索引，做很多操作时性能仍下降严重。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -816,9 +960,9 @@ personal_info        text               #私人信息
  
  <entry>
    <title>Docker从零构建php Nginx Alpine镜像</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/"/>
    <updated>2018-11-09T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/11/09/Docker从零构建php-nginx-alpine镜像</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/09/Docker从零构建php-nginx-alpine镜像</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;虽然之前也曾用docker环境运行了一些项目，但对于镜像这块还不是很理解，且鉴于网上现成的镜像都包含太多用不到的库，所以决定从零开始构建一个自己的镜像。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -918,9 +1062,9 @@ http://127.0.0.1:8080/index.php&lt;/p&gt;
  
  <entry>
    <title>Php7内存管理 谁动了我的内存</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/"/>
    <updated>2018-11-05T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7内存管理-谁动了我的内存</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7内存管理-谁动了我的内存</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;来源：Laruence&lt;br /&gt;
 Zend 引擎提供为了处理请求相关数据提供了一种特殊的内存管理器。请求相关数据是指只需要服务于单个请求，最迟会在请求结束时释放的数据。&lt;/p&gt;
@@ -1116,9 +1260,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>1024挑战赛题解</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/10/29/1024%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/10/29/1024%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/"/>
    <updated>2018-10-29T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/10/29/1024挑战赛题解</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/10/29/1024挑战赛题解</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;离开学校出社会工作已久，甚是怀念大学时代ACM的时光，偶遇组织于10.24举行编程挑战赛，遂前去试了一下，很幸运地也拿了点小奖，后于此简单分享。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1337,9 +1481,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>Php的openssl加密扩展使用小结</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
    <updated>2018-07-25T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;互联网的发展史上，安全性一直是开发者们相当重视的一个主题，为了实现数据传输安全，我们需要保证：数据来源（非伪造请求）、数据完整性（没有被人修改过）、数据私密性（密文，无法直接读取）等。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1560,9 +1704,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>Xdebug源码安装</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;PHP在Linux上(含MAC OS)安装xdebug的方法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1638,9 +1782,9 @@ php扩展目录：/usr/lib/php/extensions/**/&lt;/p&gt;
  
  <entry>
    <title>Php代码覆盖率一起玩</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;最近在玩PHP的单元测试，以及代码覆盖率这块，也遇到一些问题，所以摘出来记录一下，也算是简单入门了。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1864,9 +2008,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《php7内核剖析》之php基础架构</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
    <updated>2018-04-27T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;有幸最近在读秦朋的《PHP内核剖析》一书，收获良多，为了加深自己的理解，依照书中内容自己动手画了一些流程图。本文主要描述PHP的基本构成、生命周期、以及各个阶段的大体流程。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1915,9 +2059,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《大数据时代下半场》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2018-01-20T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。&lt;br /&gt;
 如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。&lt;br /&gt;
@@ -2211,9 +2355,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《从零开始学微信运营》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-12-18T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;这是最好的时代，这是最坏的时代；这是明智的时代，这是愚昧的时代；这是信仰的时期，这是怀疑的时期；这是光明的季节，这是黑暗的季节；这是希望之春，这是失望之冬；人们面前应有尽有，人们面前一无所有。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2895,9 +3039,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>使用composer安装lumen</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
    <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Laravel 是一个功能齐全，速度飞快的框架，但是 Lumen 因为去除了很多 Laravel 的配置和可自定义的选项，速度越加飞快，毫秒必争。&lt;br /&gt;
 本文介绍如何搭建PHP的Laravel和Lumen环境&lt;/p&gt;
@@ -2977,9 +3121,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>使用gd库给图片铺满水印</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
    <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;PHP一个使用GD库生成水印的方法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3031,9 +3175,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>《集创思维设计矩阵》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-11-18T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;人的才识是装在瓶子里的，你的瓶子满了，就再也装不下新东西了。要想装下更多，你不能固守这个瓶子，你要打破它，换个更大的瓶子。如此反复，你才不是现在的你。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3629,9 +3773,9 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
  
  <entry>
    <title>《现在就干：互联网时代的高效时间管理法》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/%E7%8E%B0%E5%9C%A8%E5%B0%B1%E5%B9%B2-%E4%BA%92%E8%81%94%E7%BD%91%E6%97%B6%E4%BB%A3%E7%9A%84%E9%AB%98%E6%95%88%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E6%B3%95-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《现在就干：互联网时代的高效时间管理法》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;感受一下时间流逝的速度，时间是没有声音的锉刀，最不善于利用时间的人最爱抱怨时光短暂，我们都没有时间去挥霍……时间是个盗贼……时间就是上帝给你的资本，让每一分每一秒都花在有意义的事情上，就是最好的时间管理了，最好的时间是现在。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3937,9 +4081,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>《web全栈工程师的自我修养》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/Web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-10-28T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/10/28/《Web全栈工程师的自我修养》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。&lt;br /&gt;
 但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。&lt;/p&gt;
@@ -4169,9 +4313,9 @@ K3 --&amp;gt; K31[办理护照 带宝宝打针]
  
  <entry>
    <title>Wordpress如何使用ecs+cos</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ECS+COS/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/05/03/WordPress如何使用ECS+COS</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;COS是腾讯云的一项服务，免费50G存储空间，按外网流量使用情况收费，内网调用免流量。&lt;br /&gt;
 本文主要讲如何能享受到COS的内网流量，前提当然是你已经有一个ECS服务器了。&lt;/p&gt;
@@ -4418,9 +4562,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Mysql新建数据库和用户账号</title>
-   <link href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
+   <link href="http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"/>
    <updated>2017-05-03T00:00:00+08:00</updated>
-   <id>/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
+   <id>http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL新建数据库和用户账号</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Mysql数据库账号的基本用法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4451,9 +4595,9 @@ data-user-setting=&quot;imgsize&quot;
  
  <entry>
    <title>Linux新建用户与sudo权限</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/"/>
    <updated>2017-04-10T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux新建用户与sudo权限</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;如何用命令行新建一个带超管权限的账号&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4493,95 +4637,6 @@ data-user-setting=&quot;imgsize&quot;
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//使用 groups &amp;lt;username&amp;gt;命令查看。
 adm cdrom &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dip plugdev lpadmin sambashare 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Php7和nginx安装记录</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"/>
-   <updated>2016-06-02T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7和Nginx安装记录</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;本文主要记录 PHP7+Nginx的编译 以及 环境搭建 的操作步骤&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;1获取-php-指定版本下载地址可以在这个页面找到&quot;&gt;1.获取 PHP 指定版本，下载地址可以在这个页面找到：&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;wget http://cn2.php.net/distributions/php-7.0.7.tar.xz
-&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-xvf&lt;/span&gt; php-7.0.7.tar.xz
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;2安装&quot;&gt;2.安装:&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get install nginx mysql-client-core-5.6 git libxml2-dev build-essential openssl libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev libpng-dev libmcrypt-dev libreadline6 libreadline6-dev libjpeg-dev libpng-dev libgmp-dev
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;ln &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;php-7&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;3-编译&quot;&gt;3. 编译&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; ./configure –prefix&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/php7.0.7 –enable-fpm –enable-inline-optimization –disable-debug –disable-rpath –enable-shared –enable-opcache –with-gmp  –with-mysql –with-mysqli –with-mysql-sock  –enable-pdo –with-pdo-mysql –with-gettext –enable-mbstring –with-iconv –with-mcrypt –with-mhash –with-openssl –enable-bcmath –enable-soap –with-libxml-dir –enable-pcntl –enable-shmop –enable-sysvmsg –enable-sysvsem –enable-sysvshm –enable-sockets –with-curl –with-zlib –enable-zip –enable-bz2 –with-readline –without-sqlite3 –without-pdo-sqlite –with-pear –with-libdir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/lib/x86_64-linux-gnu –with-gd –with-jpeg-dir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/lib –enable-gd-native-ttf –enable-xml
-//中间可能会出现 configure: WARNING: unrecognized options: –with-mysql, –enable-bz2
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;make
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;make install
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;ln &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/php7.0.7 /usr/local/php
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;cp php.ini-production /usr/local/php/lib/php/php.ini
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;4-配置php-fpm&quot;&gt;4. 配置php-fpm&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /usr/local/php/etc
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;cp php-fpm.conf.default php-fpm.conf
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /usr/local/php/etc/php-fpm.d
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;cp www.conf.default www.conf
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;vim www.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;修改&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; www-data
-group &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; www-data
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;如果www-data用户不存在，那么先添加www-data用户&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;groupadd www-data
-useradd &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; www-data www-data
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;5-启动php-fpm&quot;&gt;5. 启动php-fpm&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; /usr/local/php/sbin/php-fpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;加入系统变量&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo echo&lt;/span&gt; “PATH&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;:/usr/local/php/bin”&amp;gt;&amp;gt; /etc/profile
-&lt;span class=&quot;nb&quot;&gt;sudo echo&lt;/span&gt; “export PATH”&amp;gt;&amp;gt; /etc/profile
-&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /etc/profile
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;6-nginx配置&quot;&gt;6. NGINX配置&lt;/h1&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /etc/nginx/sites-enabled
-vim default
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;找到下面的配置, 把注释打开&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-location ~ &lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        fastcgi_split_path_info ^&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;.+&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;php&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;/.+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$;&lt;/span&gt;
-        &lt;span class=&quot;c&quot;&gt;# NOTE: You should have “cgi.fix_pathinfo = 0;” in php.ini&lt;/span&gt;
-        &lt;span class=&quot;c&quot;&gt;# With php5-cgi alone:&lt;/span&gt;
-        fastcgi_pass 127.0.0.1:9000&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;c&quot;&gt;# With php5-fpm:&lt;/span&gt;
-        &lt;span class=&quot;c&quot;&gt;#fastcgi_pass unix:/var/run/php5-fpm.sock;&lt;/span&gt;
-        fastcgi_index index.php&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        include fastcgi_params&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service nginx reload
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /usr/share/nginx/html
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;写一个index.php 即可看到效果&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;最后：注意腾讯云安全组的问题，要把对外80端口打开&lt;/p&gt;
-&lt;/blockquote&gt;
 </content>
  </entry>
  
