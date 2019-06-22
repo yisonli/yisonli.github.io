@@ -183,6 +183,22 @@
         "url": "/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache%E6%98%AF%E6%80%8E%E4%B9%88%E4%B8%80%E5%9B%9E%E4%BA%8B/"
       },
     
+      {
+        "title": "Laravel框架下的php辅助函数",
+        "date": "2019 年 03 月",
+        "excerpt": "\n  Laravel框架自带了一系列的PHP辅助函数，很多被框架自身使用，多了解一点这些函数，也方便我们在代码中善用它们。\n\n\n",
+        
+        "url": "/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/"
+      },
+    
+      {
+        "title": "Alpine系统下的apk指令",
+        "date": "2019 年 06 月",
+        "excerpt": "\n  Alpine Linux是一个面向安全应用的轻量级Linux发行版。它采用了musl libc和busybox以减小系统的体积和运行时资源消耗，同时还提供了自己的包管理工具apk。\n\n\n",
+        
+        "url": "/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/"
+      },
+    
   
   
   

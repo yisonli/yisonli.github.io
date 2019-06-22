@@ -8,7 +8,7 @@
     
     
     
-    <title>使用gd库给图片铺满水印 | Yison's Blog</title>
+    <title>Alpine系统下的apk指令 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="使用gd库给图片铺满水印">
-    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/">
+    <meta property="og:title" content="Alpine系统下的apk指令">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="使用gd库给图片铺满水印">
+    <meta name="twitter:title" content="Alpine系统下的apk指令">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" title="使用gd库给图片铺满水印" itemprop="url">使用gd库给图片铺满水印</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/" title="Alpine系统下的apk指令" itemprop="url">Alpine系统下的apk指令</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-12-08 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-12-08</time>
+    <time datetime="2019-06-09 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-06-09</time>
     
   </p>
 </header>
@@ -117,51 +117,153 @@
 		</div>
 		
 		<blockquote>
-  <p>PHP一个使用GD库生成水印的方法</p>
+  <p>Alpine Linux是一个面向安全应用的轻量级Linux发行版。它采用了musl libc和busybox以减小系统的体积和运行时资源消耗，同时还提供了自己的包管理工具apk。</p>
 </blockquote>
 
-<h2 id="查看示例">查看示例</h2>
+<h2 id="官方帮助文档">官方帮助文档</h2>
+<p>alpine 提供了非常好用的apk软件包管理工具，通过<code class="highlighter-rouge">apk --help --verbose</code>命令查看完整的包管理命令。</p>
 
-<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 
- * 图片加水印函数
- * $dst_file : 处理完成后保存到此文件路径
- * $src_file ：待处理的图片文件路径
- * $logo_file：水印的图片文件路径
- * $top      ：上间距
- * $left     ：左间距
- * $alpha    ：透明度(0-100)【特别注意：若logo_file本身已有透明效果，请务必传false】
- */</span>
-<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fullFillLogos</span><span class="p">(</span><span class="nv">$dst_file</span><span class="p">,</span> <span class="nv">$src_file</span><span class="p">,</span> <span class="nv">$logo_file</span><span class="p">,</span> <span class="nv">$top</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$alpha</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="p">{</span>
-        <span class="c1">//创建图片的实例
-</span>        <span class="nv">$dst</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">));</span>
-        <span class="nv">$logo</span> <span class="o">=</span> <span class="nb">imagecreatefromstring</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">));</span>
-        <span class="c1">//获取宽高
-</span>        <span class="k">list</span><span class="p">(</span><span class="nv">$logo_w</span><span class="p">,</span> <span class="nv">$logo_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$logo_file</span><span class="p">);</span>
-        <span class="k">list</span><span class="p">(</span><span class="nv">$dst_w</span><span class="p">,</span> <span class="nv">$dst_h</span><span class="p">)</span> <span class="o">=</span> <span class="nb">getimagesize</span><span class="p">(</span><span class="nv">$src_file</span><span class="p">);</span>
-        <span class="c1">//循环铺上水印
-</span>        <span class="k">for</span><span class="p">(</span><span class="nv">$off_y</span><span class="o">=</span><span class="nv">$top</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+</span><span class="nv">$top</span><span class="o">&lt;</span><span class="nv">$dst_h</span><span class="p">;</span> <span class="nv">$off_y</span><span class="o">+=</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span><span class="p">(</span><span class="nv">$off_x</span><span class="o">=</span><span class="nv">$left</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+</span><span class="nv">$left</span><span class="o">&lt;</span><span class="nv">$dst_w</span><span class="p">;</span> <span class="nv">$off_x</span><span class="o">+=</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nv">$width</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_x</span><span class="o">+</span><span class="nv">$logo_w</span><span class="o">+</span><span class="nv">$left</span><span class="o">&gt;</span><span class="nv">$dst_w</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_w</span><span class="o">-</span><span class="nv">$off_x</span><span class="o">-</span><span class="nv">$left</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_w</span><span class="p">;</span>
-                <span class="nv">$height</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$off_y</span><span class="o">+</span><span class="nv">$logo_h</span><span class="o">+</span><span class="nv">$top</span><span class="o">&gt;</span><span class="nv">$dst_h</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nv">$dst_h</span><span class="o">-</span><span class="nv">$off_y</span><span class="o">-</span><span class="nv">$top</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$logo_h</span><span class="p">;</span>
-                <span class="k">if</span><span class="p">(</span><span class="nv">$alpha</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="nb">imagecopy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">);</span>
-                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                    <span class="nb">imagecopymerge</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$logo</span><span class="p">,</span> <span class="nv">$off_x</span><span class="p">,</span> <span class="nv">$off_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$height</span><span class="p">,</span> <span class="nv">$alpha</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="c1">//水印完成, 存档...
-</span>        <span class="nb">header</span><span class="p">(</span><span class="s1">'Content-Type: image/jpeg'</span><span class="p">);</span>
-        <span class="nb">imagejpeg</span><span class="p">(</span><span class="nv">$dst</span><span class="p">,</span> <span class="nv">$dst_file</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$dst</span><span class="p">);</span>
-        <span class="nb">imagedestroy</span><span class="p">(</span><span class="nv">$logo</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/src <span class="c"># apk --help --verbose</span>
+apk-tools 2.10.3, compiled <span class="k">for </span>x86_64.
+
+usage: apk COMMAND <span class="o">[</span><span class="nt">-h</span>|--help] <span class="o">[</span><span class="nt">-p</span>|--root DIR] <span class="o">[</span><span class="nt">-X</span>|--repository REPO] <span class="o">[</span><span class="nt">-q</span>|--quiet] <span class="o">[</span><span class="nt">-v</span>|--verbose] <span class="o">[</span><span class="nt">-i</span>|--interactive] <span class="o">[</span><span class="nt">-V</span>|--version]
+           <span class="o">[</span><span class="nt">-f</span>|--force] <span class="o">[</span><span class="nt">--force-binary-stdout</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-broken-world</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-non-repository</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-old-apk</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-overwrite</span><span class="o">]</span>
+           <span class="o">[</span><span class="nt">--force-refresh</span><span class="o">]</span> <span class="o">[</span><span class="nt">-U</span>|--update-cache] <span class="o">[</span><span class="nt">--progress</span><span class="o">]</span> <span class="o">[</span><span class="nt">--progress-fd</span> FD] <span class="o">[</span><span class="nt">--no-progress</span><span class="o">]</span> <span class="o">[</span><span class="nt">--purge</span><span class="o">]</span> <span class="o">[</span><span class="nt">--allow-untrusted</span><span class="o">]</span>
+           <span class="o">[</span><span class="nt">--wait</span> TIME] <span class="o">[</span><span class="nt">--keys-dir</span> KEYSDIR] <span class="o">[</span><span class="nt">--repositories-file</span> REPOFILE] <span class="o">[</span><span class="nt">--no-network</span><span class="o">]</span> <span class="o">[</span><span class="nt">--no-cache</span><span class="o">]</span> <span class="o">[</span><span class="nt">--cache-dir</span> CACHEDIR]
+           <span class="o">[</span><span class="nt">--cache-max-age</span> AGE] <span class="o">[</span><span class="nt">--arch</span> ARCH] <span class="o">[</span><span class="nt">--print-arch</span><span class="o">]</span> <span class="o">[</span>ARGS]...
+
+The following commands are available:
+  add       Add PACKAGEs to <span class="s1">'world'</span> and install <span class="o">(</span>or upgrade<span class="o">)</span> them, <span class="k">while </span>ensuring that all dependencies are met
+  del       Remove PACKAGEs from <span class="s1">'world'</span> and uninstall them
+  fix       Repair package or upgrade it without modifying main dependencies
+  update    Update repository indexes from all remote repositories
+  info      Give detailed information about PACKAGEs or repositories
+  list      List packages by PATTERN and other criteria
+  search    Search package by PATTERNs or by indexed dependencies
+  upgrade   Upgrade currently installed packages to match repositories
+  cache     Download missing PACKAGEs to cache and/or delete unneeded files from cache
+  version   Compare package versions <span class="o">(</span><span class="k">in </span>installed database vs. available<span class="o">)</span> or <span class="k">do </span>tests on literal version strings
+  index     Create repository index file from FILEs
+  fetch     Download PACKAGEs from global repositories to a <span class="nb">local </span>directory
+  audit     Audit the directories <span class="k">for </span>changes
+  verify    Verify package integrity and signature
+  dot       Generate graphviz graphs
+  policy    Show repository policy <span class="k">for </span>packages
+  stats     Show statistics about repositories and installations
+  manifest  Show checksums of package contents
+
+Global options:
+  <span class="nt">-h</span>, <span class="nt">--help</span>              Show generic <span class="nb">help </span>or applet specific <span class="nb">help</span>
+  <span class="nt">-p</span>, <span class="nt">--root</span> DIR          Install packages to DIR
+  <span class="nt">-X</span>, <span class="nt">--repository</span> REPO   Use packages from REPO
+  <span class="nt">-q</span>, <span class="nt">--quiet</span>             Print less information
+  <span class="nt">-v</span>, <span class="nt">--verbose</span>           Print more information <span class="o">(</span>can be doubled<span class="o">)</span>
+  <span class="nt">-i</span>, <span class="nt">--interactive</span>       Ask confirmation <span class="k">for </span>certain operations
+  <span class="nt">-V</span>, <span class="nt">--version</span>           Print program version and <span class="nb">exit</span>
+  <span class="nt">-f</span>, <span class="nt">--force</span>             Enable selected <span class="nt">--force-</span><span class="k">*</span> <span class="o">(</span>deprecated<span class="o">)</span>
+  <span class="nt">--force-binary-stdout</span>   Continue even <span class="k">if </span>binary data is to be output
+  <span class="nt">--force-broken-world</span>    Continue even <span class="k">if</span> <span class="s1">'world'</span> cannot be satisfied
+  <span class="nt">--force-non-repository</span>  Continue even <span class="k">if </span>packages may be lost on reboot
+  <span class="nt">--force-old-apk</span>         Continue even <span class="k">if </span>packages use unsupported features
+  <span class="nt">--force-overwrite</span>       Overwrite files <span class="k">in </span>other packages
+  <span class="nt">--force-refresh</span>         Do not use cached files <span class="o">(</span><span class="nb">local </span>or from proxy<span class="o">)</span>
+  <span class="nt">-U</span>, <span class="nt">--update-cache</span>      Alias <span class="k">for</span> <span class="nt">--cache-max-age</span> 1
+  <span class="nt">--progress</span>              Show a progress bar
+  <span class="nt">--progress-fd</span> FD        Write progress to fd
+  <span class="nt">--no-progress</span>           Disable progress bar even <span class="k">for </span>TTYs
+  <span class="nt">--purge</span>                 Delete also modified configuration files <span class="o">(</span>pkg removal<span class="o">)</span> and uninstalled packages from cache <span class="o">(</span>cache clean<span class="o">)</span>
+  <span class="nt">--allow-untrusted</span>       Install packages with untrusted signature or no signature
+  <span class="nt">--wait</span> TIME             Wait <span class="k">for </span>TIME seconds to get an exclusive repository lock before failing
+  <span class="nt">--keys-dir</span> KEYSDIR      Override directory of trusted keys
+  <span class="nt">--repositories-file</span> REPOFILE Override repositories file
+  <span class="nt">--no-network</span>            Do not use network <span class="o">(</span>cache is still used<span class="o">)</span>
+  <span class="nt">--no-cache</span>              Do not use any <span class="nb">local </span>cache path
+  <span class="nt">--cache-dir</span> CACHEDIR    Override cache directory
+  <span class="nt">--cache-max-age</span> AGE     Maximum AGE <span class="o">(</span><span class="k">in </span>minutes<span class="o">)</span> <span class="k">for </span>index <span class="k">in </span>cache before refresh
+  <span class="nt">--arch</span> ARCH             Use architecture with <span class="nt">--root</span>
+  <span class="nt">--print-arch</span>            Print default arch and <span class="nb">exit
+
+</span>This apk has coffee making abilities.
 </code></pre></div></div>
+
+<h2 id="使用示例">使用示例</h2>
+<p>下面列举常用命令：</p>
+
+<p><strong>apk update</strong><br />
+<code class="highlighter-rouge">update</code>：从远程镜像源中更新本地镜像源索引。</p>
+
+<p><code class="highlighter-rouge">update</code>命令会从各个镜像源列表下载<code class="highlighter-rouge">APKINDEX.tar.gz</code>并存储到本地缓存，一般在<code class="highlighter-rouge">/var/cache/apk/</code>(Alpine在该目录下)、<code class="highlighter-rouge">/var/lib/apk/</code> 、<code class="highlighter-rouge">/etc/apk/cache/</code>下。</p>
+
+<p><strong>apk add</strong><br />
+<code class="highlighter-rouge">add</code>：安装PACKAGES并自动解决依赖关系。</p>
+
+<p><code class="highlighter-rouge">add</code>命令从仓库中安装最新软件包，并自动安装必须的依赖包，也可以从第三方仓库添加软件包。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk add openssh openntp vim
+<span class="nv">$ </span>apk add <span class="nt">--no-cache</span> mysql-client
+<span class="nv">$ </span>apk add docker <span class="nt">--update-cache</span> <span class="nt">--repository</span> http://mirrors.ustc.edu.cn/alpine/v3.4/main/ <span class="nt">--allow-untrusted</span>
+</code></pre></div></div>
+
+<p>【安装指定版本软件包】</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk add <span class="nv">asterisk</span><span class="o">=</span>1.6.0.21-r0
+<span class="nv">$ </span>apk add <span class="s1">'asterisk&lt;1.6.1'</span>
+<span class="nv">$ </span>apk add <span class="s1">'asterisk&gt;1.6.1'</span>
+</code></pre></div></div>
+
+<p><strong>apk del</strong><br />
+<code class="highlighter-rouge">del</code>：卸载并删除PACKAGES</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk del openssh openntp vim
+</code></pre></div></div>
+
+<p><strong>apk upgrade</strong><br />
+<code class="highlighter-rouge">upgrade</code>：升级当前已安装的软件包。</p>
+
+<p><code class="highlighter-rouge">upgrade</code>命令升级系统已安装的所有软件包（一般包括内核），当然也可指定仅升级部分软件包（通过<code class="highlighter-rouge">-u</code>或<code class="highlighter-rouge">–upgrade</code>选择指定）。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk update <span class="c">#更新最新本地镜像源</span>
+<span class="nv">$ </span>apk upgrade <span class="c">#升级软件</span>
+<span class="nv">$ </span>apk add <span class="nt">--upgrade</span> busybox <span class="c">#指定升级部分软件包</span>
+</code></pre></div></div>
+
+<p><strong>apk search</strong><br />
+<code class="highlighter-rouge">search</code>：搜索软件包。</p>
+
+<p><code class="highlighter-rouge">search</code>命令搜索可用软件包，<code class="highlighter-rouge">-v</code> 参数输出描述内容，支出通配符，<code class="highlighter-rouge">-d</code> 或 <code class="highlighter-rouge">–description</code> 参数指定通过软件包描述查询。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk search <span class="c">#查找所有可用软件包</span>
+<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="c">#查找所有可用软件包及其描述内容</span>
+<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="s1">'acf*'</span> <span class="c">#通过软件包名称查找软件包</span>
+<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="nt">-d</span> <span class="s1">'docker'</span> <span class="c">#通过描述文件查找特定的软件包</span>
+</code></pre></div></div>
+
+<p><strong>apk info</strong><br />
+<code class="highlighter-rouge">info</code>：列出PACKAGES或镜像源的详细信息。</p>
+
+<p><code class="highlighter-rouge">info</code>命令用于显示软件包的信息。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk info <span class="c">#列出所有已安装的软件包</span>
+<span class="nv">$ </span>apk info <span class="nt">-a</span> zlib <span class="c">#显示完整的软件包信息</span>
+<span class="nv">$ </span>apk info <span class="nt">--who-owns</span> /sbin/lbu <span class="c">#显示指定文件属于的包</span>
+</code></pre></div></div>
+
+<h2 id="alpine中文支持如何安装locale指令包">alpine中文支持，如何安装locale指令包</h2>
+<p>需要用到<code class="highlighter-rouge">alpine-pkg-glibc</code>库，参考： <a href="https://github.com/sgerrand/alpine-pkg-glibc">https://github.com/sgerrand/alpine-pkg-glibc</a></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk <span class="nt">--no-cache</span> add ca-certificates wget
+wget <span class="nt">-q</span> <span class="nt">-O</span> /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk
+apk add glibc-2.29-r0.apk
+
+wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-bin-2.29-r0.apk
+wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-i18n-2.29-r0.apk
+apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
+
+/usr/glibc-compat/bin/localedef <span class="nt">-i</span> en_US <span class="nt">-f</span> UTF-8 en_US.UTF-8
+</code></pre></div></div>
+
+<p>想要了解更多相关技术，快来关注我吧，聪明出于勤奋，天才在于积累，让我们成为更优秀的自己！！！</p>
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -202,7 +304,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/" data-title="使用gd库给图片铺满水印 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/" data-title="Alpine系统下的apk指令 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -215,21 +317,13 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="《集创思维设计矩阵》读书笔记">
+ <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/" title="Laravel框架下的php辅助函数">
   <strong>上一篇：</strong><br/>
   <span>
-  《集创思维设计矩阵》读书笔记</span>
+  Laravel框架下的php辅助函数</span>
 </a>
 </div>
 
-
-<div class="next">
-<a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"  title="使用composer安装lumen">
- <strong>下一篇：</strong><br/> 
- <span>使用composer安装lumen
-</span>
-</a>
-</div>
 
 </nav>
 

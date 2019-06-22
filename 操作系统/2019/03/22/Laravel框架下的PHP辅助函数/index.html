@@ -1,0 +1,1933 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>Laravel框架下的php辅助函数 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="Laravel框架下的php辅助函数">
+    <meta property="og:url" content="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Laravel框架下的php辅助函数">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/" title="Laravel框架下的php辅助函数" itemprop="url">Laravel框架下的php辅助函数</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2019-03-22 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-03-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>Laravel框架自带了一系列的PHP辅助函数，很多被框架自身使用，多了解一点这些函数，也方便我们在代码中善用它们。</p>
+</blockquote>
+
+<h2 id="方法列表">方法列表</h2>
+<h3 id="数组函数">数组函数</h3>
+
+<p><strong>array_add()</strong><br />
+功能：<code class="highlighter-rouge">array_add</code> 函数添加给定键值对到数组（如果给定键不存在的话）。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_add</span><span class="p">([</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">],</span> <span class="s1">'price'</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="c1">// ['name' =&gt; 'Desk', 'price' =&gt; 100]
+</span></code></pre></div></div>
+
+<p><strong>array_collapse()</strong><br />
+功能：<code class="highlighter-rouge">array_collapse</code> 函数将多个数组合并成一个。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_collapse</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]);</span>
+<span class="c1">// [1, 2, 3, 4, 5, 6, 7, 8, 9]
+</span></code></pre></div></div>
+
+<p><strong>array_divide()</strong><br />
+功能：<code class="highlighter-rouge">array_divide</code> 函数返回两个数组，一个包含原数组的所有键，另外一个包含原数组的所有值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">list</span><span class="p">(</span><span class="nv">$keys</span><span class="p">,</span> <span class="nv">$values</span><span class="p">)</span> <span class="o">=</span> <span class="nx">array_divide</span><span class="p">([</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">]);</span>
+<span class="c1">// $keys: ['name']
+// $values: ['Desk']
+</span></code></pre></div></div>
+
+<p><strong>array_dot()</strong><br />
+功能：array_dot 函数使用”.”号将将多维数组转化为一维数组。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+<span class="nv">$flattened</span> <span class="o">=</span> <span class="nx">array_dot</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// ['products.desk.price' =&gt; 100]
+</span></code></pre></div></div>
+
+<p><strong>array_except()</strong><br />
+功能：array_except 函数从数组中移除给定键值对。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">];</span>
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_except</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="p">[</span><span class="s1">'price'</span><span class="p">]);</span>
+<span class="c1">// ['name' =&gt; 'Desk']
+</span></code></pre></div></div>
+
+<p><strong>array_first()</strong><br />
+功能：array_first 函数返回通过测试数组的第一个元素。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">];</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_first</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="nv">$key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$value</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="c1">// 200
+</span>
+<span class="c1">// 默认值可以作为第三个参数传递给该方法，如果没有值通过测试的话返回默认值：
+</span><span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_first</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">,</span> <span class="nv">$default</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>array_flatten()</strong><br />
+功能：array_flatten 函数将多维数组转化为一维数组。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Joe'</span><span class="p">,</span> <span class="s1">'languages'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'PHP'</span><span class="p">,</span> <span class="s1">'Ruby'</span><span class="p">]];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_flatten</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// ['Joe', 'PHP', 'Ruby'];
+</span></code></pre></div></div>
+
+<p><strong>array_forget()</strong><br />
+功能：array_forget 函数使用”.”号从嵌套数组中移除给定键值对。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nx">array_forget</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'products.desk'</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; []]
+</span></code></pre></div></div>
+
+<p><strong>array_get()</strong><br />
+功能：array_get 方法使用”.”号从嵌套数组中获取值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_get</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">);</span>
+<span class="c1">// ['price' =&gt; 100]
+</span>
+<span class="c1">// array_get 函数还接收一个默认值，如果指定键不存在的话则返回该默认值：
+</span><span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_get</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'products.desk.discount'</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="c1">// 0
+</span></code></pre></div></div>
+
+<p><strong>array_has()</strong><br />
+功能：array_has 函数使用“.”检查给定数据项是否在数组中存在。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'product'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'desk'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]];</span>
+
+<span class="nv">$hasItem</span> <span class="o">=</span> <span class="nx">array_has</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'product.name'</span><span class="p">);</span>
+<span class="c1">// true
+</span>
+<span class="nv">$hasItems</span> <span class="o">=</span> <span class="nx">array_has</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="p">[</span><span class="s1">'product.price'</span><span class="p">,</span> <span class="s1">'product.discount'</span><span class="p">]);</span>
+<span class="c1">// false
+</span></code></pre></div></div>
+
+<p><strong>array_last()</strong><br />
+功能：array_last 函数返回通过过滤数组的最后一个元素。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">110</span><span class="p">];</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_last</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="nv">$key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$value</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="c1">// 300
+</span>
+<span class="c1">// 我们可以传递一个默认值作为第三个参数到该函数，如果没有值通过真理测试的话该默认值被返回：
+</span><span class="nv">$last</span> <span class="o">=</span> <span class="nx">array_last</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">,</span> <span class="nv">$default</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>array_only()</strong><br />
+功能：array_only 方法只从给定数组中返回指定键值对。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">'orders'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_only</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'price'</span><span class="p">]);</span>
+<span class="c1">// ['name' =&gt; 'Desk', 'price' =&gt; 100]
+</span></code></pre></div></div>
+
+<p><strong>array_pluck()</strong><br />
+功能：array_pluck 方法从数组中返回给定键对应的键值对列表。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">'developer'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Taylor'</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s1">'developer'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Abigail'</span><span class="p">]],</span>
+<span class="p">];</span>
+
+<span class="nv">$names</span> <span class="o">=</span> <span class="nx">array_pluck</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'developer.name'</span><span class="p">);</span>
+<span class="c1">// ['Taylor', 'Abigail']
+</span>
+<span class="c1">// 你还可以指定返回结果的键：
+</span><span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_pluck</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'developer.name'</span><span class="p">,</span> <span class="s1">'developer.id'</span><span class="p">);</span>
+<span class="c1">// [1 =&gt; 'Taylor', 2 =&gt; 'Abigail'];
+</span></code></pre></div></div>
+
+<p><strong>array_prepend()</strong><br />
+功能：array_prepend 函数将数据项推入数组开头。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'one'</span><span class="p">,</span> <span class="s1">'two'</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">,</span> <span class="s1">'four'</span><span class="p">];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_prepend</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'zero'</span><span class="p">);</span>
+<span class="c1">// $array: ['zero', 'one', 'two', 'three', 'four']
+</span>
+<span class="c1">// 如果需要的话还可以指定用于该值的键：
+</span><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_prepend</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'Desk'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">);</span>
+<span class="c1">// ['name' =&gt; 'Desk', 'price' =&gt; 100]
+</span></code></pre></div></div>
+
+<p><strong>array_pull()</strong><br />
+功能：array_pull 函数从数组中返回并移除键值对。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">];</span>
+
+<span class="nv">$name</span> <span class="o">=</span> <span class="nx">array_pull</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">);</span>
+<span class="c1">// $name: Desk
+// $array: ['price' =&gt; 100]
+</span>
+<span class="c1">// 我们还可以传递默认值作为第三个参数到该函数，如果指定键不存在的话返回该值：
+</span><span class="nv">$value</span> <span class="o">=</span> <span class="nx">array_pull</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="nv">$key</span><span class="p">,</span> <span class="nv">$default</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>array_random()</strong><br />
+功能：array_random 函数从数组中返回随机值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+
+<span class="nv">$random</span> <span class="o">=</span> <span class="nx">array_random</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// 4 - (retrieved randomly)
+</span>
+<span class="c1">// 还可以指定返回的数据项数目作为可选的第二个参数，需要注意的是提供这个参数会返回一个数组，即使只返回一个数据项：
+</span><span class="nv">$items</span> <span class="o">=</span> <span class="nx">array_random</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="c1">// [2, 5] - (retrieved randomly)
+</span></code></pre></div></div>
+
+<p><strong>array_set()</strong><br />
+功能：array_set 函数用于在嵌套数组中使用”.”号设置值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nx">array_set</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; ['desk' =&gt; ['price' =&gt; 200]]]
+</span></code></pre></div></div>
+
+<p><strong>array_sort()</strong><br />
+功能：array_sort 函数通过值对数组进行排序。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Desk'</span><span class="p">,</span> <span class="s1">'Table'</span><span class="p">,</span> <span class="s1">'Chair'</span><span class="p">];</span>
+
+<span class="nv">$sorted</span> <span class="o">=</span> <span class="nx">array_sort</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// ['Chair', 'Desk', 'Table']
+</span>
+<span class="c1">// 还可以通过给定闭包的结果对数组进行排序：
+</span><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Table'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Chair'</span><span class="p">],</span>
+<span class="p">];</span>
+
+<span class="nv">$sorted</span> <span class="o">=</span> <span class="nb">array_values</span><span class="p">(</span><span class="nx">array_sort</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$value</span><span class="p">[</span><span class="s1">'name'</span><span class="p">];</span>
+<span class="p">}));</span>
+<span class="cm">/*
+    [
+        ['name' =&gt; 'Chair'],
+        ['name' =&gt; 'Desk'],
+        ['name' =&gt; 'Table'],
+    ]
+*/</span>
+</code></pre></div></div>
+
+<p><strong>array_sort_recursive()</strong><br />
+功能：array_sort_recursive 函数使用 sort 函数对数组进行递归排序。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">'Roman'</span><span class="p">,</span> <span class="s1">'Taylor'</span><span class="p">,</span> <span class="s1">'Li'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'PHP'</span><span class="p">,</span> <span class="s1">'Ruby'</span><span class="p">,</span> <span class="s1">'JavaScript'</span><span class="p">],</span>
+<span class="p">];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_sort_recursive</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="cm">/*
+    [
+        ['Li', 'Roman', 'Taylor'],
+        ['JavaScript', 'PHP', 'Ruby'],
+    ]
+*/</span>
+</code></pre></div></div>
+
+<p><strong>array_where()</strong><br />
+功能：array_where 函数使用给定闭包对数组进行过滤。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="s1">'200'</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">'400'</span><span class="p">,</span> <span class="mi">500</span><span class="p">];</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_where</span><span class="p">(</span><span class="nv">$array</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="nv">$key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">is_string</span><span class="p">(</span><span class="nv">$value</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="c1">// [1 =&gt; 200, 3 =&gt; 400]
+</span></code></pre></div></div>
+
+<p><strong>array_wrap()</strong><br />
+功能：array_wrap 函数将给定值包裹到数组中，如果给定值已经是数组则保持不变。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$string</span> <span class="o">=</span> <span class="s1">'Laravel'</span><span class="p">;</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_wrap</span><span class="p">(</span><span class="nv">$string</span><span class="p">);</span>
+<span class="c1">// ['Laravel']
+</span>
+<span class="c1">// 如果给定值是空的，则返回一个空数组：
+</span><span class="nv">$nothing</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+<span class="nv">$array</span> <span class="o">=</span> <span class="nx">array_wrap</span><span class="p">(</span><span class="nv">$nothing</span><span class="p">);</span>
+<span class="c1">// []
+</span></code></pre></div></div>
+
+<p><strong>data_fill()</strong><br />
+功能：data_fill 函数使用「.」号以嵌套数组或对象的方式设置缺失值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nx">data_fill</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; ['desk' =&gt; ['price' =&gt; 100]]]
+</span>
+<span class="nx">data_fill</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.discount'</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; ['desk' =&gt; ['price' =&gt; 100, 'discount' =&gt; 10]]]
+</span>
+<span class="c1">// 该函数还接收「*」号作为通配符并填充相应目标：
+</span><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk 1'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk 2'</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">];</span>
+
+<span class="nx">data_fill</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.*.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+<span class="cm">/*
+    [
+        'products' =&gt; [
+            ['name' =&gt; 'Desk 1', 'price' =&gt; 100],
+            ['name' =&gt; 'Desk 2', 'price' =&gt; 200],
+        ],
+    ]
+*/</span>
+</code></pre></div></div>
+
+<p><strong>data_get()</strong><br />
+功能：data_get 函数使用「.」号从嵌套数组或对象中获取值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nv">$price</span> <span class="o">=</span> <span class="nx">data_get</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">);</span>
+<span class="c1">// 100
+</span>
+<span class="nx">data_get</span> <span class="nx">函数还接收默认值</span><span class="err">，</span><span class="nx">以便指定键不存在的情况下返回</span><span class="err">：</span>
+<span class="nv">$discount</span> <span class="o">=</span> <span class="nx">data_get</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.discount'</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="c1">// 0
+</span></code></pre></div></div>
+
+<p><strong>data_set()</strong><br />
+功能：data_set 函数使用 「.」号设置嵌套数组或对象的值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nx">data_set</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; ['desk' =&gt; ['price' =&gt; 200]]]
+</span>
+<span class="c1">// 该函数还接收通配符然后设置相应的目标值：
+</span><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk 1'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Desk 2'</span><span class="p">,</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">150</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">];</span>
+
+<span class="nx">data_set</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.*.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+<span class="cm">/*
+    [
+        'products' =&gt; [
+            ['name' =&gt; 'Desk 1', 'price' =&gt; 200],
+            ['name' =&gt; 'Desk 2', 'price' =&gt; 200],
+        ],
+    ]
+*/</span>
+
+<span class="c1">// 默认情况下，任意已存在的值都会被覆盖，如果你想要只设置不存在的值，可以传递 false 作为第三个参数：
+</span><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'products'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'desk'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">]]];</span>
+
+<span class="nx">data_set</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="s1">'products.desk.price'</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="c1">// ['products' =&gt; ['desk' =&gt; ['price' =&gt; 100]]]
+</span></code></pre></div></div>
+
+<p><strong>head()</strong><br />
+head 函数只是简单返回给定数组的第一个元素。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">];</span>
+
+<span class="nv">$first</span> <span class="o">=</span> <span class="nx">head</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// 100
+</span></code></pre></div></div>
+
+<p><strong>last()</strong><br />
+功能：last 函数返回给定数组的最后一个元素。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">];</span>
+
+<span class="nv">$last</span> <span class="o">=</span> <span class="nx">last</span><span class="p">(</span><span class="nv">$array</span><span class="p">);</span>
+<span class="c1">// 300
+</span></code></pre></div></div>
+
+<h3 id="路径函数">路径函数</h3>
+<p><strong>app_path()</strong><br />
+功能：app_path 函数返回 app 目录的绝对路径，你还可以使用 app_path 函数为相对于 app 目录的给定文件生成绝对路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">app_path</span><span class="p">();</span>
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">app_path</span><span class="p">(</span><span class="s1">'Http/Controllers/Controller.php'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>base_path()</strong><br />
+功能：base_path 函数返回项目根目录的绝对路径，你还可以使用 base_path 函数为相对于应用根目录的给定文件生成绝对路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">base_path</span><span class="p">();</span>
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">base_path</span><span class="p">(</span><span class="s1">'vendor/bin'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>config_path()</strong><br />
+功能：config_path 函数返回应用配置目录 config 的绝对路径，还可以使用 config_path 函数在应用配置目录内为给定文件生成完整路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">config_path</span><span class="p">();</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">config_path</span><span class="p">(</span><span class="s1">'app.php'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>database_path()</strong><br />
+功能：database_path 函数返回应用数据库目录 database 的完整路径，还可以使用 database_path 函数在数据库目录内为给定文件生成完整路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">database_path</span><span class="p">();</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">database_path</span><span class="p">(</span><span class="s1">'factories/UserFactory.php'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>mix()</strong>
+功能：mix 函数返回带有版本号的Mix文件路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">mix</span><span class="p">(</span><span class="nv">$file</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>public_path()</strong><br />
+功能：public_path 函数返回 public 目录的绝对路径，还可以使用 public_path 函数在 public 目录下为给定文件生成完整路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">public_path</span><span class="p">();</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">public_path</span><span class="p">(</span><span class="s1">'css/app.css'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>resource_path()</strong><br />
+功能：resource_path 函数返回 resources 目录的绝对路径，还可以使用 resources 函数在 resources 目录下为给定文件生成完整路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">resource_path</span><span class="p">();</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">resource_path</span><span class="p">(</span><span class="s1">'assets/sass/app.scss'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>storage_path()</strong>
+功能：storage_path 函数返回 storage 目录的绝对路径， 还可以使用 storage_path 函数在 storage 目录下为给定文件生成完整路径。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$path</span> <span class="o">=</span> <span class="nx">storage_path</span><span class="p">();</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nx">storage_path</span><span class="p">(</span><span class="s1">'app/file.txt'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="字符串函数">字符串函数</h3>
+<p><strong>__()</strong><br />
+功能：__ 函数会使用本地化文件翻译给定翻译字符串或翻译键。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">__</span><span class="p">(</span><span class="s1">'Welcome to our application'</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="nx">__</span><span class="p">(</span><span class="s1">'messages.welcome'</span><span class="p">);</span>
+
+<span class="c1">// 如果给定翻译字符串或键不存在，__ 函数将会返回给定值。  
+// 所以，使用上面的例子，如果翻译键不存在的话 __ 函数将会返回 messages.welcome。
+</span></code></pre></div></div>
+
+<p><strong>camel_case()</strong><br />
+功能：camel_case 函数将给定字符串转化为符合驼峰式命名规则的字符串。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$camel</span> <span class="o">=</span> <span class="nx">camel_case</span><span class="p">(</span><span class="s1">'foo_bar'</span><span class="p">);</span>
+<span class="c1">// fooBar
+</span></code></pre></div></div>
+
+<p><strong>class_basename()</strong><br />
+功能：class_basename 返回给定类移除命名空间后的类名。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$class</span> <span class="o">=</span> <span class="nx">class_basename</span><span class="p">(</span><span class="s1">'Foo\Bar\Baz'</span><span class="p">);</span>
+<span class="c1">// Baz
+</span></code></pre></div></div>
+
+<p><strong>e()</strong><br />
+功能：e 函数在给定字符串上运行 htmlentities（double_encode 选项设置为 false）。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">e</span><span class="p">(</span><span class="s1">'&lt;html&gt;foo&lt;/html&gt;'</span><span class="p">);</span>
+<span class="c1">// &amp;lt;html&amp;gt;foo&amp;lt;/html&amp;gt;
+</span></code></pre></div></div>
+
+<p><strong>ends_with()</strong><br />
+功能：ends_with 函数判断给定字符串是否以给定值结尾。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">ends_with</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">);</span>
+<span class="c1">// true
+</span></code></pre></div></div>
+
+<p><strong>kebab_case()</strong><br />
+功能：kebab_case 函数将给定字符串转化为短划线分隔的字符串。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$converted</span> <span class="o">=</span> <span class="nx">kebab_case</span><span class="p">(</span><span class="s1">'fooBar'</span><span class="p">);</span>
+<span class="c1">// foo-bar
+</span></code></pre></div></div>
+
+<p><strong>preg_replace_array()</strong><br />
+功能：preg_replace_array 函数使用数组替换字符串序列中的给定模式。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$string</span> <span class="o">=</span> <span class="s1">'The event will take place between :start and :end'</span><span class="p">;</span>
+
+<span class="nv">$replaced</span> <span class="o">=</span> <span class="nx">preg_replace_array</span><span class="p">(</span><span class="s1">'/:[a-z_]+/'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'8:30'</span><span class="p">,</span> <span class="s1">'9:00'</span><span class="p">],</span> <span class="nv">$string</span><span class="p">);</span>
+<span class="c1">// The event will take place between 8:30 and 9:00
+</span></code></pre></div></div>
+
+<p><strong>snake_case()</strong><br />
+功能：snake_case 函数将给定字符串转化为下划线分隔的字符串。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$snake</span> <span class="o">=</span> <span class="nx">snake_case</span><span class="p">(</span><span class="s1">'fooBar'</span><span class="p">);</span>
+<span class="c1">// foo_bar
+</span></code></pre></div></div>
+
+<p><strong>starts_with()</strong><br />
+功能：starts_with 函数判断给定字符串是否以给定值开头。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$result</span> <span class="o">=</span> <span class="nx">starts_with</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="s1">'This'</span><span class="p">);</span>
+<span class="c1">// true
+</span></code></pre></div></div>
+
+<p><strong>str_after()</strong><br />
+功能：str_after 函数返回字符串中给定值之后的所有字符。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$slice</span> <span class="o">=</span> <span class="nx">str_after</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="s1">'This is'</span><span class="p">);</span>
+<span class="c1">// ' my name'
+</span></code></pre></div></div>
+
+<p><strong>str_before()</strong><br />
+功能：str_before 函数返回字符串给定值之前的所有字符。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$slice</span> <span class="o">=</span> <span class="nx">str_before</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="s1">'my name'</span><span class="p">);</span>
+<span class="c1">// 'This is '
+</span></code></pre></div></div>
+
+<p><strong>str_contains()</strong> <br />
+功能：str_contains 函数判断给定字符串是否包含给定值（大小写敏感）。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$contains</span> <span class="o">=</span> <span class="nx">str_contains</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="s1">'my'</span><span class="p">);</span>
+<span class="c1">// true
+</span>
+<span class="c1">// 还可以传递数组值判断给定字符串是否包含数组中的任意值：
+</span><span class="nv">$contains</span> <span class="o">=</span> <span class="nx">str_contains</span><span class="p">(</span><span class="s1">'This is my name'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'my'</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">]);</span>
+<span class="c1">// true
+</span></code></pre></div></div>
+
+<p><strong>str_finish()</strong><br />
+功能：str_finish 函数添加给定值单个实例到字符串结尾 —— 如果原字符串不以给定值结尾的话。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$adjusted</span> <span class="o">=</span> <span class="nx">str_finish</span><span class="p">(</span><span class="s1">'this/string'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">);</span>
+<span class="c1">// this/string/
+</span>
+<span class="nv">$adjusted</span> <span class="o">=</span> <span class="nx">str_finish</span><span class="p">(</span><span class="s1">'this/string/'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">);</span>
+<span class="c1">// this/string/
+</span></code></pre></div></div>
+
+<p><strong>str_is()</strong><br />
+功能：str_is 函数判断给定字符串是否与给定模式匹配，星号可用于表示通配符。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">str_is</span><span class="p">(</span><span class="s1">'foo*'</span><span class="p">,</span> <span class="s1">'foobar'</span><span class="p">);</span>
+<span class="c1">// true
+</span>
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">str_is</span><span class="p">(</span><span class="s1">'baz*'</span><span class="p">,</span> <span class="s1">'foobar'</span><span class="p">);</span>
+<span class="c1">// false
+</span></code></pre></div></div>
+
+<p><strong>str_limit()</strong><br />
+功能：str_limit 函数以指定长度截断字符串。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$truncated</span> <span class="o">=</span> <span class="nx">str_limit</span><span class="p">(</span><span class="s1">'The quick brown fox jumps over the lazy dog'</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+<span class="c1">// The quick brown fox...
+</span>
+<span class="c1">// 还可以传递第三个参数来改变字符串末尾字符：
+</span><span class="nv">$truncated</span> <span class="o">=</span> <span class="nx">str_limit</span><span class="p">(</span><span class="s1">'The quick brown fox jumps over the lazy dog'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">' (...)'</span><span class="p">);</span>
+<span class="c1">// The quick brown fox (...)
+</span></code></pre></div></div>
+
+<p><strong>str_plural()</strong><br />
+功能：str_plural 函数将字符串转化为复数形式，该函数当前只支持英文。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$plural</span> <span class="o">=</span> <span class="nx">str_plural</span><span class="p">(</span><span class="s1">'car'</span><span class="p">);</span>
+<span class="c1">// cars
+</span>
+<span class="nv">$plural</span> <span class="o">=</span> <span class="nx">str_plural</span><span class="p">(</span><span class="s1">'child'</span><span class="p">);</span>
+<span class="c1">// children
+</span>
+<span class="c1">// 还可以传递整型数据作为第二个参数到该函数以获取字符串的单数或复数形式：
+</span><span class="nv">$plural</span> <span class="o">=</span> <span class="nx">str_plural</span><span class="p">(</span><span class="s1">'child'</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="c1">// children
+</span>
+<span class="nv">$plural</span> <span class="o">=</span> <span class="nx">str_plural</span><span class="p">(</span><span class="s1">'child'</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="c1">// child
+</span></code></pre></div></div>
+
+<p><strong>str_random()</strong><br />
+功能：str_random 函数通过指定长度生成随机字符串，该函数使用了PHP的 random_bytes 函数。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$string</span> <span class="o">=</span> <span class="nx">str_random</span><span class="p">(</span><span class="mi">40</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>str_replace_array()</strong><br />
+功能：str_replace_array 函数使用数组在字符串序列中替换给定值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$string</span> <span class="o">=</span> <span class="s1">'The event will take place between ? and ?'</span><span class="p">;</span>
+
+<span class="nv">$replaced</span> <span class="o">=</span> <span class="nx">str_replace_array</span><span class="p">(</span><span class="s1">'?'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'8:30'</span><span class="p">,</span> <span class="s1">'9:00'</span><span class="p">],</span> <span class="nv">$string</span><span class="p">);</span>
+<span class="c1">// The event will take place between 8:30 and 9:00
+</span></code></pre></div></div>
+
+<p><strong>str_replace_first()</strong><br />
+功能：str_replace_first 函数会替换字符串中第一次出现的值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$replaced</span> <span class="o">=</span> <span class="nx">str_replace_first</span><span class="p">(</span><span class="s1">'the'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'the quick brown fox jumps over the lazy dog'</span><span class="p">);</span>
+<span class="c1">// a quick brown fox jumps over the lazy dog
+</span></code></pre></div></div>
+
+<p><strong>str_replace_last()</strong><br />
+功能：str_replace_last 函数会替换字符串中最后一次出现的值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$replaced</span> <span class="o">=</span> <span class="nx">str_replace_last</span><span class="p">(</span><span class="s1">'the'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'the quick brown fox jumps over the lazy dog'</span><span class="p">);</span>
+<span class="c1">// the quick brown fox jumps over a lazy dog
+</span></code></pre></div></div>
+
+<p><strong>str_singular()</strong><br />
+功能：str_singular 函数将字符串转化为单数形式，该函数目前只支持英文。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$singular</span> <span class="o">=</span> <span class="nx">str_singular</span><span class="p">(</span><span class="s1">'cars'</span><span class="p">);</span>
+<span class="c1">// car
+</span>
+<span class="nv">$singular</span> <span class="o">=</span> <span class="nx">str_singular</span><span class="p">(</span><span class="s1">'children'</span><span class="p">);</span>
+<span class="c1">// child
+</span></code></pre></div></div>
+
+<p><strong>str_slug()</strong><br />
+功能：str_slug 函数将给定字符串生成 URL 友好的格式。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$title</span> <span class="o">=</span> <span class="nx">str_slug</span><span class="p">(</span><span class="s2">"Laravel 5 Framework"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">);</span>
+<span class="c1">// laravel-5-framework
+</span></code></pre></div></div>
+
+<p><strong>str_start()</strong><br />
+功能：如果字符串没有以给定值开头的话 str_start 函数会将给定值添加到字符串最前面。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$adjusted</span> <span class="o">=</span> <span class="nx">str_start</span><span class="p">(</span><span class="s1">'this/string'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">);</span>
+<span class="c1">// /this/string
+</span>
+<span class="nv">$adjusted</span> <span class="o">=</span> <span class="nx">str_start</span><span class="p">(</span><span class="s1">'/this/string/'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">);</span>
+<span class="c1">// /this/string
+</span></code></pre></div></div>
+
+<p><strong>studly_case()</strong><br />
+功能：studly_case 函数将给定字符串转化为单词开头字母大写的格式。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">studly_case</span><span class="p">(</span><span class="s1">'foo_bar'</span><span class="p">);</span>
+<span class="c1">// FooBar
+</span></code></pre></div></div>
+
+<p><strong>title_case()</strong><br />
+功能：title_case 函数将字符串转化为 Title 形式。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$title</span> <span class="o">=</span> <span class="nx">title_case</span><span class="p">(</span><span class="s1">'a nice title uses the correct case'</span><span class="p">);</span>
+<span class="c1">// A Nice Title Uses The Correct Case
+</span></code></pre></div></div>
+
+<p><strong>trans()</strong><br />
+功能：trans 函数使用本地文件翻译给定翻译键。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">trans</span><span class="p">(</span><span class="s1">'messages.welcome'</span><span class="p">);</span>
+<span class="c1">// 如果指定翻译键不存在，trans 函数会返回给定键。
+// 所以，以上面的示例为例，如果翻译键不存在，trans 函数会返回 messages.welcome。
+</span></code></pre></div></div>
+
+<p><strong>trans_choice()</strong><br />
+功能：trans_choice 函数翻译带拐点的给定翻译键。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">trans_choice</span><span class="p">(</span><span class="s1">'messages.notifications'</span><span class="p">,</span> <span class="nv">$unreadCount</span><span class="p">);</span>
+<span class="c1">// 如果指定的翻译键不存在，trans_choice 函数会将其返回。
+// 所以，以上面的示例为例，如果指定翻译键不存在 trans_choice 函数会返回 messages.notifications。
+</span></code></pre></div></div>
+
+<h3 id="url函数">URL函数</h3>
+<p><strong>action()</strong><br />
+功能：action 函数为给定控制器动作生成 URL，你不需要传递完整的命名空间到该控制器，传递相对于命名空间 App\Http\Controllers 的类名即可。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$url</span> <span class="o">=</span> <span class="nx">action</span><span class="p">(</span><span class="s1">'HomeController@index'</span><span class="p">);</span>
+
+<span class="c1">// 如果该方法接收路由参数，你可以将其作为第二个参数传递进来：
+</span><span class="nv">$url</span> <span class="o">=</span> <span class="nx">action</span><span class="p">(</span><span class="s1">'UserController@profile'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>asset()</strong><br />
+功能：asset 函数使用当前请求的 scheme（HTTP 或 HTTPS）为前端资源生成一个 URL。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$url</span> <span class="o">=</span> <span class="nx">asset</span><span class="p">(</span><span class="s1">'img/photo.jpg'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>secure_asset()</strong><br />
+功能：secure_asset 函数使用 HTTPS 为前端资源生成一个 URL。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">secure_asset</span><span class="p">(</span><span class="s1">'foo/bar.zip'</span><span class="p">,</span> <span class="nv">$title</span><span class="p">,</span> <span class="nv">$attributes</span> <span class="o">=</span> <span class="p">[]);</span>
+</code></pre></div></div>
+
+<p><strong>route()</strong><br />
+功能：route 函数为给定命名路由生成一个URL。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$url</span> <span class="o">=</span> <span class="nx">route</span><span class="p">(</span><span class="s1">'routeName'</span><span class="p">);</span>
+
+<span class="c1">// 如果该路由接收参数，你可以将其作为第二个参数传递进来：
+</span><span class="nv">$url</span> <span class="o">=</span> <span class="nx">route</span><span class="p">(</span><span class="s1">'routeName'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+
+<span class="c1">// 默认情况下，route 函数生成的是绝对 URL，如果你想要生成一个相对 URL，可以传递 false 作为第三个参数：
+</span><span class="nv">$url</span> <span class="o">=</span> <span class="nx">route</span><span class="p">(</span><span class="s1">'routeName'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">],</span> <span class="kc">false</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>secure_url()</strong><br />
+功能：secure_url 函数为给定路径生成完整的 HTTPS URL。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">secure_url</span><span class="p">(</span><span class="s1">'user/profile'</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="nx">secure_url</span><span class="p">(</span><span class="s1">'user/profile'</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>url()</strong><br />
+功能：url 函数为给定路径生成完整URL。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nx">url</span><span class="p">(</span><span class="s1">'user/profile'</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="nx">url</span><span class="p">(</span><span class="s1">'user/profile'</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+
+<span class="c1">// 如果没有提供路径，将会返回 Illuminate\Routing\UrlGenerator 实例：
+</span><span class="k">echo</span> <span class="nx">url</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">();</span>
+<span class="k">echo</span> <span class="nx">url</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">full</span><span class="p">();</span>
+<span class="k">echo</span> <span class="nx">url</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">previous</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="其它函数">其它函数</h3>
+<p><strong>abort()</strong><br />
+功能：abort 函数会抛出一个被异常处理器渲染的 HTTP 异常。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">);</span>
+
+<span class="c1">// 还可以提供异常响应文本以及自定义响应头：
+</span><span class="nx">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="s1">'Unauthorized.'</span><span class="p">,</span> <span class="nv">$headers</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>abort_if()</strong><br />
+功能：abort_if 函数在给定布尔表达式为 true 时抛出 HTTP 异常。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abort_if</span><span class="p">(</span><span class="o">!</span> <span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span> <span class="mi">403</span><span class="p">);</span>
+<span class="c1">// 和 abort 一样，你还可以传递异常响应文本作为第三个参数以及自定义响应头数组作为第四个参数。
+</span></code></pre></div></div>
+
+<p><strong>abort_unless()</strong><br />
+功能：abort_unless 函数在给定布尔表达式为 false 时抛出 HTTP 异常。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abort_unless</span><span class="p">(</span><span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span> <span class="mi">403</span><span class="p">);</span>
+
+<span class="c1">// 和 abort 一样，你还可以传递异常响应文本作为第三个参数以及自定义响应头数组作为第四个参数。
+</span></code></pre></div></div>
+
+<p><strong>app()</strong><br />
+功能：app 函数返回服务容器实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$container</span> <span class="o">=</span> <span class="nx">app</span><span class="p">();</span>
+
+<span class="c1">// 还可以传递类或接口名从容器中解析它：
+</span><span class="nv">$api</span> <span class="o">=</span> <span class="nx">app</span><span class="p">(</span><span class="s1">'HelpSpot\API'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>auth()</strong><br />
+功能：auth 函数返回一个认证器实例，为方便起见你可以用其取代 Auth 门面。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$user</span> <span class="o">=</span> <span class="nx">auth</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">();</span>
+
+<span class="c1">// 如果需要的话还可以指定你想要使用的 guard 实例：
+</span><span class="nv">$user</span> <span class="o">=</span> <span class="nx">auth</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p><strong>back()</strong><br />
+功能：back 函数生成重定向响应到用户前一个访问页面。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">back</span><span class="p">(</span><span class="nv">$status</span> <span class="o">=</span> <span class="mi">302</span><span class="p">,</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">$fallback</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">back</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p><strong>bcrypt()</strong><br />
+功能：bcrypt 函数使用 Bcrypt 对给定值进行哈希，你可以用其替代 Hash 门面。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$password</span> <span class="o">=</span> <span class="nx">bcrypt</span><span class="p">(</span><span class="s1">'my-secret-password'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>broadcast()</strong><br />
+功能：broadcast 函数广播给定事件到监听器。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">broadcast</span><span class="p">(</span><span class="k">new</span> <span class="nx">UserRegistered</span><span class="p">(</span><span class="nv">$user</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p><strong>blank()</strong><br />
+功能：blank 函数返回给定值是否为空。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">blank</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="nx">blank</span><span class="p">(</span><span class="s1">'   '</span><span class="p">);</span>
+<span class="nx">blank</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="nx">blank</span><span class="p">(</span><span class="nx">collect</span><span class="p">());</span>
+<span class="c1">// true
+</span>
+<span class="nx">blank</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nx">blank</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">blank</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="c1">// false
+</span>
+<span class="c1">// 与 blank 相对的是 filled 函数。
+</span></code></pre></div></div>
+
+<p><strong>cache()</strong><br />
+功能：cache 函数可以用于从缓存中获取值，如果给定 key 在缓存中不存在，可选的默认值会被返回。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">cache</span><span class="p">(</span><span class="s1">'key'</span><span class="p">);</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">cache</span><span class="p">(</span><span class="s1">'key'</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">);</span>
+
+<span class="c1">// 你可以通过传递数组键值对到函数来添加数据项到缓存。还需要传递缓存有效期（分钟数; 注意：从laravel5.8开始改成了秒数）：
+</span><span class="nx">cache</span><span class="p">([</span><span class="s1">'key'</span> <span class="o">=&gt;</span> <span class="s1">'value'</span><span class="p">],</span> <span class="mi">5</span><span class="p">);</span>
+
+<span class="nx">cache</span><span class="p">([</span><span class="s1">'key'</span> <span class="o">=&gt;</span> <span class="s1">'value'</span><span class="p">],</span> <span class="nx">now</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">addSeconds</span><span class="p">(</span><span class="mi">10</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p><strong>class_uses_recursive()</strong><br />
+功能：class_uses_recursive 函数某个类所使用的所有 trait，包括子类使用的。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$traits</span> <span class="o">=</span> <span class="nx">class_uses_recursive</span><span class="p">(</span><span class="nx">App\User</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>collect()</strong><br />
+功能：collect 函数会根据提供的数据项创建一个集合。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$collection</span> <span class="o">=</span> <span class="nx">collect</span><span class="p">([</span><span class="s1">'taylor'</span><span class="p">,</span> <span class="s1">'abigail'</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>config()</strong><br />
+功能：config 函数获取配置变量的值，配置值可以通过使用”.”号访问，包含文件名以及你想要访问的选项。如果配置选项不存在的话默认值将会被指定并返回。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">config</span><span class="p">(</span><span class="s1">'app.timezone'</span><span class="p">);</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">config</span><span class="p">(</span><span class="s1">'app.timezone'</span><span class="p">,</span> <span class="nv">$default</span><span class="p">);</span>
+
+<span class="c1">// 辅助函数 config 还可以用于在运行时通过传递键值对数组设置配置变量值：
+</span><span class="nx">config</span><span class="p">([</span><span class="s1">'app.debug'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>cookie()</strong><br />
+功能：cookie 函数可用于创建一个新的 Cookie 实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$cookie</span> <span class="o">=</span> <span class="nx">cookie</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">,</span> <span class="nv">$minutes</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>csrf_field()</strong><br />
+功能：csrf_field 函数生成一个包含 CSRF 令牌值的 HTML 隐藏字段，例如，使用Blade语法示例如下。<br />
+用法：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="p">{{</span> <span class="nx">csrf_field</span><span class="p">()</span> <span class="p">}}</span></code></pre></figure>
+
+<p><strong>csrf_token()</strong><br />
+功能：csrf_token 函数获取当前 CSRF 令牌的值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$token</span> <span class="o">=</span> <span class="nx">csrf_token</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p><strong>dd()</strong><br />
+功能：dd 函数输出给定变量值并终止脚本执行。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dd</span><span class="p">(</span><span class="nv">$value</span><span class="p">);</span>
+
+<span class="nx">dd</span><span class="p">(</span><span class="nv">$value1</span><span class="p">,</span> <span class="nv">$value2</span><span class="p">,</span> <span class="nv">$value3</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+
+<span class="c1">// 如果你不想停止脚本的运行，可以使用 dump 函数。
+</span></code></pre></div></div>
+
+<p><strong>decrypt()</strong><br />
+功能：decrypt 函数使用 Laravel 加密器对给定值进行解密。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$decrypted</span> <span class="o">=</span> <span class="nx">decrypt</span><span class="p">(</span><span class="nv">$encrypted_value</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>dispatch()</strong><br />
+功能：dispatch 函数推送一个新的任务到 Laravel 任务队列。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dispatch</span><span class="p">(</span><span class="k">new</span> <span class="nx">App\Jobs\SendEmails</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>dispatch_now()</strong><br />
+功能：dispatch_now 函数会立即运行给定任务并返回 handle 方法处理结果。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$result</span> <span class="o">=</span> <span class="nx">dispatch_now</span><span class="p">(</span><span class="k">new</span> <span class="nx">App\Jobs\SendEmails</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>dump()</strong><br />
+功能：dump 函数会打印给定变量。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dump</span><span class="p">(</span><span class="nv">$value</span><span class="p">);</span>
+
+<span class="nx">dump</span><span class="p">(</span><span class="nv">$value1</span><span class="p">,</span> <span class="nv">$value2</span><span class="p">,</span> <span class="nv">$value3</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+
+<span class="c1">// 如果你想要在打印变量后终止脚本执行，可以使用 dd 函数替代之。
+</span></code></pre></div></div>
+
+<p><strong>encrypt()</strong><br />
+功能：encrypt 函数使用 Laravel 加密器加密给定字符串。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$encrypted</span> <span class="o">=</span> <span class="nx">encrypt</span><span class="p">(</span><span class="nv">$unencrypted_value</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>env()</strong><br />
+功能：env 函数获取环境变量值或返回默认值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$env</span> <span class="o">=</span> <span class="nx">env</span><span class="p">(</span><span class="s1">'APP_ENV'</span><span class="p">);</span>
+
+<span class="c1">// 如果变量不存在返回默认值...
+</span><span class="nv">$env</span> <span class="o">=</span> <span class="nx">env</span><span class="p">(</span><span class="s1">'APP_ENV'</span><span class="p">,</span> <span class="s1">'production'</span><span class="p">);</span>
+</code></pre></div></div>
+<blockquote>
+  <p>注：如果你在开发过程中执行了 config:cache 命令，需要确保只在配置文件中调用了 env，一旦配置被缓存起来，.env 文件将不会被加载，因此所有对 env 函数的调用都会返回 null。</p>
+</blockquote>
+
+<p><strong>event()</strong><br />
+功能：event 函数分发给定事件到对应监听器。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">event</span><span class="p">(</span><span class="k">new</span> <span class="nx">UserRegistered</span><span class="p">(</span><span class="nv">$user</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p><strong>factory()</strong><br />
+功能：factory 函数为给定类、名称和数量创建模型工厂构建器，可用于测试或数据填充。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$user</span> <span class="o">=</span> <span class="nx">factory</span><span class="p">(</span><span class="nx">App\User</span><span class="o">::</span><span class="na">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">make</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p><strong>filled()</strong><br />
+功能：filled 函数会返回给定值是否不为空。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">filled</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nx">filled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">filled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="c1">// true
+</span>
+<span class="nx">filled</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="nx">filled</span><span class="p">(</span><span class="s1">'   '</span><span class="p">);</span>
+<span class="nx">filled</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="nx">filled</span><span class="p">(</span><span class="nx">collect</span><span class="p">());</span>
+<span class="c1">// false
+</span>
+<span class="c1">// 与 filled 相对的是 blank 函数。
+</span></code></pre></div></div>
+
+<p><strong>info()</strong><br />
+功能：info 函数会记录信息到日志系统。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">info</span><span class="p">(</span><span class="s1">'Some helpful information!'</span><span class="p">);</span>
+
+<span class="c1">// 还可以传递上下文数据数组到该函数：
+</span><span class="nx">info</span><span class="p">(</span><span class="s1">'User login attempt failed.'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>logger()</strong><br />
+功能：logger 函数可以用于记录 debug 级别的日志消息。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">logger</span><span class="p">(</span><span class="s1">'Debug message'</span><span class="p">);</span>
+
+<span class="c1">// 同样，也可以传递上下文数据数组到该函数：
+</span><span class="nx">logger</span><span class="p">(</span><span class="s1">'User has logged in.'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">]);</span>
+
+<span class="c1">// 如果没有值传入该函数的话会返回logger实例：
+</span><span class="nx">logger</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="s1">'You are not allowed here.'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>method_field()</strong><br />
+功能：method_field 函数生成包含 HTTP 请求方法的 HTML hidden 表单字段。<br />
+用法：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">"POST"</span><span class="nt">&gt;</span>
+    {{ method_field('DELETE') }}
+<span class="nt">&lt;/form&gt;</span> </code></pre></figure>
+
+<p><strong>now()</strong><br />
+功能：now 函数为当前时间创建一个新的 Illuminate\Support\Carbon 实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$now</span> <span class="o">=</span> <span class="nx">now</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p><strong>old()</strong><br />
+功能：old 函数获取存放在一次性 Session 中的值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">old</span><span class="p">(</span><span class="s1">'value'</span><span class="p">);</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">old</span><span class="p">(</span><span class="s1">'value'</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>optional()</strong><br />
+功能：optional 函数接收任意参数并允许你访问对象上的属性或调用其方法。如果给定的对象为空，属性或方法调用返回 null 而不是出错。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">optional</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">address</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">street</span><span class="p">;</span>
+
+<span class="p">{</span><span class="o">!!</span> <span class="nx">old</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="nx">optional</span><span class="p">(</span><span class="nv">$user</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">)</span> <span class="o">!!</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>policy()</strong><br />
+功能：policy 函数为给定模型类获取对应策略实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$policy</span> <span class="o">=</span> <span class="nx">policy</span><span class="p">(</span><span class="nx">App\User</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>redirect()</strong><br />
+功能：redirect 函数返回 HTTP 重定向响应，如果不带参数的话返回重定向器示例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">redirect</span><span class="p">(</span><span class="nv">$to</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="nv">$status</span> <span class="o">=</span> <span class="mi">302</span><span class="p">,</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">$secure</span> <span class="o">=</span> <span class="kc">null</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">redirect</span><span class="p">(</span><span class="s1">'/home'</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">redirect</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">route</span><span class="p">(</span><span class="s1">'route.name'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>report()</strong><br />
+功能：report 函数会使用异常处理器的 report 方法报告异常。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">report</span><span class="p">(</span><span class="nv">$e</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>request()</strong><br />
+功能：request 函数返回当前请求实例或者获取一个输入项。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nx">request</span><span class="p">();</span>
+
+<span class="nv">$value</span> <span class="o">=</span> <span class="nx">request</span><span class="p">(</span><span class="s1">'key'</span><span class="p">,</span> <span class="nv">$default</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>rescue()</strong><br />
+功能：rescue 函数可以执行给定闭包并捕获执行过程中的所有异常。这些捕获的异常会发送给异常处理器的 report 方法，不过，请求会继续执行。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">rescue</span><span class="p">(</span><span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">method</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// 还可以传递第二个参数到 rescue 函数，作为在执行闭包出现异常的情况下返回的默认值：
+</span><span class="k">return</span> <span class="nx">rescue</span><span class="p">(</span><span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">method</span><span class="p">();</span>
+<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">rescue</span><span class="p">(</span><span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">method</span><span class="p">();</span>
+<span class="p">},</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">failure</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><strong>resolve()</strong><br />
+功能：resolve 函数使用服务容器将给定类或接口名解析为对应绑定实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$api</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="s1">'HelpSpot\API'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>response()</strong><br />
+功能：response 函数创建一个响应实例或者获取响应工厂实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">response</span><span class="p">(</span><span class="s1">'Hello World'</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nv">$headers</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">response</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">json</span><span class="p">([</span><span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'bar'</span><span class="p">],</span> <span class="mi">200</span><span class="p">,</span> <span class="nv">$headers</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>retry()</strong><br />
+功能：retry 函数尝试执行给定回调直到达到最大执行次数，如果回调没有抛出异常，会返回对应的返回值。如果回调抛出了异常，会自动重试。如果超出最大执行次数，异常会被抛出。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">retry</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Attempt 5 times while resting 100ms in between attempts...
+</span><span class="p">},</span> <span class="mi">100</span><span class="p">);</span>    
+</code></pre></div></div>
+
+<p><strong>session()</strong><br />
+功能：session 函数可以用于获取/设置 Session 值。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$value</span> <span class="o">=</span> <span class="nx">session</span><span class="p">(</span><span class="s1">'key'</span><span class="p">);</span>
+
+<span class="c1">// 可以通过传递键值对数组到该函数的方式设置 Session 值：
+</span><span class="nx">session</span><span class="p">([</span><span class="s1">'chairs'</span> <span class="o">=&gt;</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">'instruments'</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">]);</span>
+
+<span class="c1">// 如果没有传入参数到 session 函数则返回 Session 存储器对象实例：
+</span><span class="nv">$value</span> <span class="o">=</span> <span class="nx">session</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'key'</span><span class="p">);</span>
+
+<span class="nx">session</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">put</span><span class="p">(</span><span class="s1">'key'</span><span class="p">,</span> <span class="nv">$value</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>tap()</strong><br />
+功能：tap 函数接收两个参数：任意的 $value 和一个闭包。$value 会被传递到闭包然后通过 tap 函数返回。闭包返回值与函数返回值不相关。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$user</span> <span class="o">=</span> <span class="nx">tap</span><span class="p">(</span><span class="nx">User</span><span class="o">::</span><span class="na">first</span><span class="p">(),</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$user</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span> <span class="o">=</span> <span class="s1">'taylor'</span><span class="p">;</span>
+
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// 如果没有传入闭包到 tap 函数，那么你可以调用给定 $value 上面的任意方法，调用方法的返回值永远都是 $value，不管在方法中定义的返回值是什么。
+// 例如，Eloquent update 方法通常返回一个整型，不过，我们可以通过 tap 函数强制该方法返回模型本身：
+</span><span class="nv">$user</span> <span class="o">=</span> <span class="nx">tap</span><span class="p">(</span><span class="nv">$user</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">([</span>
+    <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span>
+    <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="p">,</span>
+<span class="p">]);</span>
+</code></pre></div></div>
+
+<p><strong>today()</strong><br />
+功能：today 函数会为当前日期创建一个新的 Illuminate\Support\Carbon 实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$today</span> <span class="o">=</span> <span class="nx">today</span><span class="p">();</span>
+
+<span class="nx">throw_if</span><span class="p">()</span>
+<span class="nx">throw_if</span> <span class="nx">函数会在给定布尔表达式为</span> <span class="kc">true</span> <span class="nx">的情况下抛出给定异常</span><span class="err">：</span>
+<span class="nx">throw_if</span><span class="p">(</span><span class="o">!</span> <span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span> <span class="nx">AuthorizationException</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+<span class="nx">throw_if</span><span class="p">(</span>
+    <span class="o">!</span> <span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span>
+    <span class="nx">AuthorizationException</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+    <span class="s1">'You are not allowed to access this page'</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>throw_unless()</strong><br />
+功能：throw_unless 函数会在给定布尔表达式为 false 的情况下抛出给定异常。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">throw_unless</span><span class="p">(</span><span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span> <span class="nx">AuthorizationException</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+<span class="nx">throw_unless</span><span class="p">(</span>
+    <span class="nx">Auth</span><span class="o">::</span><span class="na">user</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">isAdmin</span><span class="p">(),</span>
+    <span class="nx">AuthorizationException</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+    <span class="s1">'You are not allowed to access this page'</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>trait_uses_recursive()</strong><br />
+功能：trait_uses_recursive 函数会返回某个 trait 使用的所有 trait。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$traits</span> <span class="o">=</span> <span class="nx">trait_uses_recursive</span><span class="p">(</span><span class="nx">\Illuminate\Notifications\Notifiable</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>transform()</strong><br />
+功能：transform 函数会在给定值不为空的情况下执行闭包并返回闭包结果。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$callback</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$value</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">transform</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">);</span>
+<span class="c1">// 10
+</span>
+<span class="c1">// 默认值或者闭包可以以第三个参数的方式传递给该函数，默认值在给定值为空的情况下返回：
+</span><span class="nv">$result</span> <span class="o">=</span> <span class="nx">transform</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">,</span> <span class="s1">'The value is blank'</span><span class="p">);</span>
+<span class="c1">// The value is blank
+</span></code></pre></div></div>
+
+<p><strong>validator()</strong><br />
+validator 函数通过给定参数创建一个新的验证器实例，为方便起见可以使用它代替 Validator 门面。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$validator</span> <span class="o">=</span> <span class="nx">validator</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$rules</span><span class="p">,</span> <span class="nv">$messages</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>value()</strong><br />
+value 函数返回给定的值，不过，如果你传递一个闭包到该函数，该闭包将会被执行并返回执行结果。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$result</span> <span class="o">=</span> <span class="nx">value</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="c1">// true
+</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">value</span><span class="p">(</span><span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="c1">// false
+</span></code></pre></div></div>
+
+<p><strong>view()</strong><br />
+功能：view 函数获取一个视图实例。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">view</span><span class="p">(</span><span class="s1">'auth.login'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>with()</strong><br />
+功能：with 函数返回给定的值，如果第二个参数是闭包，则返回闭包执行结果。<br />
+用法：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$callback</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">is_numeric</span><span class="p">(</span><span class="nv">$value</span><span class="p">))</span> <span class="o">?</span> <span class="nv">$value</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">with</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">);</span>
+<span class="c1">// 10
+</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">with</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">);</span>
+<span class="c1">// 0
+</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">with</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+<span class="c1">// 5
+</span></code></pre></div></div>
+
+<p>想要了解更多相关技术，快来关注我吧，聪明出于勤奋，天才在于积累，让我们成为更优秀的自己！！！</p>
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#操作系统">操作系统</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  <a href="/tags/#Linux">Linux</a>
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/" data-title="Laravel框架下的php辅助函数 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache%E6%98%AF%E6%80%8E%E4%B9%88%E4%B8%80%E5%9B%9E%E4%BA%8B/" title="Opcache是怎么一回事">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Opcache是怎么一回事</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/"  title="Alpine系统下的apk指令">
+ <strong>下一篇：</strong><br/> 
+ <span>Alpine系统下的apk指令
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>5</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Cache" title="Cache">Cache<sup>2</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
