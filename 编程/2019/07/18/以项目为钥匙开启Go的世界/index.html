@@ -1,0 +1,2017 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>以项目为钥匙开启go的世界 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="以项目为钥匙开启go的世界">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="以项目为钥匙开启go的世界">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/" title="以项目为钥匙开启go的世界" itemprop="url">以项目为钥匙开启go的世界</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2019-07-18 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-07-18</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>本文不同于其他Go语言学习的文章，将以项目开发所需为基础，带你飞速踏入Go的世界，成为能独挡一面的强者。当你稍微花几分钟的时间，看完本文的时候，或许你会发现，驾驭Go语言为己所用是如此简单。 <br />
+山不在高，有仙则名，水不在深，有龙则灵，文不在多，一篇足以。希望我这些小小的经验和用心的分享，能真的帮助到您。</p>
+</blockquote>
+
+<h2 id="一go-语言简介">一、Go 语言简介</h2>
+<h3 id="1-go-语言介绍">1 Go 语言介绍</h3>
+<p>Go 即Golang，是Google公司2009年11月正式对外公开的一门编程语言。<br />
+Go是静态强类型语言，是区别于解析型语言的编译型语言。</p>
+<blockquote>
+  <p>解析型语言——源代码是先翻译为中间代码，然后由解析器对代码进行解释执行。<br />
+编译型语言——源代码编译生成机器语言，然后由机器直接执行机器码即可执行。</p>
+</blockquote>
+
+<h3 id="2-go语言特性">2 Go语言特性</h3>
+<ul>
+  <li>跨平台的编译型语言</li>
+  <li>语法接近C语言</li>
+  <li>管道（channel），切片（slice），并发（routine）</li>
+  <li>有垃圾回收的机制</li>
+  <li>支持面向对象和面向过程的编程模式</li>
+</ul>
+
+<h3 id="3-go-语言特色">3 Go 语言特色</h3>
+<ul>
+  <li>编程模式比较简单，没有复杂的设计模式</li>
+  <li>全部源码编译到一个文件，编译速度很快</li>
+  <li>最新版本也有动态库形式，对跨语言调用的支撑更到位</li>
+  <li>开源框架比较成熟，新崛起的互联网公司都在用
+    <ul>
+      <li>如滴滴，uber，百度，阿里巴巴，oppo，vivo等</li>
+    </ul>
+  </li>
+  <li>微服务的开发模式下Go语言是新宠</li>
+</ul>
+
+<h3 id="4-go-擅长领域">4 Go 擅长领域</h3>
+<ul>
+  <li>服务开发，web的api开发，分布式服务集群的开发</li>
+  <li>容器docker是go开源的产品，k8s等这些都是基于go语言的</li>
+  <li>对高并发、高性能的系统和服务支撑，Go语言对比其他语言有更快的开发速度，更高的开发效率</li>
+  <li>独有的语言特性和设计模式routine，channel，sync包支撑了海量并行的支持。</li>
+</ul>
+
+<blockquote>
+  <p>所以能看到这些领域都在使用Go语言：微服务开发模式，api开发，rpc服务开发，游戏服务开发等等</p>
+</blockquote>
+
+<h2 id="二框架选择">二、框架选择</h2>
+<p>Go的开发框架比较多，比较知名的几个分别是Gin、BeeGo、Irir、Echo、Revel、Buffalo。对比排名详见： <a href="https://github.com/speedwheel/awesome-go-web-frameworks/blob/master/README.md#popularity">《Go语言Web框架对比》</a></p>
+
+<p>框架的选择上，本人主要遵循如下几点原则，分别是：</p>
+
+<ul>
+  <li>star多</li>
+  <li>易上手</li>
+  <li>性能佳</li>
+  <li>持续维护</li>
+</ul>
+
+<blockquote>
+  <p>选择过程不多说，本人最终选择了beego作为本次入手的框架，本文余下内容如无特别说明，均基于此框架。</p>
+</blockquote>
+
+<h2 id="三环境部署">三、环境部署</h2>
+
+<h3 id="1-go-语言环境安装">1 Go 语言环境安装</h3>
+<p>安装包下载地址为：<a href="https://golang.org/dl/">https://golang.org/dl/</a><br />
+如果打不开可以使用这个地址：<a href="https://golang.google.cn/dl/">https://golang.google.cn/dl/</a></p>
+
+<p><strong>【UNIX/Linux/Mac OS X, 和 FreeBSD 安装】</strong></p>
+
+<ul>
+  <li>下载二进制包：go1.4.linux-amd64.tar.gz</li>
+  <li>将下载的二进制包解压至 /usr/local目录
+    <ul>
+      <li><code class="highlighter-rouge">tar -C /usr/local -xzf go1.12.7.linux-amd64.tar.gz</code></li>
+    </ul>
+  </li>
+  <li>将 /usr/local/go/bin 目录添加至PATH环境变量：
+    <ul>
+      <li><code class="highlighter-rouge">export PATH=$PATH:/usr/local/go/bin</code></li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>注意：MAC 系统下你可以使用 .pkg 结尾的安装包直接双击来完成安装，安装目录在 /usr/local/go/ 下。<br />
+本文余下内容如无特别说明，均默认Linux环境</p>
+</blockquote>
+
+<p><strong>【Windows 系统下安装】</strong><br />
+Windows 下可以使用 .msi 后缀(在下载列表中可以找到该文件，如<code class="highlighter-rouge">go1.12.7.windows-amd64.msi</code>)的安装包来安装。<br />
+默认情况下.msi文件会安装在 <code class="highlighter-rouge">c:\Go</code> 目录下。你可以将 <code class="highlighter-rouge">c:\Go\bin</code> 目录添加到 PATH 环境变量中。<br />
+添加后你需要重启命令窗口才能生效。</p>
+
+<p><strong>安装测试:</strong><br />
+创建工作目录 <code class="highlighter-rouge">C:\&gt;Go_WorkSpace</code>。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">//test.go 文件代码：</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="s">"fmt"</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>使用 go 命令执行以上代码输出结果如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">C</span><span class="o">:</span><span class="err">\</span><span class="n">Go_WorkSpace</span><span class="o">&gt;</span><span class="k">go</span><span class="x"> </span><span class="n">run</span><span class="x"> </span><span class="n">test</span><span class="o">.</span><span class="k">go</span><span class="x">
+
+</span><span class="n">Hello</span><span class="p">,</span><span class="x"> </span><span class="n">World</span><span class="o">!</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="2-go-语言环境变量">2 Go 语言环境变量</h3>
+<p>如下环境变量，都是Go编译和运行时必要的，如果安装时没有自动设置好，请务必自己手动添加。</p>
+
+<ul>
+  <li><strong>GOROOT</strong>: Go 安装后的根目录（例如：/usr/local/go）</li>
+  <li><strong>GOPATH</strong>: Go 的工作空间，就是我们的开发和依赖包的目录（例如：~/go）</li>
+</ul>
+
+<p>添加环境变量方法:</p>
+
+<ol>
+  <li>命令行直接export(对当前终端有效)</li>
+  <li>将export加到<code class="highlighter-rouge">~/.bashrc</code>文件里(对当前用户有效，首次添加后记得<code class="highlighter-rouge">source ~/.bashrc</code>一下)</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export GOPATH=~/go
+export GOROOT=/usr/local/go
+</code></pre></div></div>
+
+<h3 id="3-beego-框架">3 BeeGo 框架</h3>
+<p><strong>【安装】</strong><br />
+安装方式非常简单，只要敲击如下命令即可（bee工具可以快速创建项目和自动监测运行，记得要安装哦）：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go get github.com/astaxie/beego
+# bee 工具
+go get github.com/beego/bee
+</code></pre></div></div>
+<blockquote>
+  <p>安装完之后，bee 可执行文件默认存放在 <code class="highlighter-rouge">$GOPATH/bin</code> 里面，所以您需要把 <code class="highlighter-rouge">$GOPATH/bin</code> 添加到您的环境变量PATH中: <code class="highlighter-rouge">export PATH=$PATH:$GOPATH/bin</code></p>
+</blockquote>
+
+<p>常见问题：</p>
+
+<ol>
+  <li>git 没有安装，请自行安装不同平台的 git，如何安装请看<a href="https://git-scm.com/book/zh/v2/起步-安装-Git">《Git官方安装说明》</a>。</li>
+  <li>git https 无法获取，请配置本地的 git，关闭 https 验证：<code class="highlighter-rouge">git config --global http.sslVerify false</code></li>
+</ol>
+
+<p><strong>【创建项目】</strong><br />
+打开终端，进入 <code class="highlighter-rouge">$GOPATH/src</code> 所在的目录，用bee工具创建一个项目：<code class="highlighter-rouge">bee new firstPro</code></p>
+
+<p><strong>【目录结构】</strong><br />
+这是一个典型的 MVC 架构的应用，main.go 是入口文件。目录结构如下所示：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
+├── conf
+│   └── app.conf
+├── controllers
+│   └── default.go
+├── main.go
+├── models
+├── routers
+│   └── router.go
+├── static
+│   ├── css
+│   ├── img
+│   └── js
+│       └── reload.min.js
+├── tests
+│   └── default_test.go
+└── views
+    └── index.tpl
+
+10 directories, 7 files
+</code></pre></div></div>
+<p><strong>【编译运行】</strong><br />
+<code class="highlighter-rouge">cd $GOPATH/src/firstPro</code>进入我们创建的项目，使用 <code class="highlighter-rouge">bee run</code> 来运行该项目，这样我们的应用就在 8080 端口(beego 的默认端口)跑起来了，让我们打开浏览器看看效果吧：
+<img src="/assets/img/article/2019-07-17/beerun.png" alt="" /></p>
+
+<h3 id="4-命令使用">4 命令使用</h3>
+<p><strong>Go指令</strong></p>
+
+<ul>
+  <li>下载：<code class="highlighter-rouge">go get</code></li>
+  <li>编译：<code class="highlighter-rouge">go build </code></li>
+  <li>运行：<code class="highlighter-rouge">go run</code></li>
+</ul>
+
+<p><strong>Bee工具</strong></p>
+
+<ul>
+  <li>新建项目：<code class="highlighter-rouge">bee api</code> 或 <code class="highlighter-rouge">bee new</code> 分别创建 api应用 和 web项目，位于 <code class="highlighter-rouge">$GOPATH/src</code> 目录下</li>
+  <li>运行：<code class="highlighter-rouge">bee run</code> 该命令必须在 <code class="highlighter-rouge">$GOPATH/src/appname</code> 下执行</li>
+  <li>打包：<code class="highlighter-rouge">bee pack</code></li>
+</ul>
+
+<blockquote>
+  <p>以上是一些常用的命令，介绍虽比较简单，但只要大概记住他的作用即可。<br />
+没有把所有指令都列出来，因为我们暂时还用不到，这些已经足够我们摆平项目的开发了，其他的指令和高级用法，有兴趣的小伙伴们可以动动手自行查阅。</p>
+</blockquote>
+
+<h2 id="四go-基础语法">四、Go 基础语法</h2>
+<h3 id="1-变量">1 变量</h3>
+<p>Go 语言变量名由字母、数字、下划线组成，其中首个字符不能为数字。</p>
+
+<p><strong>【声明变量】</strong></p>
+
+<ol>
+  <li>使用 var 关键字：<br />
+<code class="highlighter-rouge">var name type</code></li>
+  <li>一次声明多个变量：<br />
+<code class="highlighter-rouge">var name1, name2 type</code></li>
+  <li>省略var形式：<br />
+<code class="highlighter-rouge">name := value</code></li>
+</ol>
+
+<p><strong>【零值】</strong><br />
+指定变量类型，如果没有初始化，则变量默认为零值。</p>
+
+<ul>
+  <li>数值类型（包括complex64/128）为 0</li>
+  <li>布尔类型为 false</li>
+  <li>字符串为 ““（空字符串）</li>
+  <li>以下几种类型为 nil：</li>
+</ul>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">*</span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="p">[]</span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">error</span><span class="x"> </span><span class="c">// error 是接口</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+</span><span class="k">import</span><span class="x"> </span><span class="s">"fmt"</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"yisonli"</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">var</span><span class="x"> </span><span class="n">b</span><span class="p">,</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="m">2</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="x"> </span><span class="n">c</span><span class="p">)</span><span class="x">
+    
+    </span><span class="n">d</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="m">10</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">8</span><span class="p">,</span><span class="m">7</span><span class="p">}</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="x">
+    
+    </span><span class="k">var</span><span class="x"> </span><span class="n">e</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="s">"one"</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="s">"two"</span><span class="o">:</span><span class="m">2</span><span class="p">}</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>以上示例输出结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">yisonli</span><span class="x">
+</span><span class="m">1</span><span class="x"> </span><span class="m">2</span><span class="x">
+</span><span class="p">[</span><span class="m">10</span><span class="x"> </span><span class="m">9</span><span class="x"> </span><span class="m">8</span><span class="x"> </span><span class="m">7</span><span class="p">]</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">one</span><span class="o">:</span><span class="m">1</span><span class="x"> </span><span class="n">two</span><span class="o">:</span><span class="m">2</span><span class="p">]</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="2-数据类型">2 数据类型</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">类型</th>
+      <th style="text-align: left">描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>布尔型</strong></td>
+      <td style="text-align: left">布尔型的值只可以是常量 <code class="highlighter-rouge">true</code> 或者 <code class="highlighter-rouge">false</code> <br />一个简单的例子：<code class="highlighter-rouge">var b bool = true</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>数字类型</strong></td>
+      <td style="text-align: left"><strong>有符号整型</strong>: int、int8、int16、int32、int64 <br /><strong>无符号整型</strong>: uint、uint8、uint16、uint32、uint64 <br /><strong>浮点型</strong>: float32、float64 <br /><strong>复数</strong>: complex64、complex128 <br /><strong>其他</strong>: byte （类似uint8）、uintptr （存指针）、rune （类似int32）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>字符串类型</strong></td>
+      <td style="text-align: left">一串固定长度的字符连接起来的字符序列，使用 UTF-8 编码标识 Unicode 文本</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>派生类型</strong></td>
+      <td style="text-align: left">包括：<br />(a) 指针类型（Pointer）<br />(b) 数组类型<br />(c) 结构化类型(struct)<br />(d) Channel 类型<br />(e) 函数类型<br />(f) 切片类型<br />(g) 接口类型（interface）<br />(h) Map 类型<br /></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="3-函数">3 函数</h3>
+<p>Go 语言函数定义格式如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">function_name</span><span class="p">(</span><span class="x"> </span><span class="p">[</span><span class="n">parameter</span><span class="x"> </span><span class="n">list</span><span class="p">]</span><span class="x"> </span><span class="p">)</span><span class="x"> </span><span class="p">[</span><span class="n">return_types</span><span class="p">]</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="n">函数体</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>函数定义解析：</p>
+
+<ul>
+  <li><strong>func</strong>：函数声明关键字</li>
+  <li><strong>function_name</strong>：函数名称</li>
+  <li><strong>parameter list</strong>：参数列表
+    <ul>
+      <li>参数就像一个占位符，当函数被调用时，你可以将值传递给参数，这个值被称为实际参数。</li>
+      <li>参数列表指定的是参数类型、顺序、及参数个数。</li>
+      <li>参数是可选的，也就是说函数也可以不包含参数。</li>
+    </ul>
+  </li>
+  <li><strong>return_types</strong>：返回类型
+    <ul>
+      <li>函数返回一列值, return_types 是该列值的数据类型。</li>
+      <li>有些功能不需要返回值，这种情况下 return_types 不是必须的。</li>
+    </ul>
+  </li>
+  <li><strong>函数体</strong>：具体的代码逻辑</li>
+</ul>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="s">"fmt"</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">swap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="x"> </span><span class="n">y</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="k">return</span><span class="x"> </span><span class="n">y</span><span class="p">,</span><span class="x"> </span><span class="n">x</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="n">a</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">swap</span><span class="p">(</span><span class="s">"Golang"</span><span class="p">,</span><span class="x"> </span><span class="s">"yisonli"</span><span class="p">)</span><span class="x">
+   </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>以上示例输出结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">yisonli</span><span class="x"> </span><span class="n">Golang</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="4-循环">4 循环</h3>
+<p>for循环是一个循环控制结构，可以执行指定次数的循环。Go语言的For循环有3种形式，具体定义如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 1. 类似 C 语言的 for</span><span class="x">
+</span><span class="k">for</span><span class="x"> </span><span class="n">init</span><span class="p">;</span><span class="x"> </span><span class="n">condition</span><span class="p">;</span><span class="x"> </span><span class="n">post</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="p">}</span><span class="x">
+
+</span><span class="c">// 2. 类似 C 的 while</span><span class="x">
+</span><span class="k">for</span><span class="x"> </span><span class="n">condition</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="p">}</span><span class="x">
+
+</span><span class="c">// 3. 类似 C 的 for(;;)</span><span class="x">
+</span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<ul>
+  <li>init： 一般为赋值表达式，给控制变量赋初值；</li>
+  <li>condition： 关系表达式或逻辑表达式，循环控制条件；</li>
+  <li>post： 一般为赋值表达式，给控制变量增量或减量。</li>
+</ul>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="s">"fmt"</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+
+   </span><span class="k">var</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">7</span><span class="x">
+   </span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">int</span><span class="x">
+
+   </span><span class="n">numbers</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="p">[</span><span class="m">6</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="m">2</span><span class="p">,</span><span class="x"> </span><span class="m">3</span><span class="p">,</span><span class="x"> </span><span class="m">5</span><span class="p">}</span><span class="x"> 
+
+   </span><span class="c">/* for 循环 */</span><span class="x">
+   </span><span class="k">for</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">5</span><span class="p">;</span><span class="x"> </span><span class="n">a</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"a 的值为: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">a</span><span class="p">)</span><span class="x">
+   </span><span class="p">}</span><span class="x">
+
+   </span><span class="k">for</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">a</span><span class="o">++</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"a 的值为: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">a</span><span class="p">)</span><span class="x">
+   </span><span class="p">}</span><span class="x">
+
+   </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="p">,</span><span class="n">x</span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">numbers</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"第 %d 位 x 的值 = %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">i</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="x">
+   </span><span class="p">}</span><span class="x">   
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>以上示例输出结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">0</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">1</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">2</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">3</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">4</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">1</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">2</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">3</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">4</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">5</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">6</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">7</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">2</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">3</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">5</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">4</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">0</span><span class="x">
+</span><span class="n">第</span><span class="x"> </span><span class="m">5</span><span class="x"> </span><span class="n">位</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="n">的值</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">0</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="5-条件语句">5 条件语句</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>语句</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>if 语句</td>
+      <td>if 语句 由一个布尔表达式后紧跟一个或多个语句组成。</td>
+    </tr>
+    <tr>
+      <td>if…else 语句</td>
+      <td>if 语句 后可以使用可选的 else 语句, <br />else 语句中的表达式在布尔表达式为 false 时执行。</td>
+    </tr>
+    <tr>
+      <td>if 嵌套语句</td>
+      <td>你可以在 if 或 else if 语句中嵌入一个或多个 if 或 else if 语句。</td>
+    </tr>
+    <tr>
+      <td>switch 语句</td>
+      <td>switch 语句用于基于不同条件执行不同动作。</td>
+    </tr>
+    <tr>
+      <td>select 语句</td>
+      <td>select 语句类似于 switch 语句，但是select会随机执行一个可运行的case。<br />如果没有case可运行，它将阻塞，直到有case可运行。</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>注意：Go 没有三目运算符，所以不支持 ?: 形式的条件判断。</p>
+</blockquote>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="s">"fmt"</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="c">/* 局部变量定义 */</span><span class="x">
+   </span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">100</span><span class="p">;</span><span class="x">
+ 
+   </span><span class="c">/* 判断布尔表达式 */</span><span class="x">
+   </span><span class="k">if</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">20</span><span class="x"> </span><span class="p">{</span><span class="x">
+       </span><span class="c">/* 如果条件为 true 则执行以下语句 */</span><span class="x">
+       </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"a 小于 20</span><span class="se">\n</span><span class="s">"</span><span class="x"> </span><span class="p">);</span><span class="x">
+   </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+       </span><span class="c">/* 如果条件为 false 则执行以下语句 */</span><span class="x">
+       </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"a 不小于 20</span><span class="se">\n</span><span class="s">"</span><span class="x"> </span><span class="p">);</span><span class="x">
+   </span><span class="p">}</span><span class="x">
+   </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"a 的值为 : %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">a</span><span class="p">);</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>以上示例输出结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="x"> </span><span class="n">不小于</span><span class="x"> </span><span class="m">20</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="n">的值为</span><span class="x"> </span><span class="o">:</span><span class="x"> </span><span class="m">100</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="6-package包">6 Package包</h3>
+<p><strong>【包的定义和特性】</strong>：</p>
+
+<ul>
+  <li>包是结构化代码的一种方式</li>
+  <li>每个程序都由包（通常简称为 pkg）的概念组成</li>
+  <li>每个 Go 文件都属于且仅属于一个包</li>
+  <li>一个包可以由许多以 <code class="highlighter-rouge">.go</code> 为扩展名的源文件组成</li>
+  <li>你必须在源文件中非注释的第一行指明这个文件属于哪个包，如：<code class="highlighter-rouge"><span class="k">package</span> <span class="n">main</span></code></li>
+  <li>每个 Go 应用程序都包含一个名为 <code class="highlighter-rouge">main</code> 的包</li>
+  <li>通过 <code class="highlighter-rouge">import</code> 关键字可以将一组包链接在一起，在你的应用中导入后方可使用</li>
+</ul>
+
+<p><strong>【注意事项】</strong>：</p>
+
+<ol>
+  <li>如果你导入了一个包却没有使用它，则会在构建程序时引发错误，如 <code class="highlighter-rouge">imported and not used: os</code>，这正是遵循了 Go 的格言：“没有不必要的代码！“。</li>
+  <li>可见性规则
+    <ul>
+      <li>当标识符（包括常量、变量、类型、函数名、结构字段等等）以一个<strong>大写字母开头</strong>，如：Group1，那么使用这种形式的标识符的对象就可以被外部包的 代码所使用（客户端程序需要先导入这个包），这被称为导出（像面向对象语言中的 <code class="highlighter-rouge">public</code>）；</li>
+      <li>标识符如果以<strong>小写字母开头</strong>，则对包外是不可见的，但是他们在整个包的内部是可见并且可用的（像面向对象语言中的 <code class="highlighter-rouge">private</code> ）。</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="7-类型转换">7 类型转换</h3>
+<p><strong>【普通类型转换】</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type_name(expression)
+</code></pre></div></div>
+<blockquote>
+  <p>其中type_name 为类型，expression 为表达式。</p>
+</blockquote>
+
+<p><strong>【格式化输出】</strong><br />
+格式化在逻辑中非常常用。使用格式化函数，要注意写法：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fmt.Sprintf(格式化样式, 参数列表…)
+</code></pre></div></div>
+
+<ul>
+  <li>格式化样式：字符串形式，格式化动词以%开头。</li>
+  <li>参数列表：多个参数以逗号分隔，个数必须与格式化样式中的个数一一对应，否则运行时会报错。</li>
+</ul>
+
+<p><strong>【json转换】</strong><br />
+这里说的json其实是json格式的string字符串类型，通常json需要转换成struct结构体、或者转换成map映射，正向转换和反向转换其实会经常用到。<br />
+在此，我们需要借助Go的标准库 <code class="highlighter-rouge">"encoding/json"</code> 来帮我们完成转换的操作了。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// struct或map 转成 json字符串
+str, err := json.Marshal(object)
+
+// json字符串 转成 struct或map
+err := json.Unmarshal([]byte(str), &amp;object)
+</code></pre></div></div>
+
+<blockquote>
+  <p>扩展：网上有些Go的开发小伙伴们在抱怨说标准库的json效率比较低，而且有几个不错的开源json库可以提升2-3倍的转换性能。该如何取舍就全凭个人喜好了，有兴趣的小伙伴们可以自行去深入了解，本文就不再展开了。</p>
+</blockquote>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x"> 
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x"> 
+    </span><span class="s">"encoding/json"</span><span class="x"> 
+    </span><span class="s">"fmt"</span><span class="x"> 
+</span><span class="p">)</span><span class="x"> 
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="x"> </span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// 1. 普通类型转换</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">sum</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">17</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">count</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">5</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">mean</span><span class="x"> </span><span class="kt">float32</span><span class="x">
+    
+    </span><span class="n">mean</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="kt">float32</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span><span class="o">/</span><span class="kt">float32</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"mean 的值为: %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">mean</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span><span class="x">
+
+    </span><span class="c">// 2. 格式化</span><span class="x">
+    </span><span class="n">title</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"已采集%d个药草, 还需要%d个完成任务。"</span><span class="p">,</span><span class="x"> </span><span class="n">sum</span><span class="p">,</span><span class="x"> </span><span class="n">count</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span><span class="x">
+
+    </span><span class="c">// 3. json字符串 转成 struct或map</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">jsonBlob</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="p">[]</span><span class="x"> </span><span class="kt">byte</span><span class="x"> </span><span class="p">(</span><span class="s">`[
+        { "Name" : "Platypus" , "Order" : "Monotremata" } , 
+        { "Name" : "Quoll" ,     "Order" : "Dasyuromorphia" } 
+    ]`</span><span class="p">)</span><span class="x"> 
+    </span><span class="k">type</span><span class="x"> </span><span class="n">Animal</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">Name</span><span class="x">  </span><span class="kt">string</span><span class="x"> 
+        </span><span class="n">Order</span><span class="x"> </span><span class="kt">string</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="k">var</span><span class="x"> </span><span class="n">animals</span><span class="x"> </span><span class="p">[]</span><span class="x"> </span><span class="n">Animal</span><span class="x">
+    </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">json</span><span class="o">.</span><span class="n">Unmarshal</span><span class="p">(</span><span class="n">jsonBlob</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">animals</span><span class="p">)</span><span class="x"> 
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"error:"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">animals</span><span class="p">)</span><span class="x"> 
+
+    </span><span class="k">var</span><span class="x"> </span><span class="n">animalsMap</span><span class="x"> </span><span class="p">[]</span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="k">interface</span><span class="p">{}</span><span class="x">
+    </span><span class="n">err1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">json</span><span class="o">.</span><span class="n">Unmarshal</span><span class="p">(</span><span class="n">jsonBlob</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">animalsMap</span><span class="p">)</span><span class="x"> 
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err1</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"error:"</span><span class="p">,</span><span class="x"> </span><span class="n">err1</span><span class="p">)</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">animalsMap</span><span class="p">)</span><span class="x"> 
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span><span class="x">
+
+    </span><span class="c">// 4. struct或map 转成 json字符串</span><span class="x">
+    </span><span class="k">type</span><span class="x"> </span><span class="n">ColorGroup</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">ID</span><span class="x">     </span><span class="kt">int</span><span class="x"> 
+        </span><span class="n">Name</span><span class="x">   </span><span class="kt">string</span><span class="x"> 
+        </span><span class="n">Colors</span><span class="x"> </span><span class="p">[]</span><span class="x"> </span><span class="kt">string</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">group</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ColorGroup</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">ID</span><span class="x"> </span><span class="o">:</span><span class="x">     </span><span class="m">1</span><span class="x"> </span><span class="p">,</span><span class="x"> 
+        </span><span class="n">Name</span><span class="x"> </span><span class="o">:</span><span class="x">   </span><span class="s">"Reds"</span><span class="x"> </span><span class="p">,</span><span class="x"> 
+        </span><span class="n">Colors</span><span class="x"> </span><span class="o">:</span><span class="x"> </span><span class="p">[]</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="s">"Crimson"</span><span class="p">,</span><span class="x"> </span><span class="s">"Red"</span><span class="p">,</span><span class="x"> </span><span class="s">"Ruby"</span><span class="p">,</span><span class="x"> </span><span class="s">"Maroon"</span><span class="p">}</span><span class="x"> </span><span class="p">,</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">groupStr</span><span class="x"> </span><span class="p">,</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">json</span><span class="o">.</span><span class="n">Marshal</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="x"> 
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"error:"</span><span class="p">,</span><span class="x"> </span><span class="n">err2</span><span class="p">)</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">groupStr</span><span class="p">)</span><span class="x"> 
+
+    </span><span class="k">var</span><span class="x"> </span><span class="n">groupMap</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="p">{</span><span class="s">"ID"</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="s">"Name"</span><span class="o">:</span><span class="s">"Reds"</span><span class="p">,</span><span class="s">"Colors"</span><span class="o">:</span><span class="p">[]</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="s">"Crimson"</span><span class="p">,</span><span class="x"> </span><span class="s">"Red"</span><span class="p">,</span><span class="x"> </span><span class="s">"Ruby"</span><span class="p">,</span><span class="x"> </span><span class="s">"Maroon"</span><span class="p">}}</span><span class="x">
+    </span><span class="n">groupStr1</span><span class="x"> </span><span class="p">,</span><span class="x"> </span><span class="n">err3</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">json</span><span class="o">.</span><span class="n">Marshal</span><span class="p">(</span><span class="n">groupMap</span><span class="p">)</span><span class="x"> 
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err3</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x"> 
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"error:"</span><span class="p">,</span><span class="x"> </span><span class="n">err3</span><span class="p">)</span><span class="x"> 
+    </span><span class="p">}</span><span class="x"> 
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">groupStr1</span><span class="p">)</span><span class="x"> 
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre></div></div>
+<p>以上示例输出结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mean</span><span class="x"> </span><span class="n">的值为</span><span class="o">:</span><span class="x"> </span><span class="m">3.400000</span><span class="x">
+
+</span><span class="n">已采集17个药草</span><span class="p">,</span><span class="x"> </span><span class="n">还需要5个完成任务</span><span class="err">。</span><span class="x">
+
+</span><span class="p">[{</span><span class="n">Name</span><span class="o">:</span><span class="n">Platypus</span><span class="x"> </span><span class="n">Order</span><span class="o">:</span><span class="n">Monotremata</span><span class="p">}</span><span class="x"> </span><span class="p">{</span><span class="n">Name</span><span class="o">:</span><span class="n">Quoll</span><span class="x"> </span><span class="n">Order</span><span class="o">:</span><span class="n">Dasyuromorphia</span><span class="p">}]</span><span class="x">
+</span><span class="p">[</span><span class="k">map</span><span class="p">[</span><span class="n">Name</span><span class="o">:</span><span class="n">Platypus</span><span class="x"> </span><span class="n">Order</span><span class="o">:</span><span class="n">Monotremata</span><span class="p">]</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="n">Name</span><span class="o">:</span><span class="n">Quoll</span><span class="x"> </span><span class="n">Order</span><span class="o">:</span><span class="n">Dasyuromorphia</span><span class="p">]]</span><span class="x">
+
+</span><span class="p">{</span><span class="s">"ID"</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="s">"Name"</span><span class="o">:</span><span class="s">"Reds"</span><span class="p">,</span><span class="s">"Colors"</span><span class="o">:</span><span class="p">[</span><span class="s">"Crimson"</span><span class="p">,</span><span class="s">"Red"</span><span class="p">,</span><span class="s">"Ruby"</span><span class="p">,</span><span class="s">"Maroon"</span><span class="p">]}</span><span class="x">
+</span><span class="p">{</span><span class="s">"Colors"</span><span class="o">:</span><span class="p">[</span><span class="s">"Crimson"</span><span class="p">,</span><span class="s">"Red"</span><span class="p">,</span><span class="s">"Ruby"</span><span class="p">,</span><span class="s">"Maroon"</span><span class="p">],</span><span class="s">"ID"</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="s">"Name"</span><span class="o">:</span><span class="s">"Reds"</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<h2 id="五项目开发---必备知识点">五、项目开发 - 必备知识点</h2>
+<p>根据项目难易程度，需要掌握的技术知识点会有所不同；本文会根据项目中常用的、基础的、必须掌握的功能点，逐个进行讲解和示例，希望我这些小小的经验和用心的分享，能真的帮助到你，让你在Go的世界里翱翔。</p>
+
+<h3 id="1-beego的执行过程">1 BeeGo的执行过程</h3>
+
+<p><img src="/assets/img/article/2019-07-17/init.png" alt="" /></p>
+
+<ul>
+  <li>main 函数是入口函数</li>
+  <li>main 引入了一个路由包：<code class="highlighter-rouge">_ "firstPro/routers"</code></li>
+  <li>路由包执行了路由注册，定位了对应的 Controller：<code class="highlighter-rouge">beego.Router("/", &amp;controllers.MainController{})</code></li>
+  <li>Controller 负责完成具体的业务逻辑</li>
+</ul>
+
+<h3 id="2-路由配置">2 路由配置</h3>
+<p>BeeGo支持的路由配置方式有很多，但正因为多所以短时间理解起来会比较难，所以这里只列出了大致的分类，以及最为基本的配置方式。先把简单的理解了，如果个人确实有额外特殊的需求，再另行深入，也会清晰得多。</p>
+
+<p><strong>【基础路由】</strong><br />
+普通的Get和Post，参见如下代码：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">beego</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="k">func</span><span class="p">(</span><span class="n">ctx</span><span class="x"> </span><span class="o">*</span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">){</span><span class="x">
+     </span><span class="n">ctx</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">Body</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"this is get"</span><span class="p">))</span><span class="x">
+</span><span class="p">})</span><span class="x">
+
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Post</span><span class="p">(</span><span class="s">"/save"</span><span class="p">,</span><span class="k">func</span><span class="p">(</span><span class="n">ctx</span><span class="x"> </span><span class="o">*</span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">){</span><span class="x">
+     </span><span class="n">ctx</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">Body</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"this is post"</span><span class="p">))</span><span class="x">
+</span><span class="p">})</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【RESTful路由】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 全匹配, 自动找Controller内对应REST的方法</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Router</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">controllers</span><span class="o">.</span><span class="n">MainController</span><span class="p">{})</span><span class="x">
+
+</span><span class="c">// 自定义规则, 第三个参数就是用来设置对应 method 到函数名</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Router</span><span class="p">(</span><span class="s">"/api/list"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">RestController</span><span class="p">{},</span><span class="s">"*:List"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Router</span><span class="p">(</span><span class="s">"/api/create"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">RestController</span><span class="p">{},</span><span class="s">"post:Create"</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【注解路由】</strong><br />
+用户无需在 router 中注册路由，只需要 Include 相应地 controller，然后在 controller 的 method 方法上面写上 router 注释（<code class="highlighter-rouge">// @router</code>）就可以了。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">init</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">ns</span><span class="x"> </span><span class="o">:=</span><span class="x">
+        </span><span class="n">beego</span><span class="o">.</span><span class="n">NewNamespace</span><span class="p">(</span><span class="s">"/v1"</span><span class="p">,</span><span class="x">
+            </span><span class="n">beego</span><span class="o">.</span><span class="n">NSNamespace</span><span class="p">(</span><span class="s">"/customer"</span><span class="p">,</span><span class="x">
+                </span><span class="n">beego</span><span class="o">.</span><span class="n">NSInclude</span><span class="p">(</span><span class="x">
+                    </span><span class="o">&amp;</span><span class="n">controllers</span><span class="o">.</span><span class="n">CustomerController</span><span class="p">{},</span><span class="x">
+                    </span><span class="o">&amp;</span><span class="n">controllers</span><span class="o">.</span><span class="n">CustomerCookieCheckerController</span><span class="p">{},</span><span class="x">
+                </span><span class="p">),</span><span class="x">
+            </span><span class="p">),</span><span class="x">
+            </span><span class="n">beego</span><span class="o">.</span><span class="n">NSNamespace</span><span class="p">(</span><span class="s">"/cms"</span><span class="p">,</span><span class="x">
+                </span><span class="n">beego</span><span class="o">.</span><span class="n">NSInclude</span><span class="p">(</span><span class="x">
+                    </span><span class="o">&amp;</span><span class="n">controllers</span><span class="o">.</span><span class="n">CMSController</span><span class="p">{},</span><span class="x">
+                </span><span class="p">),</span><span class="x">
+            </span><span class="p">),</span><span class="x">
+        </span><span class="p">)</span><span class="x">
+    </span><span class="n">beego</span><span class="o">.</span><span class="n">AddNamespace</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>注意：为了生成swagger自动化文档，只支持 <code class="highlighter-rouge">Namespace+Include</code> 写法的解析，其他写法函数不会自动解析，而且只支持二级解析（一级版本号，二级分别表示应用模块）</p>
+
+<h3 id="3-请求数据处理">3 请求数据处理</h3>
+<p><strong>【参数获取】</strong><br />
+我们经常需要获取用户传递的数据，包括 Get、POST 等方式的请求，beego 里面会自动解析这些数据，你可以通过如下方式获取数据：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">GetString</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="n">GetStrings</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">[]</span><span class="kt">string</span><span class="x">
+</span><span class="n">GetInt</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">int64</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">
+</span><span class="n">GetBool</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">bool</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">
+</span><span class="n">GetFloat</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">float64</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【解析到Struct】</strong><br />
+适用于Form表单提交的形式，使用方法也很简单，先定义个结构体，然后调用 <code class="highlighter-rouge">this.ParseForm(结构体指针)</code> 即可。</p>
+
+<p>注意：</p>
+
+<ul>
+  <li>定义 struct 时，字段名后如果有 form 这个 tag，则会以把 form 表单里的 name 和 tag 的名称一样的字段赋值给这个字段，否则就会把 form 表单里与字段名一样的表单内容赋值给这个字段。</li>
+  <li>调用 ParseForm 这个方法的时候，传入的参数必须为一个 struct 的指针，否则对 struct 的赋值不会成功并返回 xx must be a struct pointer 的错误。</li>
+  <li>如果要忽略一个字段，有两种办法，一是：字段名小写开头，二是：form 标签的值设置为 -</li>
+</ul>
+
+<p><strong>【原始请求数据】</strong></p>
+
+<ol>
+  <li>在配置文件 <code class="highlighter-rouge">app.conf</code> 里设置 <code class="highlighter-rouge">copyrequestbody = true</code></li>
+  <li>在 Controller 中使用 <code class="highlighter-rouge">this.Ctx.Input.RequestBody</code> 获取</li>
+</ol>
+
+<blockquote>
+  <p>更多其他的 request 的信息，用户可以通过 <code class="highlighter-rouge">this.Ctx.Request</code> 获取</p>
+</blockquote>
+
+<p><strong>【json参数返回】</strong><br />
+在 Controller 中给 <code class="highlighter-rouge">this.Data["json"]</code> 赋值， 然后调用 <code class="highlighter-rouge">this.ServeJSON()</code> 即可</p>
+
+<p><strong>【示例】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">controllers</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego"</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">MainController</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">beego</span><span class="o">.</span><span class="n">Controller</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">user</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Id</span><span class="x">    </span><span class="kt">int</span><span class="x">         </span><span class="s">`form:"-"`</span><span class="x">
+    </span><span class="n">Name</span><span class="x">  </span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="s">`form:"username"`</span><span class="x">
+    </span><span class="n">Age</span><span class="x">   </span><span class="kt">int</span><span class="x">         </span><span class="s">`form:"age"`</span><span class="x">
+    </span><span class="n">Email</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">this</span><span class="x"> </span><span class="o">*</span><span class="n">MainController</span><span class="p">)</span><span class="x"> </span><span class="n">Post</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">email</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">this</span><span class="o">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">"Email"</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">body</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">this</span><span class="o">.</span><span class="n">Ctx</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">RequestBody</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="kt">string</span><span class="p">(</span><span class="n">body</span><span class="p">))</span><span class="x">
+    
+    </span><span class="n">u</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">user</span><span class="p">{}</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">this</span><span class="o">.</span><span class="n">ParseForm</span><span class="p">(</span><span class="o">&amp;</span><span class="n">u</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="c">//handle error</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"json"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="k">interface</span><span class="p">{}{</span><span class="s">"code"</span><span class="o">:-</span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="s">"message"</span><span class="o">:</span><span class="s">"ParseForm fail"</span><span class="p">,</span><span class="x"> </span><span class="s">"result"</span><span class="o">:</span><span class="n">err</span><span class="p">}</span><span class="x">
+   </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+           </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">u</span><span class="p">)</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"json"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="k">interface</span><span class="p">{}{</span><span class="s">"code"</span><span class="o">:</span><span class="m">0</span><span class="p">,</span><span class="x"> </span><span class="s">"message"</span><span class="o">:</span><span class="s">"ok"</span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">ServeJSON</span><span class="p">()</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">StopRun</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>以上示例控制台结果为：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 模拟请求：curl -X POST -d "username=yisonli&amp;age=18&amp;Email=yisonli@vip.qq.com" "http://127.0.0.1:8080"</span><span class="x">
+</span><span class="n">yisonli</span><span class="err">@</span><span class="n">vip</span><span class="o">.</span><span class="n">qq</span><span class="o">.</span><span class="n">com</span><span class="x">
+</span><span class="n">username</span><span class="o">=</span><span class="n">yisonli</span><span class="o">&amp;</span><span class="n">age</span><span class="o">=</span><span class="m">18</span><span class="o">&amp;</span><span class="n">Email</span><span class="o">=</span><span class="n">yisonli</span><span class="err">@</span><span class="n">vip</span><span class="o">.</span><span class="n">qq</span><span class="o">.</span><span class="n">com</span><span class="x">
+</span><span class="p">{</span><span class="n">Id</span><span class="o">:</span><span class="m">0</span><span class="x"> </span><span class="n">Name</span><span class="o">:</span><span class="n">yisonli</span><span class="x"> </span><span class="n">Age</span><span class="o">:</span><span class="m">18</span><span class="x"> </span><span class="n">Email</span><span class="o">:</span><span class="n">yisonli</span><span class="err">@</span><span class="n">vip</span><span class="o">.</span><span class="n">qq</span><span class="o">.</span><span class="n">com</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="4-数据库">4 数据库</h3>
+<p>使用数据库前需先装好数据库驱动，其实只要执行 <code class="highlighter-rouge">go get -u </code> 指令即可。<br />
+已支持数据库驱动：</p>
+
+<ul>
+  <li>MySQL：<a href="https://github.com/go-sql-driver/mysql">github.com/go-sql-driver/mysql</a></li>
+  <li>PostgreSQL：<a href="https://github.com/lib/pq">github.com/lib/pq</a></li>
+  <li>Sqlite3：<a href="https://github.com/mattn/go-sqlite3">github.com/mattn/go-sqlite3</a></li>
+</ul>
+
+<p><strong>【连接数据库】</strong></p>
+<ol>
+  <li>将你需要使用的 driver 加入 import 中</li>
+</ol>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/go-sql-driver/mysql"</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/lib/pq"</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/mattn/go-sqlite3"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+<blockquote>
+  <p>按个人项目需求来选择即可，本文将以mysql为例进行演示和说明</p>
+</blockquote>
+
+<ol>
+  <li>以自己实际的数据库配置，初始化并连接数据库</li>
+</ol>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDriver</span><span class="p">(</span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="n">orm</span><span class="o">.</span><span class="n">DRMySQL</span><span class="p">)</span><span class="x">
+    
+</span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDataBase</span><span class="p">(</span><span class="s">"default"</span><span class="p">,</span><span class="x"> </span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="s">"root:123456@tcp(127.0.0.1:3306)/test?charset=utf8&amp;loc=Local"</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>注：</p>
+  <ol>
+    <li>loc=Local 是将操作数据库的时区，设置成跟本地时区一样。</li>
+    <li>如果你想像我一样，在本机运行mysql的服务端，而你又恰好装了Docker，那么恭喜你，只需要一条指令启动docker镜像即可：<br />
+<code class="highlighter-rouge">docker run --name mysqlserver -e MYSQL_ROOT_PASSWORD=123456 -d -i -p 3306:3306  mysql:5.7</code></li>
+  </ol>
+</blockquote>
+
+<p><strong>【原生CRUD】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">controllers</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego"</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/orm"</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/go-sql-driver/mysql"</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">TestController</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">beego</span><span class="o">.</span><span class="n">Controller</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">this</span><span class="x"> </span><span class="o">*</span><span class="n">TestController</span><span class="p">)</span><span class="x"> </span><span class="n">Get</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDriver</span><span class="p">(</span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="n">orm</span><span class="o">.</span><span class="n">DRMySQL</span><span class="p">)</span><span class="x">
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDataBase</span><span class="p">(</span><span class="s">"default"</span><span class="p">,</span><span class="x"> </span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="s">"root:123456@tcp(127.0.0.1:3306)/test?charset=utf8&amp;loc=Local"</span><span class="p">)</span><span class="x">
+    
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">Debug</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">true</span><span class="x">        </span><span class="c">//是否开启sql调试，开启时可以打印所有执行的sql语句，不设置时默认为false</span><span class="x">
+    </span><span class="n">o</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">orm</span><span class="o">.</span><span class="n">NewOrm</span><span class="p">()</span><span class="x">
+    </span><span class="n">o</span><span class="o">.</span><span class="n">Using</span><span class="p">(</span><span class="s">"default"</span><span class="p">)</span><span class="x">        </span><span class="c">//如果连接了多个数据库，此方法可以用来切换，不设置时默认是default的DataBase</span><span class="x">
+    
+    </span><span class="k">var</span><span class="x"> </span><span class="n">maps</span><span class="x"> </span><span class="p">[]</span><span class="n">orm</span><span class="o">.</span><span class="n">Params</span><span class="x">
+    </span><span class="n">num1</span><span class="p">,</span><span class="x"> </span><span class="n">err1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">o</span><span class="o">.</span><span class="n">Raw</span><span class="p">(</span><span class="s">"SELECT * FROM users"</span><span class="p">)</span><span class="o">.</span><span class="n">Values</span><span class="p">(</span><span class="o">&amp;</span><span class="n">maps</span><span class="p">)</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">num1</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">err1</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="n">term</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">maps</span><span class="p">{</span><span class="x">
+            </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">term</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="n">res2</span><span class="p">,</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">o</span><span class="o">.</span><span class="n">Raw</span><span class="p">(</span><span class="s">"INSERT INTO `users` (`name`, `age`, `email`) VALUES ('Test', 27, 'test@gmail.com')"</span><span class="p">)</span><span class="o">.</span><span class="n">Exec</span><span class="p">();</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">num2</span><span class="p">,</span><span class="x"> </span><span class="n">_</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">res2</span><span class="o">.</span><span class="n">RowsAffected</span><span class="p">()</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"mysql row affected nums: "</span><span class="p">,</span><span class="x"> </span><span class="n">num2</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    
+    </span><span class="n">res3</span><span class="p">,</span><span class="x"> </span><span class="n">err3</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">o</span><span class="o">.</span><span class="n">Raw</span><span class="p">(</span><span class="s">"UPDATE `users` SET `age`=18 WHERE `name`='Test'"</span><span class="p">)</span><span class="o">.</span><span class="n">Exec</span><span class="p">()</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err3</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">num3</span><span class="p">,</span><span class="x"> </span><span class="n">_</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">res3</span><span class="o">.</span><span class="n">RowsAffected</span><span class="p">()</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"mysql row affected nums: "</span><span class="p">,</span><span class="x"> </span><span class="n">num3</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="n">res4</span><span class="p">,</span><span class="x"> </span><span class="n">err4</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">o</span><span class="o">.</span><span class="n">Raw</span><span class="p">(</span><span class="s">"DELETE FROM `users` WHERE `name`='Test'"</span><span class="p">)</span><span class="o">.</span><span class="n">Exec</span><span class="p">()</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err4</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">num4</span><span class="p">,</span><span class="x"> </span><span class="n">_</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">res4</span><span class="o">.</span><span class="n">RowsAffected</span><span class="p">()</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"mysql row affected nums: "</span><span class="p">,</span><span class="x"> </span><span class="n">num4</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    
+    </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"json"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="k">interface</span><span class="p">{}{</span><span class="s">"code"</span><span class="o">:</span><span class="m">0</span><span class="p">,</span><span class="x"> </span><span class="s">"message"</span><span class="o">:</span><span class="s">"ok"</span><span class="p">}</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">ServeJSON</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>运行结果：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">ORM</span><span class="p">]</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">15</span><span class="o">:</span><span class="m">30</span><span class="o">:</span><span class="m">51</span><span class="x">  </span><span class="o">-</span><span class="p">[</span><span class="n">Queries</span><span class="o">/</span><span class="k">default</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="x">  </span><span class="n">OK</span><span class="x"> </span><span class="o">/</span><span class="x">    </span><span class="n">db</span><span class="o">.</span><span class="n">Query</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="m">0.9</span><span class="n">ms</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="n">SELECT</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">FROM</span><span class="x"> </span><span class="n">users</span><span class="p">]</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">email</span><span class="o">:</span><span class="n">Lily</span><span class="err">@</span><span class="n">qq</span><span class="o">.</span><span class="n">com</span><span class="x"> </span><span class="n">id</span><span class="o">:</span><span class="m">1</span><span class="x"> </span><span class="n">name</span><span class="o">:</span><span class="n">Lily</span><span class="x"> </span><span class="n">age</span><span class="o">:</span><span class="m">18</span><span class="p">]</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">id</span><span class="o">:</span><span class="m">2</span><span class="x"> </span><span class="n">name</span><span class="o">:</span><span class="n">Lucy</span><span class="x"> </span><span class="n">age</span><span class="o">:</span><span class="m">20</span><span class="x"> </span><span class="n">email</span><span class="o">:</span><span class="n">Lucy</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="p">]</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">email</span><span class="o">:</span><span class="n">Honey</span><span class="err">@</span><span class="n">foxmail</span><span class="o">.</span><span class="n">com</span><span class="x"> </span><span class="n">id</span><span class="o">:</span><span class="m">3</span><span class="x"> </span><span class="n">name</span><span class="o">:</span><span class="n">Honey</span><span class="x"> </span><span class="n">age</span><span class="o">:</span><span class="m">30</span><span class="p">]</span><span class="x">
+</span><span class="p">[</span><span class="n">ORM</span><span class="p">]</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">15</span><span class="o">:</span><span class="m">30</span><span class="o">:</span><span class="m">51</span><span class="x">  </span><span class="o">-</span><span class="p">[</span><span class="n">Queries</span><span class="o">/</span><span class="k">default</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="x">  </span><span class="n">OK</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="n">db</span><span class="o">.</span><span class="n">Exec</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="m">6.9</span><span class="n">ms</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="n">INSERT</span><span class="x"> </span><span class="n">INTO</span><span class="x"> </span><span class="s">`users`</span><span class="x"> </span><span class="p">(</span><span class="s">`name`</span><span class="p">,</span><span class="x"> </span><span class="s">`age`</span><span class="p">,</span><span class="x"> </span><span class="s">`email`</span><span class="p">)</span><span class="x"> </span><span class="n">VALUES</span><span class="x"> </span><span class="p">(</span><span class="err">'</span><span class="n">Test</span><span class="err">'</span><span class="p">,</span><span class="x"> </span><span class="m">27</span><span class="p">,</span><span class="x"> </span><span class="err">'</span><span class="n">test</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="err">'</span><span class="p">)]</span><span class="x">
+</span><span class="n">mysql</span><span class="x"> </span><span class="n">row</span><span class="x"> </span><span class="n">affected</span><span class="x"> </span><span class="n">nums</span><span class="o">:</span><span class="x">  </span><span class="m">1</span><span class="x">
+</span><span class="p">[</span><span class="n">ORM</span><span class="p">]</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">15</span><span class="o">:</span><span class="m">30</span><span class="o">:</span><span class="m">51</span><span class="x">  </span><span class="o">-</span><span class="p">[</span><span class="n">Queries</span><span class="o">/</span><span class="k">default</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="x">  </span><span class="n">OK</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="n">db</span><span class="o">.</span><span class="n">Exec</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="m">3.1</span><span class="n">ms</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="n">UPDATE</span><span class="x"> </span><span class="s">`users`</span><span class="x"> </span><span class="n">SET</span><span class="x"> </span><span class="s">`age`</span><span class="o">=</span><span class="m">18</span><span class="x"> </span><span class="n">WHERE</span><span class="x"> </span><span class="s">`name`</span><span class="o">=</span><span class="err">'</span><span class="n">Test</span><span class="err">'</span><span class="p">]</span><span class="x">
+</span><span class="n">mysql</span><span class="x"> </span><span class="n">row</span><span class="x"> </span><span class="n">affected</span><span class="x"> </span><span class="n">nums</span><span class="o">:</span><span class="x">  </span><span class="m">1</span><span class="x">
+</span><span class="p">[</span><span class="n">ORM</span><span class="p">]</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">15</span><span class="o">:</span><span class="m">30</span><span class="o">:</span><span class="m">51</span><span class="x">  </span><span class="o">-</span><span class="p">[</span><span class="n">Queries</span><span class="o">/</span><span class="k">default</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="x">  </span><span class="n">OK</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="n">db</span><span class="o">.</span><span class="n">Exec</span><span class="x"> </span><span class="o">/</span><span class="x">     </span><span class="m">6.4</span><span class="n">ms</span><span class="p">]</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="p">[</span><span class="n">DELETE</span><span class="x"> </span><span class="n">FROM</span><span class="x"> </span><span class="s">`users`</span><span class="x"> </span><span class="n">WHERE</span><span class="x"> </span><span class="s">`name`</span><span class="o">=</span><span class="err">'</span><span class="n">Test</span><span class="err">'</span><span class="p">]</span><span class="x">
+</span><span class="n">mysql</span><span class="x"> </span><span class="n">row</span><span class="x"> </span><span class="n">affected</span><span class="x"> </span><span class="n">nums</span><span class="o">:</span><span class="x">  </span><span class="m">1</span><span class="x">
+</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">15</span><span class="o">:</span><span class="m">30</span><span class="o">:</span><span class="m">51.054</span><span class="x"> </span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="k">go</span><span class="o">:</span><span class="m">2741</span><span class="p">]</span><span class="x">  </span><span class="o">|</span><span class="x">      </span><span class="m">127.0.0.1</span><span class="o">|</span><span class="x"> </span><span class="m">200</span><span class="x"> </span><span class="o">|</span><span class="x">  </span><span class="m">28.352094</span><span class="n">ms</span><span class="o">|</span><span class="x">   </span><span class="n">match</span><span class="o">|</span><span class="x"> </span><span class="n">GET</span><span class="x">      </span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="x">   </span><span class="n">r</span><span class="o">:/</span><span class="n">test</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【ORM】</strong><br />
+ORM是一个比较强大的功能，他可以让我们的表结构，通过Struct定义的方式表现&amp;关联起来，方便使用。<br />
+目前该框架仍处于开发阶段，让我们来看看官网的示例吧：</p>
+
+<p>models.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/orm"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">User</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Id</span><span class="x">          </span><span class="kt">int</span><span class="x">
+    </span><span class="n">Name</span><span class="x">        </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Profile</span><span class="x">     </span><span class="o">*</span><span class="n">Profile</span><span class="x">   </span><span class="s">`orm:"rel(one)"`</span><span class="x"> </span><span class="c">// OneToOne relation</span><span class="x">
+    </span><span class="n">Post</span><span class="x">        </span><span class="p">[]</span><span class="o">*</span><span class="n">Post</span><span class="x"> </span><span class="s">`orm:"reverse(many)"`</span><span class="x"> </span><span class="c">// 设置一对多的反向关系</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Profile</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Id</span><span class="x">          </span><span class="kt">int</span><span class="x">
+    </span><span class="n">Age</span><span class="x">         </span><span class="kt">int16</span><span class="x">
+    </span><span class="n">User</span><span class="x">        </span><span class="o">*</span><span class="n">User</span><span class="x">   </span><span class="s">`orm:"reverse(one)"`</span><span class="x"> </span><span class="c">// 设置一对一反向关系(可选)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Post</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Id</span><span class="x">    </span><span class="kt">int</span><span class="x">
+    </span><span class="n">Title</span><span class="x"> </span><span class="kt">string</span><span class="x">
+    </span><span class="n">User</span><span class="x">  </span><span class="o">*</span><span class="n">User</span><span class="x">  </span><span class="s">`orm:"rel(fk)"`</span><span class="x">    </span><span class="c">//设置一对多关系</span><span class="x">
+    </span><span class="n">Tags</span><span class="x">  </span><span class="p">[]</span><span class="o">*</span><span class="n">Tag</span><span class="x"> </span><span class="s">`orm:"rel(m2m)"`</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Tag</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Id</span><span class="x">    </span><span class="kt">int</span><span class="x">
+    </span><span class="n">Name</span><span class="x">  </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Posts</span><span class="x"> </span><span class="p">[]</span><span class="o">*</span><span class="n">Post</span><span class="x"> </span><span class="s">`orm:"reverse(many)"`</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">init</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// 需要在init中注册定义的model</span><span class="x">
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterModel</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="n">User</span><span class="p">),</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">Post</span><span class="p">),</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">Profile</span><span class="p">),</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">Tag</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>main.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/orm"</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/go-sql-driver/mysql"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">init</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDriver</span><span class="p">(</span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="n">orm</span><span class="o">.</span><span class="n">DRMySQL</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">orm</span><span class="o">.</span><span class="n">RegisterDataBase</span><span class="p">(</span><span class="s">"default"</span><span class="p">,</span><span class="x"> </span><span class="s">"mysql"</span><span class="p">,</span><span class="x"> </span><span class="s">"root:root@/orm_test?charset=utf8"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">o</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">orm</span><span class="o">.</span><span class="n">NewOrm</span><span class="p">()</span><span class="x">
+    </span><span class="n">o</span><span class="o">.</span><span class="n">Using</span><span class="p">(</span><span class="s">"default"</span><span class="p">)</span><span class="x"> </span><span class="c">// 默认使用 default，你可以指定为其他数据库</span><span class="x">
+
+    </span><span class="n">profile</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">Profile</span><span class="p">)</span><span class="x">
+    </span><span class="n">profile</span><span class="o">.</span><span class="n">Age</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">30</span><span class="x">
+
+    </span><span class="n">user</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="x">
+    </span><span class="n">user</span><span class="o">.</span><span class="n">Profile</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">profile</span><span class="x">
+    </span><span class="n">user</span><span class="o">.</span><span class="n">Name</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"slene"</span><span class="x">
+
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">Insert</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">Insert</span><span class="p">(</span><span class="n">user</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>BeeGo还封装了很多高级的查询方法，有兴趣的小伙伴可以额外深入了解一下；因为篇幅有限，这里就不再展开了。</p>
+</blockquote>
+
+<h3 id="5-http请求">5 Http请求</h3>
+<p>httplib 库主要用来模拟客户端发送 HTTP 请求，类似于 Curl 工具，支持 JQuery 类似的链式操作。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 首先导入包</span><span class="x">
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/httplib"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="c">// 然后初始化请求方法，返回对象</span><span class="x">
+</span><span class="n">req</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">httplib</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"http://yyeer.com/"</span><span class="p">)</span><span class="x">
+    
+</span><span class="c">// 超时时间、Header头都可以按需设置</span><span class="x">
+</span><span class="n">req</span><span class="o">.</span><span class="n">SetTimeout</span><span class="p">(</span><span class="m">100</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">,</span><span class="x"> </span><span class="m">30</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+</span><span class="n">req</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span><span class="s">"Host"</span><span class="p">,</span><span class="s">"yyeer.com"</span><span class="p">)</span><span class="x">
+    
+</span><span class="c">// 然后我们就可以获取数据了</span><span class="x">
+</span><span class="n">str</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">req</span><span class="o">.</span><span class="n">String</span><span class="p">()</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【支持的方法对象】</strong></p>
+
+<ul>
+  <li>Get(url string)</li>
+  <li>Post(url string)</li>
+  <li>Put(url string)</li>
+  <li>Delete(url string)</li>
+  <li>Head(url string)</li>
+</ul>
+
+<p><strong>【获取返回结果】</strong></p>
+
+<ul>
+  <li>返回 Response 对象，<code class="highlighter-rouge">req.Response()</code> 方法
+    <ul>
+      <li>这个是 http.Response 对象，用户可以自己读取 body 的数据等。</li>
+    </ul>
+  </li>
+  <li>返回 bytes, <code class="highlighter-rouge">req.Bytes()</code> 方法</li>
+  <li>返回 string，<code class="highlighter-rouge">req.String()</code> 方法</li>
+  <li>保存为文件，<code class="highlighter-rouge">req.ToFile(filename)</code> 方法</li>
+  <li>解析为 JSON 结构，<code class="highlighter-rouge">req.ToJSON(&amp;result)</code> 方法</li>
+  <li>解析为 XML 结构，<code class="highlighter-rouge">req.ToXml(&amp;result)</code> 方法</li>
+</ul>
+
+<h3 id="6-swagger文档">6 Swagger文档</h3>
+<p>BeeGo框架内自动集成了swagger模块，要使得文档工作，你需要做几个事情，</p>
+
+<ol>
+  <li>第一开启应用内文档开关，在配置文件中设置：<code class="highlighter-rouge">EnableDocs = true</code>,</li>
+  <li>然后在你的 main.go 函数中引入 <code class="highlighter-rouge">_ "beeapi/docs"</code>（beego 1.7.0 之后版本不需要添加该引用）。</li>
+  <li>这样你就已经内置了 docs 在你的 API 应用中，然后你就使用 <code class="highlighter-rouge">bee run -gendoc=true -downdoc=true</code>, 让我们的 API 应用跑起来
+    <ul>
+      <li>-gendoc=true 表示每次自动化的 build 文档，</li>
+      <li>-downdoc=true 就会自动的下载 swagger 文档查看器</li>
+    </ul>
+  </li>
+  <li>最后，router 和 controller 内的配置和注释按照规范编写，即可</li>
+</ol>
+
+<p><strong>【全局注释】</strong><br />
+必须设置在 routers/router.go 中，文件的注释，最顶部：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// @APIVersion 1.0.0</span><span class="x">
+</span><span class="c">// @Title mobile API</span><span class="x">
+</span><span class="c">// @Description mobile has every tool to get any job done, so codename for the new mobile APIs.</span><span class="x">
+</span><span class="c">// @Contact astaxie@gmail.com</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">routers</span><span class="x">
+</span></code></pre></div></div>
+<p>全局的注释如上所示，是显示给全局应用的设置信息，有如下这些设置</p>
+
+<ul>
+  <li>@APIVersion</li>
+  <li>@Title</li>
+  <li>@Description</li>
+  <li>@Contact</li>
+  <li>@TermsOfServiceUrl</li>
+  <li>@License</li>
+  <li>@LicenseUrl</li>
+</ul>
+
+<p><strong>【应用注释】</strong></p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// CMS API</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">CMSController</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">beego</span><span class="o">.</span><span class="n">Controller</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="c">// @Title getStaticBlock</span><span class="x">
+</span><span class="c">// @Description get all the staticblock by key</span><span class="x">
+</span><span class="c">// @Param   key     path    string  true        "The email for login"</span><span class="x">
+</span><span class="c">// @Success 200 {object} models.ZDTCustomer.Customer</span><span class="x">
+</span><span class="c">// @Failure 400 Invalid email supplied</span><span class="x">
+</span><span class="c">// @Failure 404 User not found</span><span class="x">
+</span><span class="c">// @router /staticblock/:key [get]</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">CMSController</span><span class="p">)</span><span class="x"> </span><span class="n">StaticBlock</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>首先是 CMSController 定义上面的注释，这个是用来显示这个模块的作用。</p>
+
+<p>接下来就是每一个函数上面的注释，这里列出来支持的各种注释：</p>
+
+<ul>
+  <li>@Title
+    <ul>
+      <li>这个 API 所表达的含义，是一个文本，空格之后的内容全部解析为 title</li>
+    </ul>
+  </li>
+  <li>@Description
+    <ul>
+      <li>这个 API 详细的描述，是一个文本，空格之后的内容全部解析为 Description</li>
+    </ul>
+  </li>
+  <li>@Param
+    <ul>
+      <li>参数，表示需要传递到服务器端的参数，有五列参数，使用空格或者 tab 分割，五个分别表示的含义如下</li>
+      <li>参数名</li>
+      <li>参数类型，可以有的值是 <code class="highlighter-rouge">formData</code>、<code class="highlighter-rouge">query</code>、<code class="highlighter-rouge">path</code>、<code class="highlighter-rouge">body</code>、<code class="highlighter-rouge">header</code>，formData 表示是 post 请求的数据，query 表示带在 url 之后的参数，path 表示请求路径上得参数，例如上面例子里面的 key，body 表示是一个 raw 数据请求，header 表示带在 header 信息中得参数。</li>
+      <li>参数类型</li>
+      <li>是否必须</li>
+      <li>注释</li>
+    </ul>
+  </li>
+  <li>@Success
+    <ul>
+      <li>成功返回给客户端的信息，三个参数，三个参数必须通过空格分隔
+        <ul>
+          <li>第一个是 status code。</li>
+          <li>第二个参数是返回的类型，必须使用 {} 包含，</li>
+          <li>第三个是返回的对象或者字符串信息，如果是 {object} 类型，那么 bee 工具在生成 docs 的时候会扫描对应的对象。</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>@Failure
+    <ul>
+      <li>失败返回的信息，包含两个参数，使用空格分隔
+        <ul>
+          <li>第一个表示 status code，</li>
+          <li>第二个表示错误信息</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>@router
+    <ul>
+      <li>路由信息，包含两个参数，使用空格分隔，
+        <ul>
+          <li>第一个是请求的路由地址，支持正则和自定义路由，和之前的路由规则一样，</li>
+          <li>第二个参数是支持的请求方法,放在 [] 之中，如果有多个方法，那么使用 , 分隔。</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="7-日志">7 日志</h3>
+<p><strong>【常规使用】</strong><br />
+首先引入包：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/logs"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p>然后添加输出引擎：</p>
+
+<ul>
+  <li>第一个参数是引擎名:
+    <ul>
+      <li><code class="highlighter-rouge">logs.SetLogger("console")</code></li>
+    </ul>
+  </li>
+  <li>第二个参数，用来表示配置信息：
+    <ul>
+      <li>
+        <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logs</span><span class="o">.</span><span class="n">SetLogger</span><span class="p">(</span><span class="n">logs</span><span class="o">.</span><span class="n">AdapterFile</span><span class="p">,</span><span class="s">`{"filename":"project.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10,"color":true}`</span><span class="p">)</span><span class="x">
+</span></code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>log 支持同时输出到多个引擎，包括：console、file、conn、smtp、es、multifile</p>
+</blockquote>
+
+<p>使用方式：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">beego</span><span class="o">.</span><span class="n">Emergency</span><span class="p">(</span><span class="s">"this is emergency"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Alert</span><span class="p">(</span><span class="s">"this is alert"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Critical</span><span class="p">(</span><span class="s">"this is critical"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s">"this is error"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Warning</span><span class="p">(</span><span class="s">"this is warning"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Notice</span><span class="p">(</span><span class="s">"this is notice"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Informational</span><span class="p">(</span><span class="s">"this is informational"</span><span class="p">)</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">Debug</span><span class="p">(</span><span class="s">"this is debug"</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【自定义格式】</strong><br />
+如果框架自带的日志功能还无法满足你的需求，那可能就得麻烦一点，自定义日志格式。</p>
+
+<p>操作流程大致为：</p>
+
+<ol>
+  <li>打开要写入的文件，不存在则创建，<code class="highlighter-rouge">os.OpenFile</code></li>
+  <li>创建一个自定义的日志对象 <code class="highlighter-rouge">log.New</code></li>
+  <li>使用时按所需格式输出日志 <code class="highlighter-rouge">Printf</code></li>
+</ol>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">File</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">OpenFile</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">O_WRONLY</span><span class="o">|</span><span class="n">os</span><span class="o">.</span><span class="n">O_CREATE</span><span class="o">|</span><span class="n">os</span><span class="o">.</span><span class="n">O_APPEND</span><span class="p">,</span><span class="x"> </span><span class="m">0644</span><span class="p">)</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="n">MyLog</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">log</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">MultiWriter</span><span class="p">(</span><span class="n">File</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">),</span><span class="x"> </span><span class="s">""</span><span class="p">,</span><span class="x"> </span><span class="m">0</span><span class="p">)</span><span class="x">
+
+</span><span class="n">MyLog</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"自己定义的格式... %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">自己定义的参数</span><span class="p">,</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="n">formating</span><span class="p">,</span><span class="x"> </span><span class="n">args</span><span class="o">...</span><span class="p">))</span><span class="x">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>实际使用时, 可以把 <code class="highlighter-rouge">MyLog.Printf</code> 封装成一个全局方法，这样整个项目里都可使用。</p>
+</blockquote>
+
+<h3 id="8-加解密">8 加解密</h3>
+<p>加解密在多方对接的时候，经常会用到，所以稍微了解一点也是必要的。<br />
+因为这块使用的人比较多，所以只要肯稍微花点时间，在网上都是可以找到答案的。</p>
+
+<p><strong>【MD5】</strong><br />
+MD5主要是用作签名，具体生成方法如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"crypto/md5"</span><span class="x">
+    </span><span class="s">"encoding/hex"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">MyMd5</span><span class="p">(</span><span class="n">Str</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">Key</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">md5ctx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">md5</span><span class="o">.</span><span class="n">New</span><span class="p">()</span><span class="x">
+    </span><span class="n">md5ctx</span><span class="o">.</span><span class="n">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="n">Str</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">Key</span><span class="p">))</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">md5ctx</span><span class="o">.</span><span class="n">Sum</span><span class="p">(</span><span class="no">nil</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p><strong>【AES】</strong><br />
+AES主要是用作加解密，还分好几种不同的模式如：ECB、CBC、CFB等。<br />
+网上找到一份看起来还不错的<a href="https://blog.csdn.net/mirage003/article/details/87868999">《AES的加解密实现》</a>，原谅我的小偷懒（还没有在实际项目验证过），God Bless。</p>
+
+<blockquote>
+  <p>其他还有SHA、DES、RSA等加解密方式，具体就得根据各小伙伴不同项目所需了。<br />
+Go Go Go ！去吧，你可以的！</p>
+</blockquote>
+
+<h3 id="9-缓存使用">9 缓存使用</h3>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 首先引入包：</span><span class="x">
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/cache"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="c">// 然后初始化一个全局变量对象：</span><span class="x">
+</span><span class="n">bm</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">cache</span><span class="o">.</span><span class="n">NewCache</span><span class="p">(</span><span class="s">"memory"</span><span class="p">,</span><span class="x"> </span><span class="s">`{"interval":60}`</span><span class="p">)</span><span class="x">
+
+</span><span class="c">// 然后我们就可以使用bm增删改缓存：</span><span class="x">
+</span><span class="n">bm</span><span class="o">.</span><span class="n">Put</span><span class="p">(</span><span class="s">"astaxie"</span><span class="p">,</span><span class="x"> </span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="m">10</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+</span><span class="n">bm</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"astaxie"</span><span class="p">)</span><span class="x">
+</span><span class="n">bm</span><span class="o">.</span><span class="n">IsExist</span><span class="p">(</span><span class="s">"astaxie"</span><span class="p">)</span><span class="x">
+</span><span class="n">bm</span><span class="o">.</span><span class="n">Delete</span><span class="p">(</span><span class="s">"astaxie"</span><span class="p">)</span><span class="x">
+</span></code></pre></div></div>
+
+<p>【配置说明】</p>
+
+<ul>
+  <li>memory
+    <ul>
+      <li>配置信息如下所示，配置的信息表示 GC 的时间，表示每个 60s 会进行一次过期清理：</li>
+      <li><code class="highlighter-rouge">{"interval":60}</code></li>
+    </ul>
+  </li>
+  <li>file
+    <ul>
+      <li>配置信息如下所示，配置 CachePath 表示缓存的文件目录，FileSuffix 表示文件后缀，DirectoryLevel 表示目录层级，EmbedExpiry 表示过期设置</li>
+      <li><code class="highlighter-rouge">{"CachePath":"./cache","FileSuffix":".cache","DirectoryLevel":"2","EmbedExpiry":"120"}</code></li>
+    </ul>
+  </li>
+  <li>redis
+    <ul>
+      <li>配置信息如下所示，redis 采用了库 redigo:</li>
+      <li><code class="highlighter-rouge">{"key":"collectionName","conn":":6039","dbNum":"0","password":"thePassWord"}</code>
+        <ul>
+          <li><code class="highlighter-rouge">key</code>: Redis collection 的名称</li>
+          <li><code class="highlighter-rouge">conn</code>: Redis 连接信息</li>
+          <li><code class="highlighter-rouge">dbNum</code>: 连接 Redis 时的 DB 编号. 默认是0.</li>
+          <li><code class="highlighter-rouge">password</code>: 用于连接有密码的 Redis 服务器.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>memcache
+    <ul>
+      <li>配置信息如下所示，memcache 采用了 vitess的库，表示 memcache 的连接地址：</li>
+      <li><code class="highlighter-rouge">{"conn":"127.0.0.1:11211"}</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>【示例】</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego"</span><span class="x">
+    </span><span class="s">"github.com/astaxie/beego/cache"</span><span class="x">
+    </span><span class="n">_</span><span class="x"> </span><span class="s">"github.com/astaxie/beego/cache/redis"</span><span class="x">
+    </span><span class="s">"time"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">this</span><span class="x"> </span><span class="o">*</span><span class="n">TestController</span><span class="p">)</span><span class="x"> </span><span class="n">Test</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">bm</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">cache</span><span class="o">.</span><span class="n">NewCache</span><span class="p">(</span><span class="s">"redis"</span><span class="p">,</span><span class="x"> </span><span class="s">`{"key":"127.0.0.1","conn":":6379","dbNum":"0","password":""}`</span><span class="p">)</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"bm = %+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">bm</span><span class="p">)</span><span class="x">
+        
+    </span><span class="n">err1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bm</span><span class="o">.</span><span class="n">Put</span><span class="p">(</span><span class="s">"yisonli"</span><span class="p">,</span><span class="x"> </span><span class="m">1</span><span class="p">,</span><span class="x"> </span><span class="m">10</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err1</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err1</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="n">redisValue</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bm</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"yisonli"</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"redisValue = %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">redisValue</span><span class="p">)</span><span class="x">
+    
+    </span><span class="n">this</span><span class="o">.</span><span class="n">Ctx</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">Body</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"OK"</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>执行效果：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bm</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="o">&amp;</span><span class="p">{</span><span class="n">p</span><span class="o">:</span><span class="m">0xc000210240</span><span class="x"> </span><span class="n">conninfo</span><span class="o">::</span><span class="m">6379</span><span class="x"> </span><span class="n">dbNum</span><span class="o">:</span><span class="m">0</span><span class="x"> </span><span class="n">key</span><span class="o">:</span><span class="m">127.0.0.1</span><span class="x"> </span><span class="n">password</span><span class="o">:</span><span class="x"> </span><span class="n">maxIdle</span><span class="o">:</span><span class="m">3</span><span class="p">}</span><span class="x">
+</span><span class="n">redisValue</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>注：</p>
+  <ol>
+    <li>示例中使用了redis作为缓存，如果不依赖beego的cache模块，redis还有很多很好用的数据类型和功能方法，如：Hash散列、List列表、Set集合、SortedSet有序集合。</li>
+    <li>本机启动redis服务，和上文启动mysql类似，只需要一条指令启动docker镜像即可：<br />
+<code class="highlighter-rouge">docker run --name local-redis -p 6379:6379 -v $PWD/data:/data -d redis redis-server --appendonly yes</code></li>
+  </ol>
+</blockquote>
+
+<h3 id="10-session">10 Session</h3>
+<p>beego 内置了 session 模块，使用 session 相当方便。</p>
+
+<p>方式1、 在 main 入口函数中设置：<br />
+<code class="highlighter-rouge">beego.BConfig.WebConfig.Session.SessionOn = true</code></p>
+
+<p>方式2、 通过配置文件配置：<br />
+<code class="highlighter-rouge">sessionon = true</code></p>
+
+<p>session默认采用 memory 的方式进行存储，如果需要更换别的引擎（以redis为例），需要修改&amp;设置如下配置：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">beego</span><span class="o">.</span><span class="n">BConfig</span><span class="o">.</span><span class="n">WebConfig</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">SessionProvider</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"redis"</span><span class="x">
+</span><span class="n">beego</span><span class="o">.</span><span class="n">BConfig</span><span class="o">.</span><span class="n">WebConfig</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">SessionProviderConfig</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"127.0.0.1:6379"</span><span class="x">
+</span></code></pre></div></div>
+
+<p>【示例】</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">this</span><span class="x"> </span><span class="o">*</span><span class="n">MainController</span><span class="p">)</span><span class="x"> </span><span class="n">Get</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">v</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">this</span><span class="o">.</span><span class="n">GetSession</span><span class="p">(</span><span class="s">"asta"</span><span class="p">)</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">v</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">SetSession</span><span class="p">(</span><span class="s">"asta"</span><span class="p">,</span><span class="x"> </span><span class="kt">int</span><span class="p">(</span><span class="m">1</span><span class="p">))</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"num"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">0</span><span class="x">
+    </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">SetSession</span><span class="p">(</span><span class="s">"asta"</span><span class="p">,</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="o">+</span><span class="m">1</span><span class="p">)</span><span class="x">
+        </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"num"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"Website"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"beego.me"</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="s">"Email"</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"astaxie@gmail.com"</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%+v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">this</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="x">
+    </span><span class="n">this</span><span class="o">.</span><span class="n">TplName</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"index.tpl"</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+<p>运行后，多次访问首页的debug输出结果：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">20</span><span class="o">:</span><span class="m">25</span><span class="o">:</span><span class="m">20.235</span><span class="x"> </span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">asm_amd64</span><span class="o">.</span><span class="n">s</span><span class="o">:</span><span class="m">1333</span><span class="p">]</span><span class="x">  </span><span class="n">http</span><span class="x"> </span><span class="n">server</span><span class="x"> </span><span class="n">Running</span><span class="x"> </span><span class="n">on</span><span class="x"> </span><span class="n">http</span><span class="o">:</span><span class="c">//:8080</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">RouterPattern</span><span class="o">:/</span><span class="x"> </span><span class="n">num</span><span class="o">:</span><span class="m">0</span><span class="x"> </span><span class="n">Website</span><span class="o">:</span><span class="n">beego</span><span class="o">.</span><span class="n">me</span><span class="x"> </span><span class="n">Email</span><span class="o">:</span><span class="n">astaxie</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="p">]</span><span class="x">
+</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">20</span><span class="o">:</span><span class="m">25</span><span class="o">:</span><span class="m">25.141</span><span class="x"> </span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="k">go</span><span class="o">:</span><span class="m">2741</span><span class="p">]</span><span class="x">  </span><span class="o">|</span><span class="x">      </span><span class="m">127.0.0.1</span><span class="o">|</span><span class="x"> </span><span class="m">200</span><span class="x"> </span><span class="o">|</span><span class="x">    </span><span class="m">4.63737</span><span class="n">ms</span><span class="o">|</span><span class="x">   </span><span class="n">match</span><span class="o">|</span><span class="x"> </span><span class="n">GET</span><span class="x">      </span><span class="o">/</span><span class="x">     </span><span class="n">r</span><span class="o">:/</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">num</span><span class="o">:</span><span class="m">1</span><span class="x"> </span><span class="n">Website</span><span class="o">:</span><span class="n">beego</span><span class="o">.</span><span class="n">me</span><span class="x"> </span><span class="n">Email</span><span class="o">:</span><span class="n">astaxie</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="x"> </span><span class="n">RouterPattern</span><span class="o">:/</span><span class="p">]</span><span class="x">
+</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">20</span><span class="o">:</span><span class="m">25</span><span class="o">:</span><span class="m">46.021</span><span class="x"> </span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="k">go</span><span class="o">:</span><span class="m">2741</span><span class="p">]</span><span class="x">  </span><span class="o">|</span><span class="x">      </span><span class="m">127.0.0.1</span><span class="o">|</span><span class="x"> </span><span class="m">200</span><span class="x"> </span><span class="o">|</span><span class="x">   </span><span class="m">5.116566</span><span class="n">ms</span><span class="o">|</span><span class="x">   </span><span class="n">match</span><span class="o">|</span><span class="x"> </span><span class="n">GET</span><span class="x">      </span><span class="o">/</span><span class="x">     </span><span class="n">r</span><span class="o">:/</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">RouterPattern</span><span class="o">:/</span><span class="x"> </span><span class="n">num</span><span class="o">:</span><span class="m">2</span><span class="x"> </span><span class="n">Website</span><span class="o">:</span><span class="n">beego</span><span class="o">.</span><span class="n">me</span><span class="x"> </span><span class="n">Email</span><span class="o">:</span><span class="n">astaxie</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="p">]</span><span class="x">
+</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">20</span><span class="o">:</span><span class="m">26</span><span class="o">:</span><span class="m">00.084</span><span class="x"> </span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="k">go</span><span class="o">:</span><span class="m">2741</span><span class="p">]</span><span class="x">  </span><span class="o">|</span><span class="x">      </span><span class="m">127.0.0.1</span><span class="o">|</span><span class="x"> </span><span class="m">200</span><span class="x"> </span><span class="o">|</span><span class="x">   </span><span class="m">1.573909</span><span class="n">ms</span><span class="o">|</span><span class="x">   </span><span class="n">match</span><span class="o">|</span><span class="x"> </span><span class="n">GET</span><span class="x">      </span><span class="o">/</span><span class="x">     </span><span class="n">r</span><span class="o">:/</span><span class="x">
+</span><span class="k">map</span><span class="p">[</span><span class="n">RouterPattern</span><span class="o">:/</span><span class="x"> </span><span class="n">num</span><span class="o">:</span><span class="m">3</span><span class="x"> </span><span class="n">Website</span><span class="o">:</span><span class="n">beego</span><span class="o">.</span><span class="n">me</span><span class="x"> </span><span class="n">Email</span><span class="o">:</span><span class="n">astaxie</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span><span class="p">]</span><span class="x">
+</span><span class="m">2019</span><span class="o">/</span><span class="m">07</span><span class="o">/</span><span class="m">17</span><span class="x"> </span><span class="m">20</span><span class="o">:</span><span class="m">26</span><span class="o">:</span><span class="m">12.470</span><span class="x"> </span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="x"> </span><span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="k">go</span><span class="o">:</span><span class="m">2741</span><span class="p">]</span><span class="x">  </span><span class="o">|</span><span class="x">      </span><span class="m">127.0.0.1</span><span class="o">|</span><span class="x"> </span><span class="m">200</span><span class="x"> </span><span class="o">|</span><span class="x">   </span><span class="m">2.652028</span><span class="n">ms</span><span class="o">|</span><span class="x">   </span><span class="n">match</span><span class="o">|</span><span class="x"> </span><span class="n">GET</span><span class="x">      </span><span class="o">/</span><span class="x">     </span><span class="n">r</span><span class="o">:/</span><span class="x">
+</span></code></pre></div></div>
+
+<p>掌握了以上那么多技能，现在，你对项目的开发有多少把握了呢？<br />
+其实，基本已经差不多了，剩下的就是动手实践了。</p>
+
+<blockquote>
+  <p>古人学问无遗力，少壮工夫老始成。<br />
+纸上得来终觉浅，绝知此事要躬行。</p>
+</blockquote>
+
+<p>我是<a href="http://yyeer.com/about/">Yison</a>，如果我有帮助到你，也请你帮助一下我，随手一个赞对你来说无足轻重，但却是使我不断前行的动力！</p>
+
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#编程">编程</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  <a href="/tags/#Go">Go</a>
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/" data-title="以项目为钥匙开启go的世界 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E7%BC%96%E7%A8%8B/2019/06/30/%E6%94%B6%E9%9B%86-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="【收集】常用正则表达式">
+  <strong>上一篇：</strong><br/>
+  <span>
+  【收集】常用正则表达式</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>14</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>5</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Cache" title="Cache">Cache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Go" title="Go">Go<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
