@@ -8,7 +8,7 @@
     
     
     
-    <title>Linux新建用户与sudo权限 | Yison's Blog</title>
+    <title>Go应用的灵活配置viper | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="Linux新建用户与sudo权限">
-    <meta property="og:url" content="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/">
+    <meta property="og:title" content="Go应用的灵活配置viper">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2019/10/10/Go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEViper/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Linux新建用户与sudo权限">
+    <meta name="twitter:title" content="Go应用的灵活配置viper">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/" title="Linux新建用户与sudo权限" itemprop="url">Linux新建用户与sudo权限</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2019/10/10/Go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEViper/" title="Go应用的灵活配置viper" itemprop="url">Go应用的灵活配置viper</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2017-04-10 00:00:00 +0800" itemprop="datePublished"> 发表于 2017-04-10</time>
+    <time datetime="2019-10-10 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-10-10</time>
     
   </p>
 </header>
@@ -117,44 +117,74 @@
 		</div>
 		
 		<blockquote>
-  <p>如何用命令行新建一个带超管权限的账号</p>
+  <p>Viper是一个完整的Go应用程序配置解决方案，它可以处理所有类型的配置需求和格式。</p>
 </blockquote>
 
-<h2 id="1-添加一个用户组并指定id为1002">1. 添加一个用户组并指定id为1002</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>groupadd －g 1002 www
+<h3 id="viper-的功能">viper 的功能</h3>
+<p>viper 支持以下功能：</p>
+<ul>
+  <li>支持Yaml、Json、 TOML、HCL 等格式的配置</li>
+  <li>可以从文件、io、环境变量、command line中提取配置</li>
+  <li>支持自动转换的类型解析</li>
+  <li>可以远程从etcd中读取配置</li>
+</ul>
+
+<h3 id="安装">安装</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go get -u github.com/spf13/viper
 </code></pre></div></div>
 
-<h2 id="2-添加一个用户到www组并指定id为1003">2. 添加一个用户到www组并指定id为1003</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>useradd www <span class="nt">-g</span> 1002 <span class="nt">-u</span> 1003 <span class="nt">-m</span>
+<h3 id="示例">示例</h3>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"github.com/spf13/viper"</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">var</span><span class="x"> </span><span class="n">VP</span><span class="x"> </span><span class="o">*</span><span class="n">viper</span><span class="o">.</span><span class="n">Viper</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">AutoLoadConfig</span><span class="p">()</span><span class="x"> </span><span class="kt">error</span><span class="x">  </span><span class="p">{</span><span class="x">
+    </span><span class="n">VP</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">New</span><span class="p">()</span><span class="x">
+
+    </span><span class="c">//设置配置文件的名字</span><span class="x">
+    </span><span class="n">VP</span><span class="o">.</span><span class="n">SetConfigName</span><span class="p">(</span><span class="s">"config"</span><span class="p">)</span><span class="x">
+
+    </span><span class="c">//添加配置文件所在的路径</span><span class="x">
+    </span><span class="n">VP</span><span class="o">.</span><span class="n">AddConfigPath</span><span class="p">(</span><span class="s">"./config/"</span><span class="p">)</span><span class="x">
+
+    </span><span class="c">//设置配置文件类型</span><span class="x">
+    </span><span class="n">VP</span><span class="o">.</span><span class="n">SetConfigType</span><span class="p">(</span><span class="s">"yaml"</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">VP</span><span class="o">.</span><span class="n">ReadInConfig</span><span class="p">();</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"error: %s </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="o">.</span><span class="n">Error</span><span class="p">());</span><span class="x">
+        </span><span class="k">return</span><span class="x">  </span><span class="n">err</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="c">//获取系统环境变量</span><span class="x">
+    </span><span class="n">VP</span><span class="o">.</span><span class="n">BindEnv</span><span class="p">(</span><span class="s">"GOPATH"</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"list: %+v, gopath: %s </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">VP</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"information.list"</span><span class="p">),</span><span class="x"> </span><span class="n">VP</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"GOPATH"</span><span class="p">));</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="no">nil</span><span class="p">;</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<h3 id="configyaml">config.yaml</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">TimeStamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2019-10-10</span><span class="nv"> </span><span class="s">14:15:16"</span>
+<span class="na">Author</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Yisonli"</span>
+<span class="na">Information</span><span class="pi">:</span>
+   <span class="na">List</span><span class="pi">:</span>
+   <span class="pi">-</span> <span class="s2">"</span><span class="s">One"</span>
+   <span class="pi">-</span> <span class="s2">"</span><span class="s">Two"</span>
+   <span class="pi">-</span> <span class="s2">"</span><span class="s">Three"</span>
+   <span class="na">LuckyNumber</span><span class="pi">:</span> <span class="s">7</span>
 </code></pre></div></div>
 
-<h2 id="3-修改用户的密码">3. 修改用户的密码</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>passwd www
+<h3 id="运行结果">运行结果</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>list: <span class="o">[</span>One Two Three], gopath: /Users/yison/LocalProject/eclipse_work/go
 </code></pre></div></div>
 
-<h2 id="4-删除一个用户">4. 删除一个用户</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>userdel www
-</code></pre></div></div>
-
-<h3 id="41-添加一个管理员用户">4.1 添加一个管理员用户</h3>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>useradd <span class="nt">-s</span> /bin/bash <span class="nt">-mr</span>
-</code></pre></div></div>
-
-<h2 id="5-为该用户添加sudo权限">5. 为该用户添加sudo权限</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>usermod <span class="nt">-a</span> <span class="nt">-G</span> adm www
-<span class="nb">sudo </span>usermod <span class="nt">-a</span> <span class="nt">-G</span> <span class="nb">sudo </span>www
-</code></pre></div></div>
-
-<h2 id="6-查看所有用户和用户组">6. 查看所有用户和用户组：</h2>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /etc/passwd
-<span class="nb">cat</span> /etc/group
-</code></pre></div></div>
-
-<p>系统第一个默认账号加入的组除了它自己组外还有：</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//使用 groups &lt;username&gt;命令查看。
-adm cdrom <span class="nb">sudo </span>dip plugdev lpadmin sambashare 
-</code></pre></div></div>
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -171,7 +201,7 @@ adm cdrom <span class="nb">sudo </span>dip plugdev lpadmin sambashare
   }) %>
   -->
   
-  <a class="article-category-link" href="/categories/#操作系统">操作系统</a>
+  <a class="article-category-link" href="/categories/#编程">编程</a>
   
 </div>
 
@@ -185,7 +215,7 @@ adm cdrom <span class="nb">sudo </span>dip plugdev lpadmin sambashare
   <span></span> <!--<%- tags.join('') %>-->
   
   
-  <a href="/tags/#Linux">Linux</a>
+  <a href="/tags/#Go">Go</a>
   
   </div>
 
@@ -195,7 +225,7 @@ adm cdrom <span class="nb">sudo </span>dip plugdev lpadmin sambashare
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/04/10/Linux%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7%E4%B8%8Esudo%E6%9D%83%E9%99%90/" data-title="Linux新建用户与sudo权限 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/10/Go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEViper/" data-title="Go应用的灵活配置viper | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -208,21 +238,13 @@ adm cdrom <span class="nb">sudo </span>dip plugdev lpadmin sambashare
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/%E7%BC%96%E7%A8%8B/2016/06/02/PHP7%E5%92%8CNginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" title="Php7和nginx安装记录">
+ <a href="/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/" title="以项目为钥匙开启go的世界">
   <strong>上一篇：</strong><br/>
   <span>
-  Php7和nginx安装记录</span>
+  以项目为钥匙开启go的世界</span>
 </a>
 </div>
 
-
-<div class="next">
-<a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2017/05/03/MYSQL%E6%96%B0%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7/"  title="Mysql新建数据库和用户账号">
- <strong>下一篇：</strong><br/> 
- <span>Mysql新建数据库和用户账号
-</span>
-</a>
-</div>
 
 </nav>
 
