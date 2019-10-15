@@ -132,13 +132,13 @@
 
 <h3 id="1-cond-条件等待">1. Cond 条件等待</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Cond struct {
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Cond</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
 
-        // L is held while observing or changing the condition
-        L Locker
-        // contains filtered or unexported fields
-}
-</code></pre></div></div>
+        </span><span class="c">// L is held while observing or changing the condition</span><span class="x">
+        </span><span class="n">L</span><span class="x"> </span><span class="n">Locker</span><span class="x">
+        </span><span class="c">// contains filtered or unexported fields</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>解释：<br />
 Cond实现了一个条件变量，一个线程集合地，供线程等待或者宣布某事件的发生。</p>
@@ -150,89 +150,89 @@ Cond实现了一个条件变量，一个线程集合地，供线程等待或者�
 <p>在Wait之前需要手动为c.L上锁，Wait结束了手动解锁。
 为避免虚假唤醒，需要将Wait放到一个条件判断的循环中，官方要求写法：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c.L.Lock()
-for !condition() {
-    c.Wait()
-}
-// 执行条件满足之后的动作...
-c.L.Unlock()
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">c</span><span class="o">.</span><span class="n">L</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x">
+</span><span class="k">for</span><span class="x"> </span><span class="o">!</span><span class="n">condition</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">c</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="c">// 执行条件满足之后的动作...</span><span class="x">
+</span><span class="n">c</span><span class="o">.</span><span class="n">L</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+</span></code></pre></div></div>
 
 <p>数据结构：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Cond struct {
-    L Locker // 在“检查条件”或“更改条件”时 L 应该锁定。
-} 
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Cond</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">L</span><span class="x"> </span><span class="n">Locker</span><span class="x"> </span><span class="c">// 在“检查条件”或“更改条件”时 L 应该锁定。</span><span class="x">
+</span><span class="p">}</span><span class="x"> 
 
-// 创建一个条件等待
-func NewCond(l Locker) *Cond
+</span><span class="c">// 创建一个条件等待</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewCond</span><span class="p">(</span><span class="n">l</span><span class="x"> </span><span class="n">Locker</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Cond</span><span class="x">
 
-// Broadcast 唤醒所有等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。
-func (c *Cond) Broadcast()
+</span><span class="c">// Broadcast 唤醒所有等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">Cond</span><span class="p">)</span><span class="x"> </span><span class="n">Broadcast</span><span class="p">()</span><span class="x">
 
-// Signal 唤醒一个等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。
-func (c *Cond) Signal()
+</span><span class="c">// Signal 唤醒一个等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">Cond</span><span class="p">)</span><span class="x"> </span><span class="n">Signal</span><span class="p">()</span><span class="x">
 
-// Wait 会解锁 c.L 并进入等待状态，在被唤醒时，会重新锁定 c.L
-func (c *Cond) Wait()
-</code></pre></div></div>
+</span><span class="c">// Wait 会解锁 c.L 并进入等待状态，在被唤醒时，会重新锁定 c.L</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">Cond</span><span class="p">)</span><span class="x"> </span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span></code></pre></div></div>
 
 <p>代码示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
-<span class="n">import</span> <span class="p">(</span>
-	<span class="s2">"fmt"</span>
-	<span class="s2">"sync"</span>
-	<span class="s2">"time"</span>
-<span class="p">)</span>
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"sync"</span><span class="x">
+	</span><span class="s">"time"</span><span class="x">
+</span><span class="p">)</span><span class="x">
 
-<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="n">condition</span> <span class="p">:=</span> <span class="nb">false</span> <span class="p">//</span> <span class="err">条件不满足</span>
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">condition</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="no">false</span><span class="x"> </span><span class="c">// 条件不满足</span><span class="x">
 
-	<span class="n">var</span> <span class="n">mu</span> <span class="n">sync</span><span class="p">.</span><span class="n">Mutex</span>
-	<span class="n">cond</span> <span class="p">:=</span> <span class="n">sync</span><span class="p">.</span><span class="n">NewCond</span><span class="p">(&amp;</span><span class="n">mu</span><span class="p">)</span> <span class="p">//</span> <span class="err">创建一个</span><span class="n">Cond</span>
+	</span><span class="k">var</span><span class="x"> </span><span class="n">mu</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">Mutex</span><span class="x">
+	</span><span class="n">cond</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">NewCond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mu</span><span class="p">)</span><span class="x"> </span><span class="c">// 创建一个Cond</span><span class="x">
 
-	<span class="p">//</span><span class="err">让协程去创造条件</span>
-	<span class="n">go</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="n">mu</span><span class="p">.</span><span class="n">Lock</span><span class="p">()</span>
-		<span class="n">condition</span> <span class="p">=</span> <span class="nb">true</span> <span class="p">//</span> <span class="err">改写条件</span>
-		<span class="n">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="m">3</span> <span class="p">*</span> <span class="n">time</span><span class="p">.</span><span class="n">Second</span><span class="p">)</span>
-		<span class="n">cond</span><span class="p">.</span><span class="n">Signal</span><span class="p">()</span> <span class="p">//</span> <span class="err">发送通知：条件</span><span class="n">ok</span>
-		<span class="n">mu</span><span class="p">.</span><span class="n">Unlock</span><span class="p">()</span>
-	<span class="p">}()</span>
+	</span><span class="c">//让协程去创造条件</span><span class="x">
+	</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">mu</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x">
+		</span><span class="n">condition</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">true</span><span class="x"> </span><span class="c">// 改写条件</span><span class="x">
+		</span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">3</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+		</span><span class="n">cond</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span><span class="x"> </span><span class="c">// 发送通知：条件ok</span><span class="x">
+		</span><span class="n">mu</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+	</span><span class="p">}()</span><span class="x">
 
-	<span class="n">mu</span><span class="p">.</span><span class="n">Lock</span><span class="p">()</span>
+	</span><span class="n">mu</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x">
 
-	<span class="p">//</span> <span class="err">检查条件是否满足，避免虚假通知，同时避免</span> <span class="n">Signal</span> <span class="err">提前于</span> <span class="nf">Wait</span> <span class="err">执行。</span>
-	<span class="n">for</span> <span class="c1">!condition { // 如果Signal提前执行了，那么此处就是false了
-</span>
-		<span class="p">//</span> <span class="err">等待条件满足的通知，如果虚假通知，则继续循环等待</span>
-		<span class="n">cond</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span> <span class="p">//</span> <span class="err">等待时</span> <span class="n">mu</span> <span class="err">处于解锁状态，唤醒时重新锁定。</span> <span class="p">(</span><span class="err">阻塞当前线程</span><span class="p">)</span>
+	</span><span class="c">// 检查条件是否满足，避免虚假通知，同时避免 Signal 提前于 Wait 执行。</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="o">!</span><span class="n">condition</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="c">// 如果Signal提前执行了，那么此处就是false了</span><span class="x">
 
-	<span class="p">}</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"条件满足，开始后续动作..."</span><span class="p">)</span>
-	<span class="n">mu</span><span class="p">.</span><span class="n">Unlock</span><span class="p">()</span>
+		</span><span class="c">// 等待条件满足的通知，如果虚假通知，则继续循环等待</span><span class="x">
+		</span><span class="n">cond</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x"> </span><span class="c">// 等待时 mu 处于解锁状态，唤醒时重新锁定。 (阻塞当前线程)</span><span class="x">
 
-<span class="p">}</span>
-</code></pre></div></div>
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"条件满足，开始后续动作..."</span><span class="p">)</span><span class="x">
+	</span><span class="n">mu</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <h3 id="2-locker">2. Locker</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Locker interface {
-    Lock()
-    Unlock()
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Locker</span><span class="x"> </span><span class="k">interface</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Lock</span><span class="p">()</span><span class="x">
+    </span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>Locker接口代表一个可以加锁和解锁的对象。</p>
 
 <h3 id="3-mutex--互斥锁">3. Mutex  互斥锁</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Mutex struct {
-    // contains filtered or unexported fields
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Mutex</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// contains filtered or unexported fields</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <ul>
   <li>Mutex 是互斥锁。</li>
@@ -245,54 +245,54 @@ func (c *Cond) Wait()
 
 <p>数据结构：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Lock 用于锁住 m，如果 m 已经被加锁，则 Lock 将被阻塞，直到 m 被解锁。
-func (m *Mutex) Lock()
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// Lock 用于锁住 m，如果 m 已经被加锁，则 Lock 将被阻塞，直到 m 被解锁。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">m</span><span class="x"> </span><span class="o">*</span><span class="n">Mutex</span><span class="p">)</span><span class="x"> </span><span class="n">Lock</span><span class="p">()</span><span class="x">
 
-// Unlock 用于解锁 m，如果 m 未加锁，则该操作会引发 panic。
-func (m *Mutex) Unlock()
-</code></pre></div></div>
+</span><span class="c">// Unlock 用于解锁 m，如果 m 未加锁，则该操作会引发 panic。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">m</span><span class="x"> </span><span class="o">*</span><span class="n">Mutex</span><span class="p">)</span><span class="x"> </span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+</span></code></pre></div></div>
 
 <p>代码示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
-<span class="n">import</span> <span class="p">(</span>
-	<span class="s2">"fmt"</span>
-	<span class="s2">"sync"</span>
-<span class="p">)</span>
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"sync"</span><span class="x">
+</span><span class="p">)</span><span class="x">
 
-<span class="n">type</span> <span class="n">SafeInt</span> <span class="n">struct</span> <span class="p">{</span>
-	<span class="n">sync</span><span class="p">.</span><span class="n">Mutex</span>
-	<span class="n">Num</span> <span class="n">int</span>
-<span class="p">}</span>
+</span><span class="k">type</span><span class="x"> </span><span class="n">SafeInt</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">sync</span><span class="o">.</span><span class="n">Mutex</span><span class="x">
+	</span><span class="n">Num</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="n">waitNum</span> <span class="p">:=</span> <span class="m">10</span> <span class="p">//</span> <span class="err">设置等待的个数（继续往下看）</span>
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">waitNum</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">10</span><span class="x"> </span><span class="c">// 设置等待的个数（继续往下看）</span><span class="x">
 
-	<span class="k">count</span> <span class="p">:=</span> <span class="n">SafeInt</span><span class="p">{}</span>
+	</span><span class="n">count</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">SafeInt</span><span class="p">{}</span><span class="x">
 
-	<span class="n">done</span> <span class="p">:=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">bool</span><span class="p">)</span>
+	</span><span class="n">done</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">bool</span><span class="p">)</span><span class="x">
 
-	<span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">waitNum</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-		<span class="n">go</span> <span class="n">func</span><span class="p">(</span><span class="n">i</span> <span class="n">int</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">count</span><span class="p">.</span><span class="n">Lock</span><span class="p">()</span> <span class="p">//</span> <span class="err">加锁，防止其它例程修改</span> <span class="k">count</span>
-			<span class="k">count</span><span class="p">.</span><span class="n">Num</span> <span class="p">=</span> <span class="k">count</span><span class="p">.</span><span class="n">Num</span> <span class="p">+</span> <span class="n">i</span>
-			<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="k">count</span><span class="p">.</span><span class="n">Num</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
-			<span class="k">count</span><span class="p">.</span><span class="n">Unlock</span><span class="p">()</span>
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">waitNum</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">count</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x"> </span><span class="c">// 加锁，防止其它例程修改 count</span><span class="x">
+			</span><span class="n">count</span><span class="o">.</span><span class="n">Num</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">count</span><span class="o">.</span><span class="n">Num</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">i</span><span class="x">
+			</span><span class="n">fmt</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="n">count</span><span class="o">.</span><span class="n">Num</span><span class="p">,</span><span class="x"> </span><span class="s">" "</span><span class="p">)</span><span class="x">
+			</span><span class="n">count</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
 
-			<span class="n">done</span> <span class="p">&lt;-</span> <span class="nb">true</span>
-		<span class="p">}(</span><span class="n">i</span><span class="p">)</span>
-	<span class="p">}</span>
+			</span><span class="n">done</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="no">true</span><span class="x">
+		</span><span class="p">}(</span><span class="n">i</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
 
-	<span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">waitNum</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-		<span class="p">&lt;-</span><span class="n">done</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></div>
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">waitNum</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="o">&lt;-</span><span class="n">done</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>运行结果：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1 4 8 8 10 15 21 30 37 45
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1 4 8 8 10 15 21 30 37 45
 </code></pre></div></div>
 
 <blockquote>
@@ -304,10 +304,10 @@ func (m *Mutex) Unlock()
 
 <h3 id="4--once-单次执行">4.  Once 单次执行</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Once struct {
-    // contains filtered or unexported fields
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Once</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// contains filtered or unexported fields</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <ul>
   <li>Once是只执行一次动作的对象。</li>
@@ -318,49 +318,49 @@ func (m *Mutex) Unlock()
 
 <p>数据结构：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 多次调用仅执行一次指定的函数 f
-func (o *Once) Do(f func())
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 多次调用仅执行一次指定的函数 f</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">o</span><span class="x"> </span><span class="o">*</span><span class="n">Once</span><span class="p">)</span><span class="x"> </span><span class="n">Do</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">())</span><span class="x">
+</span></code></pre></div></div>
 
 <p>代码示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
-<span class="p">//</span> <span class="err">官方案例</span>
+</span><span class="c">// 官方案例</span><span class="x">
 
-<span class="n">import</span> <span class="p">(</span>
-	<span class="s2">"fmt"</span>
-	<span class="s2">"sync"</span>
-<span class="p">)</span>
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"sync"</span><span class="x">
+</span><span class="p">)</span><span class="x">
 
-<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="n">var</span> <span class="n">once</span> <span class="n">sync</span><span class="p">.</span><span class="n">Once</span>
-	<span class="n">var</span> <span class="n">num</span> <span class="n">int</span>
-	<span class="n">onceBody</span> <span class="p">:=</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"Only once"</span><span class="p">)</span>
-	<span class="p">}</span>
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">once</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">Once</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">num</span><span class="x"> </span><span class="kt">int</span><span class="x">
+	</span><span class="n">onceBody</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Only once"</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
 
-	<span class="n">done</span> <span class="p">:=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">bool</span><span class="p">)</span>
+	</span><span class="n">done</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">bool</span><span class="p">)</span><span class="x">
 
-	<span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-		<span class="n">go</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="n">once</span><span class="p">.</span><span class="k">Do</span><span class="p">(</span><span class="n">onceBody</span><span class="p">)</span> <span class="p">//</span> <span class="err">多次调用</span>
-			<span class="n">done</span> <span class="p">&lt;-</span> <span class="nb">true</span>
-		<span class="p">}()</span>
-	<span class="p">}</span>
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">once</span><span class="o">.</span><span class="n">Do</span><span class="p">(</span><span class="n">onceBody</span><span class="p">)</span><span class="x"> </span><span class="c">// 多次调用</span><span class="x">
+			</span><span class="n">done</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="no">true</span><span class="x">
+		</span><span class="p">}()</span><span class="x">
+	</span><span class="p">}</span><span class="x">
 
-	<span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-		<span class="p">&lt;-</span><span class="n">done</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></div>
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="o">&lt;-</span><span class="n">done</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <h3 id="5-rwmutex-读写互斥锁">5. RWMutex 读写互斥锁</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type RWMutex struct {
-    // 包含隐藏或非导出字段
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">RWMutex</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// 包含隐藏或非导出字段</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <ul>
   <li>RWMutex是读写互斥锁。</li>
@@ -372,21 +372,21 @@ func (o *Once) Do(f func())
 
 <p>数据结构：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Lock 将 rw 设置为写锁定状态，禁止其他例程读取或写入。
-func (rw *RWMutex) Lock()
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// Lock 将 rw 设置为写锁定状态，禁止其他例程读取或写入。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">rw</span><span class="x"> </span><span class="o">*</span><span class="n">RWMutex</span><span class="p">)</span><span class="x"> </span><span class="n">Lock</span><span class="p">()</span><span class="x">
 
-// Unlock 解除 rw 的写锁定状态，如果 rw 未被写锁定，则该操作会引发 panic。
-func (rw *RWMutex) Unlock()
+</span><span class="c">// Unlock 解除 rw 的写锁定状态，如果 rw 未被写锁定，则该操作会引发 panic。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">rw</span><span class="x"> </span><span class="o">*</span><span class="n">RWMutex</span><span class="p">)</span><span class="x"> </span><span class="n">Unlock</span><span class="p">()</span><span class="x">
 
-// RLock 将 rw 设置为读锁定状态，禁止其他例程写入，但可以读取。
-func (rw *RWMutex) RLock()
+</span><span class="c">// RLock 将 rw 设置为读锁定状态，禁止其他例程写入，但可以读取。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">rw</span><span class="x"> </span><span class="o">*</span><span class="n">RWMutex</span><span class="p">)</span><span class="x"> </span><span class="n">RLock</span><span class="p">()</span><span class="x">
 
-// Runlock 解除 rw 的读锁定状态，如果 rw 未被读锁顶，则该操作会引发 panic。
-func (rw *RWMutex) RUnlock()
+</span><span class="c">// Runlock 解除 rw 的读锁定状态，如果 rw 未被读锁顶，则该操作会引发 panic。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">rw</span><span class="x"> </span><span class="o">*</span><span class="n">RWMutex</span><span class="p">)</span><span class="x"> </span><span class="n">RUnlock</span><span class="p">()</span><span class="x">
 
-// RLocker 返回一个互斥锁，将 rw.RLock 和 rw.RUnlock 封装成了一个 Locker 接口。
-func (rw *RWMutex) RLocker() Locker
-</code></pre></div></div>
+</span><span class="c">// RLocker 返回一个互斥锁，将 rw.RLock 和 rw.RUnlock 封装成了一个 Locker 接口。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">rw</span><span class="x"> </span><span class="o">*</span><span class="n">RWMutex</span><span class="p">)</span><span class="x"> </span><span class="n">RLocker</span><span class="p">()</span><span class="x"> </span><span class="n">Locker</span><span class="x">
+</span></code></pre></div></div>
 
 <blockquote>
   <p>注意，Lock() 锁定时，其他例程是无法读写的。</p>
@@ -400,55 +400,55 @@ func (rw *RWMutex) RLocker() Locker
 
 <p>代码示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
-<span class="n">import</span> <span class="p">(</span>
-	<span class="s2">"fmt"</span>
-	<span class="s2">"sync"</span>
-	<span class="s2">"time"</span>
-<span class="p">)</span>
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"sync"</span><span class="x">
+	</span><span class="s">"time"</span><span class="x">
+</span><span class="p">)</span><span class="x">
 
-<span class="n">var</span> <span class="n">m</span> <span class="p">*</span><span class="n">sync</span><span class="p">.</span><span class="n">RWMutex</span>
-<span class="n">var</span> <span class="n">wg</span> <span class="n">sync</span><span class="p">.</span><span class="n">WaitGroup</span>
+</span><span class="k">var</span><span class="x"> </span><span class="n">m</span><span class="x"> </span><span class="o">*</span><span class="n">sync</span><span class="o">.</span><span class="n">RWMutex</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">wg</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span><span class="x">
 
-<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="n">m</span> <span class="p">=</span> <span class="n">new</span><span class="p">(</span><span class="n">sync</span><span class="p">.</span><span class="n">RWMutex</span><span class="p">)</span>
-	<span class="n">wg</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
-	<span class="n">go</span> <span class="nb">write</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
-	<span class="n">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="m">1</span> <span class="p">*</span> <span class="n">time</span><span class="p">.</span><span class="n">Second</span><span class="p">)</span>
-	<span class="n">go</span> <span class="nb">read</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
-	<span class="n">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
-<span class="p">}</span>
-<span class="n">func</span> <span class="nb">write</span><span class="p">(</span><span class="n">i</span> <span class="n">int</span><span class="p">)</span> <span class="p">{</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"写开始."</span><span class="p">)</span>
-	<span class="n">m</span><span class="p">.</span><span class="n">Lock</span><span class="p">()</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"正在写入中......"</span><span class="p">)</span>
-	<span class="n">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="m">3</span> <span class="p">*</span> <span class="n">time</span><span class="p">.</span><span class="n">Second</span><span class="p">)</span>
-	<span class="n">m</span><span class="p">.</span><span class="n">Unlock</span><span class="p">()</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"写入结束."</span><span class="p">)</span>
-	<span class="n">wg</span><span class="p">.</span><span class="n">Done</span><span class="p">()</span>
-<span class="p">}</span>
-<span class="n">func</span> <span class="nb">read</span><span class="p">(</span><span class="n">i</span> <span class="n">int</span><span class="p">)</span> <span class="p">{</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"读开始."</span><span class="p">)</span>
-	<span class="n">m</span><span class="p">.</span><span class="n">RLock</span><span class="p">()</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"正在读取中......"</span><span class="p">)</span>
-	<span class="n">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="m">1</span> <span class="p">*</span> <span class="n">time</span><span class="p">.</span><span class="n">Second</span><span class="p">)</span>
-	<span class="n">m</span><span class="p">.</span><span class="n">RUnlock</span><span class="p">()</span>
-	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">"读取结束."</span><span class="p">)</span>
-	<span class="n">wg</span><span class="p">.</span><span class="n">Done</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div></div>
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">m</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">sync</span><span class="o">.</span><span class="n">RWMutex</span><span class="p">)</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="x">
+	</span><span class="k">go</span><span class="x"> </span><span class="n">write</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+	</span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">1</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+	</span><span class="k">go</span><span class="x"> </span><span class="n">read</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">write</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"写开始."</span><span class="p">)</span><span class="x">
+	</span><span class="n">m</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"正在写入中......"</span><span class="p">)</span><span class="x">
+	</span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">3</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+	</span><span class="n">m</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"写入结束."</span><span class="p">)</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">read</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"读开始."</span><span class="p">)</span><span class="x">
+	</span><span class="n">m</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"正在读取中......"</span><span class="p">)</span><span class="x">
+	</span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">1</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+	</span><span class="n">m</span><span class="o">.</span><span class="n">RUnlock</span><span class="p">()</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">"读取结束."</span><span class="p">)</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>运行结果:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 写开始.
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 写开始.
 1 正在写入中......
 2 读开始.
 1 写入结束.
 2 正在读取中......
 2 读取结束.
-&gt; Elapsed: 4.747s
-&gt; Result: Success
+<span class="o">&gt;</span> Elapsed: 4.747s
+<span class="o">&gt;</span> Result: Success
 </code></pre></div></div>
 
 <blockquote>
@@ -460,10 +460,10 @@ func (rw *RWMutex) RLocker() Locker
 
 <h3 id="6-waitgroup-组等待">6. WaitGroup 组等待</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type WaitGroup struct {
-    // contains filtered or unexported fields
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">WaitGroup</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// contains filtered or unexported fields</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <ul>
   <li>WaitGroup用于等待一组线程的结束。</li>
@@ -474,47 +474,47 @@ func (rw *RWMutex) RLocker() Locker
 
 <p>数据结构：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 计数器增加 delta，delta 可以是负数。
-func (wg *WaitGroup) Add(delta int)
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// 计数器增加 delta，delta 可以是负数。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">wg</span><span class="x"> </span><span class="o">*</span><span class="n">WaitGroup</span><span class="p">)</span><span class="x"> </span><span class="n">Add</span><span class="p">(</span><span class="n">delta</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">
 
-// 计数器减少 1
-func (wg *WaitGroup) Done()
+</span><span class="c">// 计数器减少 1</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">wg</span><span class="x"> </span><span class="o">*</span><span class="n">WaitGroup</span><span class="p">)</span><span class="x"> </span><span class="n">Done</span><span class="p">()</span><span class="x">
 
-// 等待直到计数器归零。如果计数器小于 0，则该操作会引发 panic。
-func (wg *WaitGroup) Wait()
-</code></pre></div></div>
+</span><span class="c">// 等待直到计数器归零。如果计数器小于 0，则该操作会引发 panic。</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">wg</span><span class="x"> </span><span class="o">*</span><span class="n">WaitGroup</span><span class="p">)</span><span class="x"> </span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span></code></pre></div></div>
 
 <p>代码示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func main() {
-	wg := sync.WaitGroup{}
-	wg.Add(10)
-	for i := 0; i &lt; 10; i++ {
-		go func(i int) {
-			defer wg.Done()
-			fmt.Print(i, " ")
-		}(i)
-	}
-	wg.Wait()
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">wg</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span><span class="p">{}</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="k">defer</span><span class="x"> </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+			</span><span class="n">fmt</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">" "</span><span class="p">)</span><span class="x">
+		</span><span class="p">}(</span><span class="n">i</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>输出是无序的。</p>
 
 <p>注意此处有一个小坑，看代码：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func main() {
-	wg := sync.WaitGroup{}
-	for i := 0; i &lt; 10; i++ {
-		go func(i int) {
-			wg.Add(1)
-			defer wg.Done()
-			fmt.Print(i, " ")
-		}(i)
-	}
-	wg.Wait()
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">wg</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span><span class="p">{}</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+			</span><span class="k">defer</span><span class="x"> </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+			</span><span class="n">fmt</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="s">" "</span><span class="p">)</span><span class="x">
+		</span><span class="p">}(</span><span class="n">i</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>看输出，发现会小于10个，甚至一个也没有。<br />
 问题就在于goroutine执行时间和main程的退出时间问题，导致Add()是否执行。<br />
@@ -524,18 +524,18 @@ func (wg *WaitGroup) Wait()
 
 <h3 id="7-pool--临时对象池">7. Pool  临时对象池</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Pool struct {
-	noCopy noCopy
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Pool</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">noCopy</span><span class="x"> </span><span class="n">noCopy</span><span class="x">
 
-	local     unsafe.Pointer // local fixed-size per-P pool, actual type is [P]poolLocal
-	localSize uintptr        // size of the local array
+	</span><span class="n">local</span><span class="x">     </span><span class="n">unsafe</span><span class="o">.</span><span class="n">Pointer</span><span class="x"> </span><span class="c">// local fixed-size per-P pool, actual type is [P]poolLocal</span><span class="x">
+	</span><span class="n">localSize</span><span class="x"> </span><span class="kt">uintptr</span><span class="x">        </span><span class="c">// size of the local array</span><span class="x">
 
-	// New optionally specifies a function to generate
-	// a value when Get would otherwise return nil.
-	// It may not be changed concurrently with calls to Get.
-	New func() interface{}
-}
-</code></pre></div></div>
+	</span><span class="c">// New optionally specifies a function to generate</span><span class="x">
+	</span><span class="c">// a value when Get would otherwise return nil.</span><span class="x">
+	</span><span class="c">// It may not be changed concurrently with calls to Get.</span><span class="x">
+	</span><span class="n">New</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <ul>
   <li>Pool 用于存储临时对象，它将使用完毕的对象存入对象池中，在需要的时候取出来重复使用，目的是为了避免重复创建相同的对象造成 GC 负担过重。</li>
@@ -560,33 +560,33 @@ func (wg *WaitGroup) Wait()
 
 <p>先看看这几个数据结构</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Pool struct {
-	noCopy noCopy
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Pool</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">noCopy</span><span class="x"> </span><span class="n">noCopy</span><span class="x">
 
-	local     unsafe.Pointer // local fixed-size per-P pool, actual type is [P]poolLocal
-	localSize uintptr        // size of the local array
+	</span><span class="n">local</span><span class="x">     </span><span class="n">unsafe</span><span class="o">.</span><span class="n">Pointer</span><span class="x"> </span><span class="c">// local fixed-size per-P pool, actual type is [P]poolLocal</span><span class="x">
+	</span><span class="n">localSize</span><span class="x"> </span><span class="kt">uintptr</span><span class="x">        </span><span class="c">// size of the local array</span><span class="x">
 
-	// New optionally specifies a function to generate
-	// a value when Get would otherwise return nil.
-	// It may not be changed concurrently with calls to Get.
-	New func() interface{}
-}
+	</span><span class="c">// New optionally specifies a function to generate</span><span class="x">
+	</span><span class="c">// a value when Get would otherwise return nil.</span><span class="x">
+	</span><span class="c">// It may not be changed concurrently with calls to Get.</span><span class="x">
+	</span><span class="n">New</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-// Local per-P Pool appendix.
-type poolLocalInternal struct {
-	private interface{}   // Can be used only by the respective P.
-	shared  []interface{} // Can be used by any P.
-	Mutex                 // Protects shared.
-}
+</span><span class="c">// Local per-P Pool appendix.</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">poolLocalInternal</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">private</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x">   </span><span class="c">// Can be used only by the respective P.</span><span class="x">
+	</span><span class="n">shared</span><span class="x">  </span><span class="p">[]</span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="c">// Can be used by any P.</span><span class="x">
+	</span><span class="n">Mutex</span><span class="x">                 </span><span class="c">// Protects shared.</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-type poolLocal struct {
-	poolLocalInternal
+</span><span class="k">type</span><span class="x"> </span><span class="n">poolLocal</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">poolLocalInternal</span><span class="x">
 
-	// Prevents false sharing on widespread platforms with
-	// 128 mod (cache line size) = 0 .
-	pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
-}
-</code></pre></div></div>
+	</span><span class="c">// Prevents false sharing on widespread platforms with</span><span class="x">
+	</span><span class="c">// 128 mod (cache line size) = 0 .</span><span class="x">
+	</span><span class="n">pad</span><span class="x"> </span><span class="p">[</span><span class="m">128</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="n">unsafe</span><span class="o">.</span><span class="n">Sizeof</span><span class="p">(</span><span class="n">poolLocalInternal</span><span class="p">{})</span><span class="o">%</span><span class="m">128</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>Pool是提供给外部使用的对象</p>
 
@@ -603,38 +603,38 @@ type poolLocal struct {
 当多线程在并发读写的时候，通常情况下都是在自己线程的poolLocal中存取数据。<br />
 当自己线程的poolLocal中没有数据时，才会尝试加锁去其他线程的poolLocal中“偷”数据。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func (p *Pool) Get() interface{} {
-	if race.Enabled {
-		race.Disable()
-	} 
-	l := p.pin()    //获取当前线程的poolLocal对象，也就是p.local[pid]。
-	x := l.private
-	l.private = nil
-	runtime_procUnpin()
-	if x == nil {
-		l.Lock()
-		last := len(l.shared) - 1
-		if last &gt;= 0 {
-			x = l.shared[last]
-			l.shared = l.shared[:last]
-		}
-		l.Unlock()
-		if x == nil {
-			x = p.getSlow()
-		}
-	}
-	if race.Enabled {
-		race.Enable()
-		if x != nil {
-			race.Acquire(poolRaceAddr(x))
-		}
-	}
-	if x == nil &amp;&amp; p.New != nil {
-		x = p.New()
-	}
-	return x
-}
-</code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">p</span><span class="x"> </span><span class="o">*</span><span class="n">Pool</span><span class="p">)</span><span class="x"> </span><span class="n">Get</span><span class="p">()</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">race</span><span class="o">.</span><span class="n">Enabled</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">race</span><span class="o">.</span><span class="n">Disable</span><span class="p">()</span><span class="x">
+	</span><span class="p">}</span><span class="x"> 
+	</span><span class="n">l</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">p</span><span class="o">.</span><span class="n">pin</span><span class="p">()</span><span class="x">    </span><span class="c">//获取当前线程的poolLocal对象，也就是p.local[pid]。</span><span class="x">
+	</span><span class="n">x</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">l</span><span class="o">.</span><span class="n">private</span><span class="x">
+	</span><span class="n">l</span><span class="o">.</span><span class="n">private</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+	</span><span class="n">runtime_procUnpin</span><span class="p">()</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">l</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span><span class="x">
+		</span><span class="n">last</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">shared</span><span class="p">)</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="m">1</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">last</span><span class="x"> </span><span class="o">&gt;=</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">x</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">l</span><span class="o">.</span><span class="n">shared</span><span class="p">[</span><span class="n">last</span><span class="p">]</span><span class="x">
+			</span><span class="n">l</span><span class="o">.</span><span class="n">shared</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">l</span><span class="o">.</span><span class="n">shared</span><span class="p">[</span><span class="o">:</span><span class="n">last</span><span class="p">]</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+		</span><span class="n">l</span><span class="o">.</span><span class="n">Unlock</span><span class="p">()</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">x</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">p</span><span class="o">.</span><span class="n">getSlow</span><span class="p">()</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">race</span><span class="o">.</span><span class="n">Enabled</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">race</span><span class="o">.</span><span class="n">Enable</span><span class="p">()</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">race</span><span class="o">.</span><span class="n">Acquire</span><span class="p">(</span><span class="n">poolRaceAddr</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">p</span><span class="o">.</span><span class="n">New</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">x</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">p</span><span class="o">.</span><span class="n">New</span><span class="p">()</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">x</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p><strong><em>为什么这里要锁住。</em></strong> <br />
 答案在getSlow中。</p>
@@ -653,46 +653,46 @@ Pool.Get的时候，首先会在local数组中获取当前线程对应的poolLoc
 <p>既然说 pool 的优势这么大，我们可以用基准测试来看一下 使用池和不实用池的区别。<br />
 这里我们声明了一个非常简单的结构 S</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
-<span class="n">import</span> <span class="p">(</span>
-    <span class="s2">"sync"</span>
-    <span class="s2">"testing"</span>
-<span class="p">)</span>
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"sync"</span><span class="x">
+    </span><span class="s">"testing"</span><span class="x">
+</span><span class="p">)</span><span class="x">
 
-<span class="n">type</span> <span class="n">S</span> <span class="n">struct</span> <span class="p">{</span>
-    <span class="n">num</span> <span class="n">int</span>
-<span class="p">}</span>
+</span><span class="k">type</span><span class="x"> </span><span class="n">S</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">num</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-<span class="n">func</span> <span class="n">BenchmarkWithPool</span><span class="p">(</span><span class="n">b</span> <span class="p">*</span><span class="n">testing</span><span class="p">.</span><span class="n">B</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">var</span> <span class="n">s</span> <span class="p">*</span><span class="n">S</span>
-    <span class="n">var</span> <span class="n">pool</span> <span class="p">=</span> <span class="n">sync</span><span class="p">.</span><span class="n">Pool</span><span class="p">{</span>
-        <span class="n">New</span><span class="p">:</span> <span class="n">func</span><span class="p">()</span> <span class="n">interface</span><span class="p">{}</span> <span class="p">{</span> <span class="n">return</span> <span class="n">new</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="p">},</span>
-    <span class="p">}</span>
-    <span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-        <span class="n">for</span> <span class="n">j</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="m">10000</span><span class="p">;</span> <span class="n">j</span><span class="p">++</span> <span class="p">{</span>
-            <span class="n">s</span> <span class="p">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">Get</span><span class="p">().(*</span><span class="n">S</span><span class="p">)</span>
-            <span class="n">s</span><span class="p">.</span><span class="n">num</span> <span class="p">=</span> <span class="m">1</span>
-            <span class="n">s</span><span class="p">.</span><span class="n">num</span><span class="p">++</span>
-            <span class="n">pool</span><span class="p">.</span><span class="n">Put</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+</span><span class="k">func</span><span class="x"> </span><span class="n">BenchmarkWithPool</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">B</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">s</span><span class="x"> </span><span class="o">*</span><span class="n">S</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">pool</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">Pool</span><span class="p">{</span><span class="x">
+        </span><span class="n">New</span><span class="o">:</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="k">return</span><span class="x"> </span><span class="nb">new</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="x"> </span><span class="p">},</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">b</span><span class="o">.</span><span class="n">N</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="n">j</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">j</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10000</span><span class="p">;</span><span class="x"> </span><span class="n">j</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">s</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">pool</span><span class="o">.</span><span class="n">Get</span><span class="p">()</span><span class="o">.</span><span class="p">(</span><span class="o">*</span><span class="n">S</span><span class="p">)</span><span class="x">
+            </span><span class="n">s</span><span class="o">.</span><span class="n">num</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+            </span><span class="n">s</span><span class="o">.</span><span class="n">num</span><span class="o">++</span><span class="x">
+            </span><span class="n">pool</span><span class="o">.</span><span class="n">Put</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-<span class="n">func</span> <span class="n">BenchmarkWithNoPool</span><span class="p">(</span><span class="n">b</span> <span class="p">*</span><span class="n">testing</span><span class="p">.</span><span class="n">B</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">var</span> <span class="n">s</span> <span class="p">*</span><span class="n">S</span>
-    <span class="n">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
-        <span class="n">for</span> <span class="n">j</span> <span class="p">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="m">10000</span><span class="p">;</span> <span class="n">j</span><span class="p">++</span> <span class="p">{</span>
-            <span class="n">s</span> <span class="p">=</span> <span class="p">&amp;</span><span class="n">S</span><span class="p">{</span><span class="n">num</span><span class="p">:</span> <span class="m">1</span><span class="p">}</span>
-            <span class="n">s</span><span class="p">.</span><span class="n">num</span><span class="p">++</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></div>
+</span><span class="k">func</span><span class="x"> </span><span class="n">BenchmarkWithNoPool</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">B</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">s</span><span class="x"> </span><span class="o">*</span><span class="n">S</span><span class="x">
+    </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">b</span><span class="o">.</span><span class="n">N</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="n">j</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">j</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10000</span><span class="p">;</span><span class="x"> </span><span class="n">j</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">s</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="o">&amp;</span><span class="n">S</span><span class="p">{</span><span class="n">num</span><span class="o">:</span><span class="x"> </span><span class="m">1</span><span class="p">}</span><span class="x">
+            </span><span class="n">s</span><span class="o">.</span><span class="n">num</span><span class="o">++</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>运行基准测试，</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -bench=. -benchmem
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>go <span class="nb">test</span> <span class="nt">-bench</span><span class="o">=</span><span class="nb">.</span> <span class="nt">-benchmem</span>
 goos: darwin
 goarch: amd64
                                      
@@ -747,7 +747,7 @@ BenchmarkWithNoPool-4              10000            175742 ns/op           80000
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/15/Go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/" data-title="Go深入了解sync库的锁和信号量 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="/%E7%BC%96%E7%A8%8B/2019/10/15/Go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/" data-title="Go深入了解sync库的锁和信号量 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
