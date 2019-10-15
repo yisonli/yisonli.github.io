@@ -4,13 +4,612 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2019-10-10T15:11:53+08:00</updated>
+ <updated>2019-10-15T18:09:29+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Go深入了解sync库的锁和信号量</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/15/Go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/"/>
+   <updated>2019-10-15T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/15/Go深入了解sync库的锁和信号量</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;sync包提供了基本的同步基元，如互斥锁。&lt;br /&gt;
+除了Once和WaitGroup类型，大部分都是适用于低水平程序线程，高水平的同步使用channel通信更好一些。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;序&quot;&gt;序&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Go语言中实现并发或者是创建一个goroutine很简单，只需要在函数前面加上”go”，就可以了。&lt;/li&gt;
+  &lt;li&gt;那么并发中，如何实现多个goroutine之间的同步和通信？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;sync库&quot;&gt;sync库&lt;/h2&gt;
+&lt;p&gt;首先我们先来介绍一下sync包下的各种类型。&lt;/p&gt;
+
+&lt;h3 id=&quot;1-cond-条件等待&quot;&gt;1. Cond 条件等待&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Cond struct {
+
+        // L is held while observing or changing the condition
+        L Locker
+        // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;解释：&lt;br /&gt;
+Cond实现了一个条件变量，一个线程集合地，供线程等待或者宣布某事件的发生。&lt;/p&gt;
+
+&lt;p&gt;每个Cond实例都有一个相关的锁（一般是*Mutex或*RWMutex类型的值），它必须在改变条件时或者调用Wait方法时保持锁定。Cond可以创建为其他结构体的字段，Cond在开始使用后不能被拷贝。&lt;/p&gt;
+
+&lt;p&gt;条件等待通过Wait让例程等待，通过Signal让一个等待的例程继续，通过Broadcase让所有等待的继续。&lt;/p&gt;
+
+&lt;p&gt;在Wait之前需要手动为c.L上锁，Wait结束了手动解锁。
+为避免虚假唤醒，需要将Wait放到一个条件判断的循环中，官方要求写法：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c.L.Lock()
+for !condition() {
+    c.Wait()
+}
+// 执行条件满足之后的动作...
+c.L.Unlock()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;数据结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Cond struct {
+    L Locker // 在“检查条件”或“更改条件”时 L 应该锁定。
+} 
+
+// 创建一个条件等待
+func NewCond(l Locker) *Cond
+
+// Broadcast 唤醒所有等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。
+func (c *Cond) Broadcast()
+
+// Signal 唤醒一个等待的 Wait，建议在“更改条件”时锁定 c.L，更改完毕再解锁。
+func (c *Cond) Signal()
+
+// Wait 会解锁 c.L 并进入等待状态，在被唤醒时，会重新锁定 c.L
+func (c *Cond) Wait()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;condition&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;条件不满足&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Mutex&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;cond&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NewCond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;创建一个&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Cond&lt;/span&gt;
+
+	&lt;span class=&quot;p&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;让协程去创造条件&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;condition&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;改写条件&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Signal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;发送通知：条件&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Unlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}()&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+	&lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;检查条件是否满足，避免虚假通知，同时避免&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Signal&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;提前于&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Wait&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;执行。&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;!condition { // 如果Signal提前执行了，那么此处就是false了
+&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;等待条件满足的通知，如果虚假通知，则继续循环等待&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;等待时&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;处于解锁状态，唤醒时重新锁定。&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;阻塞当前线程&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;条件满足，开始后续动作...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Unlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2-locker&quot;&gt;2. Locker&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Locker interface {
+    Lock()
+    Unlock()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Locker接口代表一个可以加锁和解锁的对象。&lt;/p&gt;
+
+&lt;h3 id=&quot;3-mutex--互斥锁&quot;&gt;3. Mutex  互斥锁&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Mutex struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Mutex 是互斥锁。&lt;/li&gt;
+  &lt;li&gt;Mutex 的零值是一个解锁的互斥锁。&lt;/li&gt;
+  &lt;li&gt;第一次使用后不得复制 Mutex 。&lt;/li&gt;
+  &lt;li&gt;互斥锁是用来保证在任一时刻，只能有一个例程访问某个对象。&lt;/li&gt;
+  &lt;li&gt;Mutex的初始值为解锁的状态。&lt;/li&gt;
+  &lt;li&gt;通常作为其他结构体的你名字段使用，并且可以安全的在多个例程中并行使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;数据结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Lock 用于锁住 m，如果 m 已经被加锁，则 Lock 将被阻塞，直到 m 被解锁。
+func (m *Mutex) Lock()
+
+// Unlock 用于解锁 m，如果 m 未加锁，则该操作会引发 panic。
+func (m *Mutex) Unlock()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SafeInt&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Mutex&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Num&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;waitNum&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;设置等待的个数（继续往下看）&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SafeInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chan&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;waitNum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;加锁，防止其它例程修改&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Num&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Num&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Unlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+			&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;waitNum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    1 4 8 8 10 15 21 30 37 45
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：多次输出结果不一致， &lt;br /&gt;
+试想为什么会出现10个结果中有0值得，&lt;br /&gt;
+为什么10个结果中都大于0呢？或者都大于1呢？&lt;br /&gt;
+那么会不会出现10个结果中最小值是9 呢？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;4--once-单次执行&quot;&gt;4.  Once 单次执行&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Once struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Once是只执行一次动作的对象。&lt;/li&gt;
+  &lt;li&gt;Once 的作用是多次调用但只执行一次，&lt;/li&gt;
+  &lt;li&gt;Once 只有一个方法，Once.Do()，向 Do 传入一个函数，这个函数在第一次执行 Once.Do() 的时候会被调用，以后再执行 Once.Do() 将没有任何动作，&lt;/li&gt;
+  &lt;li&gt;即使传入了其它的函数，也不会被执行，如果要执行其它函数，需要重新创建一个 Once 对象。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;数据结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 多次调用仅执行一次指定的函数 f
+func (o *Once) Do(f func())
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;官方案例&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;once&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Once&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;onceBody&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Only once&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chan&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;once&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;Do&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;onceBody&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;多次调用&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;done&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;5-rwmutex-读写互斥锁&quot;&gt;5. RWMutex 读写互斥锁&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type RWMutex struct {
+    // 包含隐藏或非导出字段
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;RWMutex是读写互斥锁。&lt;/li&gt;
+  &lt;li&gt;该锁可以被同时多个读取者持有或唯一个写入者持有。&lt;/li&gt;
+  &lt;li&gt;RWMutex可以创建为其他结构体的字段；零值为解锁状态。&lt;/li&gt;
+  &lt;li&gt;RWMutex类型的锁也和线程无关，可以由不同的线程加读取锁/写入和解读取锁/写入锁。&lt;/li&gt;
+  &lt;li&gt;Mutex 可以安全的在多个例程中并行使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;数据结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Lock 将 rw 设置为写锁定状态，禁止其他例程读取或写入。
+func (rw *RWMutex) Lock()
+
+// Unlock 解除 rw 的写锁定状态，如果 rw 未被写锁定，则该操作会引发 panic。
+func (rw *RWMutex) Unlock()
+
+// RLock 将 rw 设置为读锁定状态，禁止其他例程写入，但可以读取。
+func (rw *RWMutex) RLock()
+
+// Runlock 解除 rw 的读锁定状态，如果 rw 未被读锁顶，则该操作会引发 panic。
+func (rw *RWMutex) RUnlock()
+
+// RLocker 返回一个互斥锁，将 rw.RLock 和 rw.RUnlock 封装成了一个 Locker 接口。
+func (rw *RWMutex) RLocker() Locker
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意，Lock() 锁定时，其他例程是无法读写的。&lt;/p&gt;
+  &lt;blockquote&gt;
+    &lt;ol&gt;
+      &lt;li&gt;可以读时， 多个goroutine可以同时读。&lt;/li&gt;
+      &lt;li&gt;写的时候， 其他goroutine不可读也不可写。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+	&lt;span class=&quot;s2&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RWMutex&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WaitGroup&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RWMutex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;写开始.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;正在写入中......&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Unlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;写入结束.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;读开始.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RLock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;正在读取中......&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RUnlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;读取结束.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1 写开始.
+1 正在写入中......
+2 读开始.
+1 写入结束.
+2 正在读取中......
+2 读取结束.
+&amp;gt; Elapsed: 4.747s
+&amp;gt; Result: Success
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当写入开始时，加写锁开始写入，一秒后，读取goroutine开始读取，发现有写入锁，只能等待。 &lt;br /&gt;
+2秒后写入完成，解除写锁，读取开始加锁，直到读取完成。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/article/2019-10-15/goroutine.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;6-waitgroup-组等待&quot;&gt;6. WaitGroup 组等待&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type WaitGroup struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;WaitGroup用于等待一组线程的结束。&lt;/li&gt;
+  &lt;li&gt;父线程调用Add方法来设定应等待的线程的数量。&lt;/li&gt;
+  &lt;li&gt;每个被等待的线程在结束时应调用Done方法。&lt;/li&gt;
+  &lt;li&gt;同时，主线程里可以调用Wait方法阻塞至所有线程结束（计数器归零）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;数据结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 计数器增加 delta，delta 可以是负数。
+func (wg *WaitGroup) Add(delta int)
+
+// 计数器减少 1
+func (wg *WaitGroup) Done()
+
+// 等待直到计数器归零。如果计数器小于 0，则该操作会引发 panic。
+func (wg *WaitGroup) Wait()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func main() {
+	wg := sync.WaitGroup{}
+	wg.Add(10)
+	for i := 0; i &amp;lt; 10; i++ {
+		go func(i int) {
+			defer wg.Done()
+			fmt.Print(i, &quot; &quot;)
+		}(i)
+	}
+	wg.Wait()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出是无序的。&lt;/p&gt;
+
+&lt;p&gt;注意此处有一个小坑，看代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func main() {
+	wg := sync.WaitGroup{}
+	for i := 0; i &amp;lt; 10; i++ {
+		go func(i int) {
+			wg.Add(1)
+			defer wg.Done()
+			fmt.Print(i, &quot; &quot;)
+		}(i)
+	}
+	wg.Wait()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;看输出，发现会小于10个，甚至一个也没有。&lt;br /&gt;
+问题就在于goroutine执行时间和main程的退出时间问题，导致Add()是否执行。&lt;br /&gt;
+再有就是复制和引用了，如果将wg复制给goroutine作为参数，一定要使用引用，否则就是两个对象了。&lt;/p&gt;
+
+&lt;p&gt;那么介绍完上面所有的类型后， 我把Pool留到了最后，这也是要重点讲的地方。&lt;/p&gt;
+
+&lt;h3 id=&quot;7-pool--临时对象池&quot;&gt;7. Pool  临时对象池&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Pool struct {
+	noCopy noCopy
+
+	local     unsafe.Pointer // local fixed-size per-P pool, actual type is [P]poolLocal
+	localSize uintptr        // size of the local array
+
+	// New optionally specifies a function to generate
+	// a value when Get would otherwise return nil.
+	// It may not be changed concurrently with calls to Get.
+	New func() interface{}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Pool 用于存储临时对象，它将使用完毕的对象存入对象池中，在需要的时候取出来重复使用，目的是为了避免重复创建相同的对象造成 GC 负担过重。&lt;/li&gt;
+  &lt;li&gt;其中存放的临时对象随时可能被 GC 回收掉（如果该对象不再被其它变量引用）。&lt;/li&gt;
+  &lt;li&gt;从 Pool 中取出对象时，如果 Pool 中没有对象，将返回 nil，但是如果给 Pool.New 字段指定了一个函数的话，Pool 将使用该函数创建一个新对象返回。&lt;/li&gt;
+  &lt;li&gt;Pool 可以安全的在多个例程中并行使用，但 Pool 并不适用于所有空闲对象，Pool 应该用来管理并发的例程共享的临时对象，而不应该管理短寿命对象中的临时对象，因为这种情况下内存不能很好的分配，这些短寿命对象应该自己实现空闲列表。&lt;/li&gt;
+  &lt;li&gt;Pool 在开始使用之后，不能再被复制。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Pool的实现&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;1.定时清理&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;文档上说，保存在Pool中的对象会在没有任何通知的情况下被自动移除掉。&lt;/li&gt;
+  &lt;li&gt;实际上，这个清理过程是在每次垃圾回收之前做的。&lt;/li&gt;
+  &lt;li&gt;垃圾回收是固定两分钟触发一次。&lt;/li&gt;
+  &lt;li&gt;而且每次清理会将Pool中的所有对象都清理掉！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;2.如何管理数据&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;先看看这几个数据结构&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;type Pool struct {
+	noCopy noCopy
+
+	local     unsafe.Pointer // local fixed-size per-P pool, actual type is [P]poolLocal
+	localSize uintptr        // size of the local array
+
+	// New optionally specifies a function to generate
+	// a value when Get would otherwise return nil.
+	// It may not be changed concurrently with calls to Get.
+	New func() interface{}
+}
+
+// Local per-P Pool appendix.
+type poolLocalInternal struct {
+	private interface{}   // Can be used only by the respective P.
+	shared  []interface{} // Can be used by any P.
+	Mutex                 // Protects shared.
+}
+
+type poolLocal struct {
+	poolLocalInternal
+
+	// Prevents false sharing on widespread platforms with
+	// 128 mod (cache line size) = 0 .
+	pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Pool是提供给外部使用的对象&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;其中的local成员的真实类型是一个poolLocal数组，localSize是数组长度。&lt;/li&gt;
+  &lt;li&gt;poolLocal是真正保存数据的地方。&lt;/li&gt;
+  &lt;li&gt;priveate保存了一个临时对象，shared是保存临时对象的数组。　　&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;为什么Pool中需要这么多poolLocal对象呢?&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;实际上，Pool是给每个线程分配了一个poolLocal对象。&lt;br /&gt;
+也就是说local数组的长度，就是工作线程的数量(size := runtime.GOMAXPROCS(0))。&lt;br /&gt;
+当多线程在并发读写的时候，通常情况下都是在自己线程的poolLocal中存取数据。&lt;br /&gt;
+当自己线程的poolLocal中没有数据时，才会尝试加锁去其他线程的poolLocal中“偷”数据。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func (p *Pool) Get() interface{} {
+	if race.Enabled {
+		race.Disable()
+	} 
+	l := p.pin()    //获取当前线程的poolLocal对象，也就是p.local[pid]。
+	x := l.private
+	l.private = nil
+	runtime_procUnpin()
+	if x == nil {
+		l.Lock()
+		last := len(l.shared) - 1
+		if last &amp;gt;= 0 {
+			x = l.shared[last]
+			l.shared = l.shared[:last]
+		}
+		l.Unlock()
+		if x == nil {
+			x = p.getSlow()
+		}
+	}
+	if race.Enabled {
+		race.Enable()
+		if x != nil {
+			race.Acquire(poolRaceAddr(x))
+		}
+	}
+	if x == nil &amp;amp;&amp;amp; p.New != nil {
+		x = p.New()
+	}
+	return x
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;为什么这里要锁住。&lt;/em&gt;&lt;/strong&gt; &lt;br /&gt;
+答案在getSlow中。&lt;/p&gt;
+
+&lt;p&gt;因为当shared中没有数据的时候，会尝试去其他的poolLocal的shared中偷数据。&lt;br /&gt;
+Pool.Get的时候，首先会在local数组中获取当前线程对应的poolLocal对象。&lt;br /&gt;
+如果private中有数据，则取出来直接返回。&lt;br /&gt;
+如果没有则先锁住shared，有数据则直接返回。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Go语言的goroutine虽然可以创建很多，但是真正能物理上并发运行的goroutine数量是有限的，是由runtime.GOMAXPROCS(0)设置的。&lt;br /&gt;
+所以这个Pool高效的设计的地方就在于将数据分散在了各个真正并发的线程中，每个线程优先从自己的poolLocal中获取数据，很大程度上降低了锁竞争。　　&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;基准测试&quot;&gt;基准测试&lt;/h3&gt;
+&lt;p&gt;既然说 pool 的优势这么大，我们可以用基准测试来看一下 使用池和不实用池的区别。&lt;br /&gt;
+这里我们声明了一个非常简单的结构 S&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;testing&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BenchmarkWithPool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pool&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Pool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;New&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;interface&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().(*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BenchmarkWithNoPool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行基准测试，&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ go test -bench=. -benchmem
+goos: darwin
+goarch: amd64
+                                     
+BenchmarkWithPool-4                10000            253269 ns/op               0 B/op          0 allocs/op
+BenchmarkWithNoPool-4              10000            175742 ns/op           80000 B/op      10000 allocs/op
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到每次分配的内存 0 B vs 80000 B，每次内存分配次数 0 vs 10000。&lt;/p&gt;
+
+&lt;p&gt;因为每次测试，我们执行了10000次迭代，所以看到没使用池的内存单次分配是 8B（即 结构 S 占的内存），单次分配次数为 1次。&lt;/p&gt;
+
+&lt;p&gt;但是在每次执行的时间上使用池比不使用池是要多的，比较使用池涉及到池的维护，也算是正常的。&lt;/p&gt;
+
+&lt;p&gt;这样看来，在高并发的场景下，context 的复用率非常高，所带来的 GC 压力也更小，所以效率当然就高了。&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Go应用的灵活配置viper</title>
@@ -6155,604 +6754,6 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>《集创思维设计矩阵》读书笔记</title>
-   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/%E9%9B%86%E5%88%9B%E6%80%9D%E7%BB%B4%E8%AE%BE%E8%AE%A1%E7%9F%A9%E9%98%B5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-   <updated>2017-11-18T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/11/18/《集创思维设计矩阵》读书笔记</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;人的才识是装在瓶子里的，你的瓶子满了，就再也装不下新东西了。要想装下更多，你不能固守这个瓶子，你要打破它，换个更大的瓶子。如此反复，你才不是现在的你。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;序&quot;&gt;序&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;做产品的不去了解商业，做交互的不去了解产品，做视觉的不去了解交互，这在未来的工作中是非常可怕的，单一的设计思维会为企业带来大量的消耗，增加不必要的沟通成本。&lt;/li&gt;
-  &lt;li&gt;了解，信任，价值，转化&lt;/li&gt;
-  &lt;li&gt;感性驱动，结果驱动，理性驱动&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;高维融合低维&quot;&gt;高维融合低维&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;品牌
-    &lt;ul&gt;
-      &lt;li&gt;集创思维&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;定位
-    &lt;ul&gt;
-      &lt;li&gt;互联网+时代&lt;/li&gt;
-      &lt;li&gt;高级思维&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;沟通主张
-    &lt;ul&gt;
-      &lt;li&gt;结合商业逻辑、产品形态、外部环境、自身能力、集合设计来提升产品的体验&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;支撑要点
-    &lt;ul&gt;
-      &lt;li&gt;枪型-逻辑定位（要点）&lt;/li&gt;
-      &lt;li&gt;高维融合低维（格局）&lt;/li&gt;
-      &lt;li&gt;设计VS计算（平衡杠杆）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;表现 {场景，内容}
-    &lt;ul&gt;
-      &lt;li&gt;针对不同市场、不同的产品形态、不同产品阶段，做出对等的设计判断&lt;/li&gt;
-      &lt;li&gt;商业思维包含产品思维，产品思维包容设计思维：他们可以互相集合&lt;/li&gt;
-      &lt;li&gt;设计很美，但考虑商业消费&lt;/li&gt;
-      &lt;li&gt;产品很美，但考虑阶段完成&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;具有向心力产品具备的三点特征&quot;&gt;具有向心力产品具备的三点特征&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;强技术，代表产品iPhone&lt;/li&gt;
-  &lt;li&gt;强用户粘性，代表产品微信&amp;amp;QQ&lt;/li&gt;
-  &lt;li&gt;强需求，代表产品12306&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;总结几点&quot;&gt;总结几点&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;用户体验实在为企业竞争力服务的。
-    &lt;ul&gt;
-      &lt;li&gt;必须承认有些产品即使用户体验出色后也逃不掉失败的命运，商业逻辑决定着产品逻辑，产品逻辑又决定着体验逻辑。&lt;/li&gt;
-      &lt;li&gt;如果高处的商业逻辑错误了，后面的发力其实意义不大。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;只有向心力产品才能改变人的习惯，差别化产品要迎合用户。
-    &lt;ul&gt;
-      &lt;li&gt;苹果、腾讯、12306这些产品失去一个，我们的生活都可能发生巨大变化，这就是向心力产品文化认知的威力。&lt;/li&gt;
-      &lt;li&gt;初创产品只有经历 四个阶段才能形成向心力
-        &lt;ul&gt;
-          &lt;li&gt;核心功能&lt;/li&gt;
-          &lt;li&gt;用户基数&lt;/li&gt;
-          &lt;li&gt;商业链接&lt;/li&gt;
-          &lt;li&gt;功能链生&lt;/li&gt;
-          &lt;li&gt;文化认同&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;绝大多数产品必须走差别化战略，和向心力产品存在差异才有可能成功。
-    &lt;ul&gt;
-      &lt;li&gt;差别化才是设计师发挥能力的关键所在。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;创新是一件很冒险的事。
-    &lt;ul&gt;
-      &lt;li&gt;“十个创新九个坑，还有一个全靠蒙”，处于中心地带的产品不会尝试冒险的创新，只有边缘市场的产品才会为了生存不得不创新，而中心地带的向心力产品只要抄袭就可以轻松干掉他们。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;创新能否成功也要看企业的DNA结构。
-    &lt;ul&gt;
-      &lt;li&gt;很多设计师和产品经理相互之间的能力可能差不多，但是在不同公司的结构下有些人的产品会出现妥协，这是很多国内一线企业难出精品的原因。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;枪型思维&quot;&gt;枪型思维&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;在这个“快”时代里
-    &lt;ul&gt;
-      &lt;li&gt;人们失去耐心&lt;/li&gt;
-      &lt;li&gt;目光被无数白元素吸引&lt;/li&gt;
-      &lt;li&gt;人们喜欢“快餐”&lt;/li&gt;
-      &lt;li&gt;人们不喜欢停留&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;虫洞商机&quot;&gt;虫洞商机&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;现在这个时段，优秀的服务就像客户口渴时服务员立刻递上一杯水。&lt;/li&gt;
-  &lt;li&gt;但是更优秀的服务是服务员预判到客户口渴了，事先准备好合适的水，并且知道是温水、矿泉水、柠檬水还是糖水，这就是大数据的威力。&lt;/li&gt;
-  &lt;li&gt;大数据的推送
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;掩埋型信息推荐&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;50%的可能性&lt;/li&gt;
-          &lt;li&gt;选择权交给用户&lt;/li&gt;
-          &lt;li&gt;数据不够精确&lt;/li&gt;
-          &lt;li&gt;信息可靠度不高&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;打断型信息推荐&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;100%的可能性&lt;/li&gt;
-          &lt;li&gt;承担全部责任&lt;/li&gt;
-          &lt;li&gt;数据绝对精确&lt;/li&gt;
-          &lt;li&gt;信息可靠度很高&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;枪型思维图5个指针&quot;&gt;枪型思维图（5个指针）&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;指向市场
-    &lt;ul&gt;
-      &lt;li&gt;现有市场
-        &lt;ul&gt;
-          &lt;li&gt;高性能、低价位&lt;/li&gt;
-          &lt;li&gt;拼体验、拼服务&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;垂直市场
-        &lt;ul&gt;
-          &lt;li&gt;针对专门的使用群体&lt;/li&gt;
-          &lt;li&gt;研究这个群体的需求&lt;/li&gt;
-          &lt;li&gt;把握这个群体的特点&lt;/li&gt;
-          &lt;li&gt;推出产品的设计特点&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;全新市场
-        &lt;ul&gt;
-          &lt;li&gt;这个产品是否能被接受&lt;/li&gt;
-          &lt;li&gt;如何设定用户的使用习惯&lt;/li&gt;
-          &lt;li&gt;如何让用户接受核心功能&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;指向用户
-    &lt;ul&gt;
-      &lt;li&gt;用户模型
-        &lt;ul&gt;
-          &lt;li&gt;1.来自数据&lt;/li&gt;
-          &lt;li&gt;2.来自产品定位：产品针对人群&lt;/li&gt;
-          &lt;li&gt;3.来自产品特征的提取
-            &lt;ul&gt;
-              &lt;li&gt;数据收集&lt;/li&gt;
-              &lt;li&gt;提取用户行为&lt;/li&gt;
-              &lt;li&gt;构建用户模型&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;场景建模&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;指向产品形态
-    &lt;ul&gt;
-      &lt;li&gt;技术驱动&lt;/li&gt;
-      &lt;li&gt;运营主导&lt;/li&gt;
-      &lt;li&gt;用户体验优先&lt;/li&gt;
-      &lt;li&gt;独特资源驱动&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;指向产品阶段
-    &lt;ul&gt;
-      &lt;li&gt;初级核心功能&lt;/li&gt;
-      &lt;li&gt;中级活跃压力&lt;/li&gt;
-      &lt;li&gt;高级商业认知&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;指向生态形式
-    &lt;ul&gt;
-      &lt;li&gt;主载体&lt;/li&gt;
-      &lt;li&gt;工具&lt;/li&gt;
-      &lt;li&gt;设备&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;创新三要素&quot;&gt;创新三要素&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;A是否提升了人们的使用效率&lt;/li&gt;
-  &lt;li&gt;B是否让人们获取更多、更准确的信息&lt;/li&gt;
-  &lt;li&gt;C是否满足人群在特殊情况下的需求&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;创新三雷区&quot;&gt;创新三雷区&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;X产品是否有可替代性&lt;/li&gt;
-  &lt;li&gt;Y是否干扰其他功能的使用&lt;/li&gt;
-  &lt;li&gt;Z落地环境是否理想&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;马洛斯心理&quot;&gt;马洛斯心理&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;生理
-    &lt;ul&gt;
-      &lt;li&gt;呼吸、食物、水、性、睡觉、机体平衡、排泄&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;安全
-    &lt;ul&gt;
-      &lt;li&gt;人身、财产、职业、家庭、健康、道德的保障&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;爱/归属
-    &lt;ul&gt;
-      &lt;li&gt;友情、亲情、爱情&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;尊重
-    &lt;ul&gt;
-      &lt;li&gt;自尊、信任、成就、尊重&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;自我实现
-    &lt;ul&gt;
-      &lt;li&gt;道德观、创造性、自觉性、解决问题、没有偏见、接受现实&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;人性的七宗罪&quot;&gt;人性的七宗罪&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;暴食&lt;/li&gt;
-  &lt;li&gt;懒惰&lt;/li&gt;
-  &lt;li&gt;贪婪&lt;/li&gt;
-  &lt;li&gt;淫欲&lt;/li&gt;
-  &lt;li&gt;愤怒&lt;/li&gt;
-  &lt;li&gt;嫉妒&lt;/li&gt;
-  &lt;li&gt;骄傲&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;产品的驱动力&quot;&gt;产品的驱动力&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;技术驱动力的产品&lt;/li&gt;
-  &lt;li&gt;运营驱动力的产品&lt;/li&gt;
-  &lt;li&gt;特殊资源驱动力的产品&lt;/li&gt;
-  &lt;li&gt;模式驱动力的产品（垂直针对、平台包容）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://v.qq.com/x/page/z01689gwe71.html&quot;&gt;慈思远2015年百度的演讲分享&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在当前的社会节奏下，产品设计不再追求对于功能的满足，而且更清晰地对准市场、对准用户、对准形势。这个时候我们将更清晰地使用枪型思维来看待问题。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;每个产品的特点不同、处于市场的环境和竞争力不同、产品阶段不同、属性不同，带来机会点的作用力也会不同。所以我们应当在发掘这个产品特点的基础上，有针对性、动态地解决问题。而不是死套模板，孤立静态地解决问题。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;媒介的特点-三大平台的属性&quot;&gt;媒介的特点-三大平台的属性&lt;/h2&gt;
-&lt;h4 id=&quot;web平台&quot;&gt;Web平台&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;特点
-    &lt;ul&gt;
-      &lt;li&gt;良好的操作环境&lt;/li&gt;
-      &lt;li&gt;输入方式强大、屏幕大&lt;/li&gt;
-      &lt;li&gt;无能耗烦恼&lt;/li&gt;
-      &lt;li&gt;视觉的盲区&lt;/li&gt;
-      &lt;li&gt;惯常的操作行为&lt;/li&gt;
-      &lt;li&gt;时空限制&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;结构
-    &lt;ul&gt;
-      &lt;li&gt;个人展示类网站&lt;/li&gt;
-      &lt;li&gt;垂直电商类网站&lt;/li&gt;
-      &lt;li&gt;平台类电商网站&lt;/li&gt;
-      &lt;li&gt;门户类网站&lt;/li&gt;
-      &lt;li&gt;Blog类网站&lt;/li&gt;
-      &lt;li&gt;工具类网站&lt;/li&gt;
-      &lt;li&gt;瀑布流结构网站&lt;/li&gt;
-      &lt;li&gt;响应式网站&lt;/li&gt;
-      &lt;li&gt;分面导航与面包屑结构的过渡&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;客户端-手机平台&quot;&gt;客户端-手机平台&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;特点
-    &lt;ul&gt;
-      &lt;li&gt;使用环境复杂&lt;/li&gt;
-      &lt;li&gt;输入方式单一&lt;/li&gt;
-      &lt;li&gt;行为受到环境、输入方式和界面的限制&lt;/li&gt;
-      &lt;li&gt;流量和电池的烦恼很严重&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;结构
-    &lt;ul&gt;
-      &lt;li&gt;导航的呈现方式
-        &lt;ul&gt;
-          &lt;li&gt;TAB式&lt;/li&gt;
-          &lt;li&gt;舵式&lt;/li&gt;
-          &lt;li&gt;上下双层标签&lt;/li&gt;
-          &lt;li&gt;抽屉式&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;内容界面的呈现方式
-        &lt;ul&gt;
-          &lt;li&gt;宫格式&lt;/li&gt;
-          &lt;li&gt;列表式&lt;/li&gt;
-          &lt;li&gt;卡片式&lt;/li&gt;
-          &lt;li&gt;其他（Pop Up、混合结构）&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;对比
-    &lt;ul&gt;
-      &lt;li&gt;视觉流&lt;/li&gt;
-      &lt;li&gt;背景噪声&lt;/li&gt;
-      &lt;li&gt;思维逻辑&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;交互设计的结构与认知&quot;&gt;交互设计的结构与认知&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;你生活在一个标准的世界里，一致性让你更好地理解世界&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一致性法则
-    &lt;ul&gt;
-      &lt;li&gt;结构&lt;/li&gt;
-      &lt;li&gt;颜色&lt;/li&gt;
-      &lt;li&gt;操作&lt;/li&gt;
-      &lt;li&gt;反馈&lt;/li&gt;
-      &lt;li&gt;文字&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;父子结构&lt;/li&gt;
-  &lt;li&gt;流-线结构&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;矩阵结构&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;状态认知
-    &lt;ul&gt;
-      &lt;li&gt;让用户明确过去、当前、将来的位置（出口和入口）&lt;/li&gt;
-      &lt;li&gt;告诉用户他当前所处的状态&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;效率与场景
-    &lt;ul&gt;
-      &lt;li&gt;如何解决等待的问题
-        &lt;ul&gt;
-          &lt;li&gt;加载机制的设计&lt;/li&gt;
-          &lt;li&gt;对等待的控制感&lt;/li&gt;
-          &lt;li&gt;主流操作区要控制好图片大小，避免动画&lt;/li&gt;
-          &lt;li&gt;四种方式缓解用户等待焦虑感
-            &lt;ul&gt;
-              &lt;li&gt;使用进度条，让用户知道等多久&lt;/li&gt;
-              &lt;li&gt;拆分任务，将任务分为数个小阶段分别加载&lt;/li&gt;
-              &lt;li&gt;调整加载速度，采用变速加载&lt;/li&gt;
-              &lt;li&gt;主流操作区不使用太大的图片和动画&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;如何快速有效地识别和提示
-        &lt;ul&gt;
-          &lt;li&gt;预防差错&lt;/li&gt;
-          &lt;li&gt;即使出现差错也能纠正、撤销&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;及时的反馈
-        &lt;ul&gt;
-          &lt;li&gt;视觉反馈&lt;/li&gt;
-          &lt;li&gt;声音反馈&lt;/li&gt;
-          &lt;li&gt;触觉反馈&lt;/li&gt;
-          &lt;li&gt;反馈的快速性&lt;/li&gt;
-          &lt;li&gt;反馈的对等性&lt;/li&gt;
-          &lt;li&gt;有效反馈节省时间&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;对于场景的合理运用提升使用效率&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;交互的设计原则&quot;&gt;交互的设计原则&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;二八法则
-    &lt;ul&gt;
-      &lt;li&gt;手机可能有100个功能，但是只有20个功能被用户使用&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;费茨定律
-    &lt;ul&gt;
-      &lt;li&gt;元素越大，越容易点击&lt;/li&gt;
-      &lt;li&gt;重要的控件应该摆在合适的位置，让用户点击或者寻找的时候不会那么辛苦&lt;/li&gt;
-      &lt;li&gt;一个重要、高频、商业价值达的控件有资格比其他控件做得更大些，这样的设计形态可以和它的内在逻辑保持一致&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;格式塔心理学&lt;/li&gt;
-  &lt;li&gt;能量消耗论与剃刀法则&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;设计的评估逻辑&quot;&gt;设计的评估逻辑&lt;/h2&gt;
-
-&lt;h4 id=&quot;三个用户阶段&quot;&gt;三个用户阶段&lt;/h4&gt;
-&lt;ol&gt;
-  &lt;li&gt;新手用户&lt;/li&gt;
-  &lt;li&gt;中间用户&lt;/li&gt;
-  &lt;li&gt;专家用户&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;三大负荷&quot;&gt;三大负荷&lt;/h4&gt;
-&lt;ol&gt;
-  &lt;li&gt;认知负荷&lt;/li&gt;
-  &lt;li&gt;操作负荷&lt;/li&gt;
-  &lt;li&gt;视觉负荷&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;不需要用户思考的设计当然是好设计，但最糟糕的确实就算让用户思考了，用户也不明其意，甚至不知道产品是什么。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如何降低用户的思考
-    &lt;ul&gt;
-      &lt;li&gt;明确界面传达的意思&lt;/li&gt;
-      &lt;li&gt;尽量使用图标加文字&lt;/li&gt;
-      &lt;li&gt;使用用户的语言&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;操作负荷评估标准
-    &lt;ul&gt;
-      &lt;li&gt;确保操作对象足够大，便于点击&lt;/li&gt;
-      &lt;li&gt;减少手势消耗&lt;/li&gt;
-      &lt;li&gt;简化的流程步骤&lt;/li&gt;
-      &lt;li&gt;保持操作惯性&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;减少视觉负荷
-    &lt;ul&gt;
-      &lt;li&gt;尽量减少动画元素&lt;/li&gt;
-      &lt;li&gt;避免使用复杂的背景&lt;/li&gt;
-      &lt;li&gt;保持屏幕整洁&lt;/li&gt;
-      &lt;li&gt;最少化的视觉元素&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;集创评估六要素&quot;&gt;集创评估六要素&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;转化力
-    &lt;ul&gt;
-      &lt;li&gt;头屏三要素
-        &lt;ul&gt;
-          &lt;li&gt;我是谁&lt;/li&gt;
-          &lt;li&gt;我有什么内容&lt;/li&gt;
-          &lt;li&gt;什么内容在吸引着你&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;条目性感度&lt;/li&gt;
-      &lt;li&gt;转化是否具备足够动力&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;系统活性
-    &lt;ul&gt;
-      &lt;li&gt;状态认知&lt;/li&gt;
-      &lt;li&gt;引发更多的链接&lt;/li&gt;
-      &lt;li&gt;多次触发力&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;效率值
-    &lt;ul&gt;
-      &lt;li&gt;主任务效率&lt;/li&gt;
-      &lt;li&gt;层级是否深&lt;/li&gt;
-      &lt;li&gt;高频操作是否具备效率&lt;/li&gt;
-      &lt;li&gt;流畅度&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;防错
-    &lt;ul&gt;
-      &lt;li&gt;认知负荷如何&lt;/li&gt;
-      &lt;li&gt;错误入口、干扰信息&lt;/li&gt;
-      &lt;li&gt;错频入口&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;风险
-    &lt;ul&gt;
-      &lt;li&gt;依赖第三方&lt;/li&gt;
-      &lt;li&gt;政策&lt;/li&gt;
-      &lt;li&gt;产品资源&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;需求满足度
-    &lt;ul&gt;
-      &lt;li&gt;界面是否满足主场景&lt;/li&gt;
-      &lt;li&gt;界面是否覆盖常规、VIP需求&lt;/li&gt;
-      &lt;li&gt;界面是否满足商业&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;视觉评估的要素&quot;&gt;视觉评估的要素&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;一致性
-    &lt;ul&gt;
-      &lt;li&gt;包括：文字、颜色、间距、控件、反馈等。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;视觉流
-    &lt;ul&gt;
-      &lt;li&gt;包括：视觉强点、视觉流向、视觉干扰等问题。&lt;/li&gt;
-      &lt;li&gt;标准一：信息的强点是否是视觉的强点&lt;/li&gt;
-      &lt;li&gt;标准二：当信息都是平级关系进行排列时，视觉注意力是否平均分配&lt;/li&gt;
-      &lt;li&gt;标准三：审查界面中出现的空白区域，要查看是否存在信息的“盲区”&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;空间流
-    &lt;ul&gt;
-      &lt;li&gt;包括：场和留白、文字的留白等。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;规整度
-    &lt;ul&gt;
-      &lt;li&gt;包括：界面的平衡、结构对齐、元素对比度与识别度等。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;抗风险
-    &lt;ul&gt;
-      &lt;li&gt;包括：图片或者元素缺失等。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;钱——社交——信用，这是真正做互联网金融的商业逻辑。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;在商业认知的基础上去做功能链生&quot;&gt;在商业认知的基础上去做功能链生&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;排除改版的影响，原来的核心功能效率不能降低。&lt;/li&gt;
-  &lt;li&gt;新的版本用户的认知习惯如何慢慢去建立。&lt;/li&gt;
-  &lt;li&gt;新加入的功能和新加入的商业逻辑如何更好地匹配界面布局。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;研发流程&quot;&gt;研发流程&lt;/h4&gt;
-&lt;p&gt;很多管理方面的问题，会导致大多数团队在产品线上至少会浪费三分之一的时间和成本，如果浪费的太多，最直接的结果就是员工得熬夜加班和产品的匆忙上线。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这些问题具体表现如下
-    &lt;ul&gt;
-      &lt;li&gt;在产品各个阶段都会乱加需求，甚至不考虑产品的全局而混乱改动。&lt;/li&gt;
-      &lt;li&gt;命名在产品的初期阶段，非要做后期阶段的事。&lt;/li&gt;
-      &lt;li&gt;需求都没想清楚，就开始进行研发和设计。&lt;/li&gt;
-      &lt;li&gt;甲方思维和互联网思维的冲突让企业争吵不断。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;关于文档：在项目开发阶段&lt;strong&gt;一定要有文档的输出，绝对不能只靠口头协议&lt;/strong&gt;。
-    &lt;ul&gt;
-      &lt;li&gt;项目每个阶段、产品的特点都明确地写在文档上，可以让各个岗位的人员很清楚地知道自己是否完成自己的任务。&lt;/li&gt;
-      &lt;li&gt;预防团队流动性大。如果形成一定的文档和设计规范，可以让后来人员很容易了解项目的历史情况和之前的数据积累。&lt;/li&gt;
-      &lt;li&gt;团队问责。一旦项目出现争执，立刻拿出文档来对证，能停止不休止的争论。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;产品经理三大输出物：需求文档、迭代计划、用户数据&lt;br /&gt;
-交互三大输出物：信息架构、原型验证、优化文档&lt;br /&gt;
-视觉设计三大输出物：视觉效果、切图、界面标注&lt;/p&gt;
-
-&lt;p&gt;设计来源于生活，也来源于自身阅历，如果你想做出优秀的设计，必须学会认识你自己。&lt;/p&gt;
-
 </content>
  </entry>
  
