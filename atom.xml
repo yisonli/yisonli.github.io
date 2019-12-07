@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Yison's Blog</title>
- <link href="/atom.xml" rel="self"/>
- <link href=""/>
- <updated>2019-10-15T18:18:47+08:00</updated>
- <id></id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000"/>
+ <updated>2019-12-07T16:41:36+08:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
@@ -13,10 +13,127 @@
 
  
  <entry>
+   <title>微信回复消息编辑器</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/12/07/%E5%BE%AE%E4%BF%A1%E5%9B%9E%E5%A4%8D%E6%B6%88%E6%81%AF%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+   <updated>2019-12-07T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/12/07/微信回复消息编辑器</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;本文旨在介绍wxmsg，一个laravel-admin的扩展工具。&lt;br /&gt;
+起源于近期重构公众号自动回复配置功能，本想网上找个现成的工具却并未如愿，遂只能用我粗糙有限的html和js能力写了一个。&lt;br /&gt;
+目前功能正常但缺乏美观，希望遇到各位前端能人壮士，能不吝赐教修改一二，让此工具能发光发亮，更好地为有需之众提供服务。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;简介&quot;&gt;简介&lt;/h1&gt;
+
+&lt;p&gt;这是一个基于&lt;code class=&quot;highlighter-rouge&quot;&gt;laravel-admin&lt;/code&gt;后台框架开发的扩展，可用在form表单中进行编辑使用，他的作用是可视化地编辑待回复的微信消息，最终消息格式是json，具体格式可参见微信公众号-发送客服消息的官方文档。&lt;/p&gt;
+
+&lt;h2 id=&quot;截图&quot;&gt;截图&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/yisonli/wxmsg/raw/master/wxmsg.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;安装&quot;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;使用如下指令即可将此扩展加到项目中:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer require yisonli/wxmsg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;用法&quot;&gt;用法&lt;/h2&gt;
+
+&lt;p&gt;普通用法:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wxmsg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'content'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;高级用法 :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;relateTo&lt;/code&gt;函数 :
+    &lt;ul&gt;
+      &lt;li&gt;参数一，自定义消息类型字段（使用框架原定义方式）时，可用此函数进行关联，当消息类型变更时会自动切换消息内容编辑.&lt;/li&gt;
+      &lt;li&gt;参数二，配合&lt;code class=&quot;highlighter-rouge&quot;&gt;selectMedia&lt;/code&gt;函数使用，如果多个公众号，可以指定关联公众号ID字段，查询时可以传递公众号ID字段的值。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;selectMedia&lt;/code&gt;函数 :
+    &lt;ul&gt;
+      &lt;li&gt;mediaID使用select控件选择的方式，选项通过ajax接口查询得到，注意需要自行实现查询的api接口.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'app_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'公众号'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$app_list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'required'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'msgtype'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'回复消息类型'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'text'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'文本'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'image'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'图片'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'news'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'图文'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'link'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'图文(小程序)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;'miniprogrampage'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'小程序卡片'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'required'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wxmsg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'content'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;relateTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'msgtype'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'app_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;selectMedia&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/wechat/reply/medias'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;查询api的实现：&lt;/p&gt;
+
+&lt;p&gt;1) 在控制器内添加api方法:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;medias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Request&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$app_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'q'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'t'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WechatMedia&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'app_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'='&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'type'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'='&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'like'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;%&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$name&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;%&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;paginate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'media_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'url'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;s1&quot;&gt;'id'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'media_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+            &lt;span class=&quot;s1&quot;&gt;'text'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&amp;lt;img style=&quot;max-width:40px;max-height:40px;&quot; src=&quot;'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'url'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot; /&amp;gt; '&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;2) 增加一条路由:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$router&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/wechat/reply/medias'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Wechat\ReplyController@medias'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;目前支持的消息类型&quot;&gt;目前支持的消息类型&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;text&lt;/li&gt;
+  &lt;li&gt;image&lt;/li&gt;
+  &lt;li&gt;news&lt;/li&gt;
+  &lt;li&gt;link&lt;/li&gt;
+  &lt;li&gt;miniprogrampage&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;待开发的功能&quot;&gt;待开发的功能&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;支持更多的消息类型. (如: video, music, msgmenu…)&lt;/li&gt;
+  &lt;li&gt;美化操作界面，并提供实时效果展示.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;关于我&quot;&gt;关于我&lt;/h2&gt;
+&lt;p&gt;name: yison.li&lt;br /&gt;
+blog: &lt;a href=&quot;http://yyeer.com&quot;&gt;http://yyeer.com&lt;/a&gt;&lt;br /&gt;
+github: &lt;a href=&quot;https://github.com/yisonli&quot;&gt;https://github.com/yisonli&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://yyeer.com/assets/img/YisonWechat.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
    <title>Go深入了解sync库的锁和信号量</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/10/15/Go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/15/Go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/"/>
    <updated>2019-10-15T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/10/15/Go深入了解sync库的锁和信号量</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/15/Go深入了解sync库的锁和信号量</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;sync包提供了基本的同步基元，如互斥锁。&lt;br /&gt;
 除了Once和WaitGroup类型，大部分都是适用于低水平程序线程，高水平的同步使用channel通信更好一些。&lt;/p&gt;
@@ -613,9 +730,9 @@ BenchmarkWithNoPool-4              10000            175742 ns/op           80000
  
  <entry>
    <title>Go应用的灵活配置viper</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/10/10/Go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEViper/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/10/Go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEViper/"/>
    <updated>2019-10-10T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/10/10/Go应用的灵活配置Viper</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/10/10/Go应用的灵活配置Viper</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Viper是一个完整的Go应用程序配置解决方案，它可以处理所有类型的配置需求和格式。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -690,9 +807,9 @@ BenchmarkWithNoPool-4              10000            175742 ns/op           80000
  
  <entry>
    <title>以项目为钥匙开启go的世界</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/07/18/%E4%BB%A5%E9%A1%B9%E7%9B%AE%E4%B8%BA%E9%92%A5%E5%8C%99%E5%BC%80%E5%90%AFGo%E7%9A%84%E4%B8%96%E7%95%8C/"/>
    <updated>2019-07-18T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/07/18/以项目为钥匙开启Go的世界</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/07/18/以项目为钥匙开启Go的世界</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;本文不同于其他Go语言学习的文章，将以项目开发所需为基础，带你飞速踏入Go的世界，成为能独挡一面的强者。当你稍微花几分钟的时间，看完本文的时候，或许你会发现，驾驭Go语言为己所用是如此简单。 &lt;br /&gt;
 山不在高，有仙则名，水不在深，有龙则灵，文不在多，一篇足以。希望我这些小小的经验和用心的分享，能真的帮助到您。&lt;/p&gt;
@@ -2063,9 +2180,9 @@ Go Go Go ！去吧，你可以的！&lt;/p&gt;
  
  <entry>
    <title>【收集】常用正则表达式</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/06/30/%E6%94%B6%E9%9B%86-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/30/%E6%94%B6%E9%9B%86-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
    <updated>2019-06-30T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/06/30/【收集】常用正则表达式</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/30/【收集】常用正则表达式</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;正则表达式是繁琐的，但它是强大的，学会之后的应用会让你除了提高效率外，会给你带来绝对的成就感。&lt;br /&gt;
 目前，正则表达式已经在很多软件中得到广泛的应用，包括 *nix（Linux, Unix等）、HP 等操作系统，PHP、C#、Java 等开发环境，以及很多的应用软件中，都可以看到正则表达式的影子。&lt;/p&gt;
@@ -2157,9 +2274,9 @@ Go Go Go ！去吧，你可以的！&lt;/p&gt;
  
  <entry>
    <title>Alpine系统下的apk指令</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/"/>
    <updated>2019-06-09T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine系统下的apk指令</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine系统下的apk指令</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Alpine Linux是一个面向安全应用的轻量级Linux发行版。它采用了musl libc和busybox以减小系统的体积和运行时资源消耗，同时还提供了自己的包管理工具apk。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2313,9 +2430,9 @@ apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
  
  <entry>
    <title>Laravel框架下的php辅助函数</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/"/>
    <updated>2019-03-22T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel框架下的PHP辅助函数</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel框架下的PHP辅助函数</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Laravel框架自带了一系列的PHP辅助函数，很多被框架自身使用，多了解一点这些函数，也方便我们在代码中善用它们。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3598,9 +3715,9 @@ value 函数返回给定的值，不过，如果你传递一个闭包到该函�
  
  <entry>
    <title>Opcache是怎么一回事</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache%E6%98%AF%E6%80%8E%E4%B9%88%E4%B8%80%E5%9B%9E%E4%BA%8B/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache%E6%98%AF%E6%80%8E%E4%B9%88%E4%B8%80%E5%9B%9E%E4%BA%8B/"/>
    <updated>2019-01-13T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache是怎么一回事</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/13/Opcache是怎么一回事</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;作为PHP10年来最大的版本升级, 最大的性能升级, PHP7在多放的测试中都表现出很明显的性能提升, 然而, 为了让它能发挥出最大的性能, 有几件事你应该知道。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3742,9 +3859,9 @@ opcache.fast_shutdown=1
  
  <entry>
    <title>你应该了解的php缓存技术</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/09/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84PHP%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/"/>
    <updated>2019-01-09T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2019/01/09/你应该了解的PHP缓存技术</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/01/09/你应该了解的PHP缓存技术</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;缓存是现在系统中必不可少的模块，并且已经成为了高并发高性能架构的一个关键组件。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4062,9 +4179,9 @@ REDIS_DB=1
  
  <entry>
    <title>分库分表de那些事【理论篇】</title>
-   <link href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/"/>
+   <link href="http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8de%E9%82%A3%E4%BA%9B%E4%BA%8B-%E7%90%86%E8%AE%BA%E7%AF%87/"/>
    <updated>2018-12-22T00:00:00+08:00</updated>
-   <id>/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/分库分表de那些事【理论篇】</id>
+   <id>http://localhost:4000/%E6%95%B0%E6%8D%AE%E5%BA%93/2018/12/22/分库分表de那些事【理论篇】</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;关系型数据库本身比较容易成为系统瓶颈，单机存储容量、连接数、处理能力都有限。当单表的数据量达到1000万或100GB以后，由于查询维度较多，即使添加从库、优化索引，做很多操作时性能仍下降严重。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4544,9 +4661,9 @@ personal_info        text               #私人信息
  
  <entry>
    <title>Docker从零构建php Nginx Alpine镜像</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/09/Docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/"/>
    <updated>2018-11-09T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/11/09/Docker从零构建php-nginx-alpine镜像</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/09/Docker从零构建php-nginx-alpine镜像</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;虽然之前也曾用docker环境运行了一些项目，但对于镜像这块还不是很理解，且鉴于网上现成的镜像都包含太多用不到的库，所以决定从零开始构建一个自己的镜像。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4646,9 +4763,9 @@ http://127.0.0.1:8080/index.php&lt;/p&gt;
  
  <entry>
    <title>Php7内存管理 谁动了我的内存</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/"/>
    <updated>2018-11-05T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7内存管理-谁动了我的内存</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/11/05/PHP7内存管理-谁动了我的内存</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;来源：Laruence&lt;br /&gt;
 Zend 引擎提供为了处理请求相关数据提供了一种特殊的内存管理器。请求相关数据是指只需要服务于单个请求，最迟会在请求结束时释放的数据。&lt;/p&gt;
@@ -4844,9 +4961,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>1024挑战赛题解</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/10/29/1024%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/10/29/1024%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/"/>
    <updated>2018-10-29T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/10/29/1024挑战赛题解</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/10/29/1024挑战赛题解</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;离开学校出社会工作已久，甚是怀念大学时代ACM的时光，偶遇组织于10.24举行编程挑战赛，遂前去试了一下，很幸运地也拿了点小奖，后于此简单分享。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5065,9 +5182,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>Php的openssl加密扩展使用小结</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/"/>
    <updated>2018-07-25T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/07/25/PHP的openssl加密扩展使用小结</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;互联网的发展史上，安全性一直是开发者们相当重视的一个主题，为了实现数据传输安全，我们需要保证：数据来源（非伪造请求）、数据完整性（没有被人修改过）、数据私密性（密文，无法直接读取）等。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5288,9 +5405,9 @@ small内存指的是小于(3/4 page_size)的内存，这些内存首先也是申
  
  <entry>
    <title>Xdebug源码安装</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/xdebug源码安装</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;PHP在Linux上(含MAC OS)安装xdebug的方法&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5366,9 +5483,9 @@ php扩展目录：/usr/lib/php/extensions/**/&lt;/p&gt;
  
  <entry>
    <title>Php代码覆盖率一起玩</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E4%B8%80%E8%B5%B7%E7%8E%A9/"/>
    <updated>2018-05-04T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/05/04/PHP代码覆盖率一起玩</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;最近在玩PHP的单元测试，以及代码覆盖率这块，也遇到一些问题，所以摘出来记录一下，也算是简单入门了。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5592,9 +5709,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《php7内核剖析》之php基础架构</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/PHP7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%B9%8BPHP%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
    <updated>2018-04-27T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2018/04/27/《PHP7内核剖析》之PHP基础架构</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;有幸最近在读秦朋的《PHP内核剖析》一书，收获良多，为了加深自己的理解，依照书中内容自己动手画了一些流程图。本文主要描述PHP的基本构成、生命周期、以及各个阶段的大体流程。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5643,9 +5760,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《大数据时代下半场》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2018-01-20T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2018/01/20/《大数据时代下半场》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。&lt;br /&gt;
 如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。&lt;br /&gt;
@@ -5939,9 +6056,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>《从零开始学微信运营》读书笔记</title>
-   <link href="/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+   <link href="http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%BE%AE%E4%BF%A1%E8%BF%90%E8%90%A5-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
    <updated>2017-12-18T00:00:00+08:00</updated>
-   <id>/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
+   <id>http://localhost:4000/%E8%AF%BB%E4%B9%A6/2017/12/18/《从零开始学微信运营》读书笔记</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;这是最好的时代，这是最坏的时代；这是明智的时代，这是愚昧的时代；这是信仰的时期，这是怀疑的时期；这是光明的季节，这是黑暗的季节；这是希望之春，这是失望之冬；人们面前应有尽有，人们面前一无所有。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -6623,9 +6740,9 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
  
  <entry>
    <title>使用composer安装lumen</title>
-   <link href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
+   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
    <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
+   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
    <content type="html">&lt;blockquote&gt;
   &lt;p&gt;Laravel 是一个功能齐全，速度飞快的框架，但是 Lumen 因为去除了很多 Laravel 的配置和可自定义的选项，速度越加飞快，毫秒必争。&lt;br /&gt;
 本文介绍如何搭建PHP的Laravel和Lumen环境&lt;/p&gt;
@@ -6699,60 +6816,6 @@ php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quo
 &lt;/blockquote&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer create-project &lt;span class=&quot;nt&quot;&gt;--prefer-dist&lt;/span&gt; laravel/lumen blog
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>使用gd库给图片铺满水印</title>
-   <link href="/%E7%BC%96%E7%A8%8B/2017/12/08/%E4%BD%BF%E7%94%A8GD%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/"/>
-   <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>/%E7%BC%96%E7%A8%8B/2017/12/08/使用GD库给图片铺满水印</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;PHP一个使用GD库生成水印的方法&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;查看示例&quot;&gt;查看示例&lt;/h2&gt;
-
-&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* 
- * 图片加水印函数
- * $dst_file : 处理完成后保存到此文件路径
- * $src_file ：待处理的图片文件路径
- * $logo_file：水印的图片文件路径
- * $top      ：上间距
- * $left     ：左间距
- * $alpha    ：透明度(0-100)【特别注意：若logo_file本身已有透明效果，请务必传false】
- */&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fullFillLogos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//创建图片的实例
-&lt;/span&gt;        &lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;imagecreatefromstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file_get_contents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-        &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;imagecreatefromstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file_get_contents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//获取宽高
-&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;getimagesize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;getimagesize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//循环铺上水印
-&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst_h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;nb&quot;&gt;imagecopy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;nb&quot;&gt;imagecopymerge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$off_y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//水印完成, 存档...
-&lt;/span&gt;        &lt;span class=&quot;nb&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type: image/jpeg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;imagejpeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;imagedestroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;imagedestroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$logo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </content>
  </entry>
