@@ -8,7 +8,7 @@
     
     
     
-    <title>Alpine系统下的apk指令 | Yison's Blog</title>
+    <title>Go依赖管理工具 | Yison's Blog</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
@@ -23,12 +23,12 @@
     
     <meta property="og:type" content="article">
     
-    <meta property="og:title" content="Alpine系统下的apk指令">
-    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/">
+    <meta property="og:title" content="Go依赖管理工具">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2020/05/09/Go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
     <meta property="og:site_name" content="Yison's Blog">
     <meta property="og:description" content="">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Alpine系统下的apk指令">
+    <meta name="twitter:title" content="Go依赖管理工具">
     <meta name="twitter:description" content="page.description">
     <meta name="twitter:creator" content="@">
     <link rel="publisher" href="">
@@ -97,14 +97,14 @@
 	<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/" title="Alpine系统下的apk指令" itemprop="url">Alpine系统下的apk指令</a>
+      <a href="/%E7%BC%96%E7%A8%8B/2020/05/09/Go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" title="Go依赖管理工具" itemprop="url">Go依赖管理工具</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
 		
   <p class="article-time">
-    <time datetime="2019-06-09 00:00:00 +0800" itemprop="datePublished"> 发表于 2019-06-09</time>
+    <time datetime="2020-05-09 00:00:00 +0800" itemprop="datePublished"> 发表于 2020-05-09</time>
     
   </p>
 </header>
@@ -117,153 +117,274 @@
 		</div>
 		
 		<blockquote>
-  <p>Alpine Linux是一个面向安全应用的轻量级Linux发行版。它采用了musl libc和busybox以减小系统的体积和运行时资源消耗，同时还提供了自己的包管理工具apk。</p>
+  <p>最早的时候，Go所依赖的所有的第三方库都放在GOPATH这个目录下面，也被很多开发者所吐槽。随着Go语言的发展，从v1.5开始开始引入vendor模式，如果项目目录下有vendor目录，那么go工具链会优先使用vendor内的包进行编译、测试等。<br />
+下面来介绍两个Golang官方依赖工具。</p>
 </blockquote>
 
-<h2 id="官方帮助文档">官方帮助文档</h2>
-<p>alpine 提供了非常好用的apk软件包管理工具，通过<code class="highlighter-rouge">apk --help --verbose</code>命令查看完整的包管理命令。</p>
+<h2 id="dep">dep</h2>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/src <span class="c"># apk --help --verbose</span>
-apk-tools 2.10.3, compiled <span class="k">for </span>x86_64.
+<p>dep 是 golang 项目依赖管理之一，是官方的实验项目，选 dep 作为 golang 的依赖管理工具也是比较靠谱的。</p>
 
-usage: apk COMMAND <span class="o">[</span><span class="nt">-h</span>|--help] <span class="o">[</span><span class="nt">-p</span>|--root DIR] <span class="o">[</span><span class="nt">-X</span>|--repository REPO] <span class="o">[</span><span class="nt">-q</span>|--quiet] <span class="o">[</span><span class="nt">-v</span>|--verbose] <span class="o">[</span><span class="nt">-i</span>|--interactive] <span class="o">[</span><span class="nt">-V</span>|--version]
-           <span class="o">[</span><span class="nt">-f</span>|--force] <span class="o">[</span><span class="nt">--force-binary-stdout</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-broken-world</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-non-repository</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-old-apk</span><span class="o">]</span> <span class="o">[</span><span class="nt">--force-overwrite</span><span class="o">]</span>
-           <span class="o">[</span><span class="nt">--force-refresh</span><span class="o">]</span> <span class="o">[</span><span class="nt">-U</span>|--update-cache] <span class="o">[</span><span class="nt">--progress</span><span class="o">]</span> <span class="o">[</span><span class="nt">--progress-fd</span> FD] <span class="o">[</span><span class="nt">--no-progress</span><span class="o">]</span> <span class="o">[</span><span class="nt">--purge</span><span class="o">]</span> <span class="o">[</span><span class="nt">--allow-untrusted</span><span class="o">]</span>
-           <span class="o">[</span><span class="nt">--wait</span> TIME] <span class="o">[</span><span class="nt">--keys-dir</span> KEYSDIR] <span class="o">[</span><span class="nt">--repositories-file</span> REPOFILE] <span class="o">[</span><span class="nt">--no-network</span><span class="o">]</span> <span class="o">[</span><span class="nt">--no-cache</span><span class="o">]</span> <span class="o">[</span><span class="nt">--cache-dir</span> CACHEDIR]
-           <span class="o">[</span><span class="nt">--cache-max-age</span> AGE] <span class="o">[</span><span class="nt">--arch</span> ARCH] <span class="o">[</span><span class="nt">--print-arch</span><span class="o">]</span> <span class="o">[</span>ARGS]...
+<h3 id="安装">安装</h3>
+<ul>
+  <li>MacOS
+    <ul>
+      <li><code class="highlighter-rouge">brew install dep</code></li>
+    </ul>
+  </li>
+  <li>Linux
+    <ul>
+      <li><code class="highlighter-rouge">curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh</code></li>
+    </ul>
+  </li>
+  <li>Windows
+    <ul>
+      <li><code class="highlighter-rouge">go get -u github.com/golang/dep/cmd/dep</code></li>
+      <li>Windows得自己编译，并且确认把 <code class="highlighter-rouge">$GOPATH/bin</code> 添加到环境变量 <code class="highlighter-rouge">$PATH</code> 下</li>
+    </ul>
+  </li>
+</ul>
 
-The following commands are available:
-  add       Add PACKAGEs to <span class="s1">'world'</span> and install <span class="o">(</span>or upgrade<span class="o">)</span> them, <span class="k">while </span>ensuring that all dependencies are met
-  del       Remove PACKAGEs from <span class="s1">'world'</span> and uninstall them
-  fix       Repair package or upgrade it without modifying main dependencies
-  update    Update repository indexes from all remote repositories
-  info      Give detailed information about PACKAGEs or repositories
-  list      List packages by PATTERN and other criteria
-  search    Search package by PATTERNs or by indexed dependencies
-  upgrade   Upgrade currently installed packages to match repositories
-  cache     Download missing PACKAGEs to cache and/or delete unneeded files from cache
-  version   Compare package versions <span class="o">(</span><span class="k">in </span>installed database vs. available<span class="o">)</span> or <span class="k">do </span>tests on literal version strings
-  index     Create repository index file from FILEs
-  fetch     Download PACKAGEs from global repositories to a <span class="nb">local </span>directory
-  audit     Audit the directories <span class="k">for </span>changes
-  verify    Verify package integrity and signature
-  dot       Generate graphviz graphs
-  policy    Show repository policy <span class="k">for </span>packages
-  stats     Show statistics about repositories and installations
-  manifest  Show checksums of package contents
+<h3 id="验证">验证</h3>
+<p>在命令行输入dep并回车,会出现以下提示的话，说明已经安装成功了。</p>
 
-Global options:
-  <span class="nt">-h</span>, <span class="nt">--help</span>              Show generic <span class="nb">help </span>or applet specific <span class="nb">help</span>
-  <span class="nt">-p</span>, <span class="nt">--root</span> DIR          Install packages to DIR
-  <span class="nt">-X</span>, <span class="nt">--repository</span> REPO   Use packages from REPO
-  <span class="nt">-q</span>, <span class="nt">--quiet</span>             Print less information
-  <span class="nt">-v</span>, <span class="nt">--verbose</span>           Print more information <span class="o">(</span>can be doubled<span class="o">)</span>
-  <span class="nt">-i</span>, <span class="nt">--interactive</span>       Ask confirmation <span class="k">for </span>certain operations
-  <span class="nt">-V</span>, <span class="nt">--version</span>           Print program version and <span class="nb">exit</span>
-  <span class="nt">-f</span>, <span class="nt">--force</span>             Enable selected <span class="nt">--force-</span><span class="k">*</span> <span class="o">(</span>deprecated<span class="o">)</span>
-  <span class="nt">--force-binary-stdout</span>   Continue even <span class="k">if </span>binary data is to be output
-  <span class="nt">--force-broken-world</span>    Continue even <span class="k">if</span> <span class="s1">'world'</span> cannot be satisfied
-  <span class="nt">--force-non-repository</span>  Continue even <span class="k">if </span>packages may be lost on reboot
-  <span class="nt">--force-old-apk</span>         Continue even <span class="k">if </span>packages use unsupported features
-  <span class="nt">--force-overwrite</span>       Overwrite files <span class="k">in </span>other packages
-  <span class="nt">--force-refresh</span>         Do not use cached files <span class="o">(</span><span class="nb">local </span>or from proxy<span class="o">)</span>
-  <span class="nt">-U</span>, <span class="nt">--update-cache</span>      Alias <span class="k">for</span> <span class="nt">--cache-max-age</span> 1
-  <span class="nt">--progress</span>              Show a progress bar
-  <span class="nt">--progress-fd</span> FD        Write progress to fd
-  <span class="nt">--no-progress</span>           Disable progress bar even <span class="k">for </span>TTYs
-  <span class="nt">--purge</span>                 Delete also modified configuration files <span class="o">(</span>pkg removal<span class="o">)</span> and uninstalled packages from cache <span class="o">(</span>cache clean<span class="o">)</span>
-  <span class="nt">--allow-untrusted</span>       Install packages with untrusted signature or no signature
-  <span class="nt">--wait</span> TIME             Wait <span class="k">for </span>TIME seconds to get an exclusive repository lock before failing
-  <span class="nt">--keys-dir</span> KEYSDIR      Override directory of trusted keys
-  <span class="nt">--repositories-file</span> REPOFILE Override repositories file
-  <span class="nt">--no-network</span>            Do not use network <span class="o">(</span>cache is still used<span class="o">)</span>
-  <span class="nt">--no-cache</span>              Do not use any <span class="nb">local </span>cache path
-  <span class="nt">--cache-dir</span> CACHEDIR    Override cache directory
-  <span class="nt">--cache-max-age</span> AGE     Maximum AGE <span class="o">(</span><span class="k">in </span>minutes<span class="o">)</span> <span class="k">for </span>index <span class="k">in </span>cache before refresh
-  <span class="nt">--arch</span> ARCH             Use architecture with <span class="nt">--root</span>
-  <span class="nt">--print-arch</span>            Print default arch and <span class="nb">exit
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Dep is a tool <span class="k">for </span>managing dependencies <span class="k">for </span>Go projects
 
-</span>This apk has coffee making abilities.
+Usage: <span class="s2">"dep [command]"</span>
+
+Commands:
+
+  init     Set up a new Go project, or migrate an existing one
+  status   Report the status of the project<span class="s1">'s dependencies
+  ensure   Ensure a dependency is safely vendored in the project
+  version  Show the dep version information
+  check    Check if imports, Gopkg.toml, and Gopkg.lock are in sync
+
+Examples:
+  dep init                               set up a new project
+  dep ensure                             install the project'</span>s dependencies
+  dep ensure <span class="nt">-update</span>                     update the locked versions of all dependencies
+  dep ensure <span class="nt">-add</span> github.com/pkg/errors  add a dependency to the project
+
+Use <span class="s2">"dep help [command]"</span> <span class="k">for </span>more information about a command.
 </code></pre></div></div>
 
-<h2 id="使用示例">使用示例</h2>
-<p>下面列举常用命令：</p>
+<h3 id="功能介绍">功能介绍</h3>
 
-<p><strong>apk update</strong><br />
-<code class="highlighter-rouge">update</code>：从远程镜像源中更新本地镜像源索引。</p>
+<ul>
+  <li><code class="highlighter-rouge">dep init</code>
+    <ul>
+      <li>初始化创建vendor目录，并下载项目中的所有依赖包，生成Gopkg.lock和Gopkg.toml配置文件。</li>
+      <li>Gopkg.toml是清单文件，Gopkg.lock是校验描述文件。</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">dep status</code>
+    <ul>
+      <li>用来查看项目依赖的详细信息和状态</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">dep ensure</code>
+    <ul>
+      <li>检查所有的依赖库是否都已经安装，如果没有则立即下载。</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">dep ensure -add 指定依赖包</code>
+    <ul>
+      <li>下载添加新的依赖包，并增量更新清单文件和校验描述文件</li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="highlighter-rouge">update</code>命令会从各个镜像源列表下载<code class="highlighter-rouge">APKINDEX.tar.gz</code>并存储到本地缓存，一般在<code class="highlighter-rouge">/var/cache/apk/</code>(Alpine在该目录下)、<code class="highlighter-rouge">/var/lib/apk/</code> 、<code class="highlighter-rouge">/etc/apk/cache/</code>下。</p>
+<blockquote>
+  <p>注：dep不会每次都去下载，而是会优先在本地仓库搜索，本地仓库未找到即在网络上下载，并添加到本地仓库。仓库位于 $GOPATH/pkg/dep/sources</p>
+</blockquote>
 
-<p><strong>apk add</strong><br />
-<code class="highlighter-rouge">add</code>：安装PACKAGES并自动解决依赖关系。</p>
+<p>示例</p>
 
-<p><code class="highlighter-rouge">add</code>命令从仓库中安装最新软件包，并自动安装必须的依赖包，也可以从第三方仓库添加软件包。</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># dep init</span>
+Using ^1.6.3 as constraint <span class="k">for </span>direct dep github.com/spf13/viper
+Locking <span class="k">in </span>v1.6.3 <span class="o">(</span>59b1917<span class="o">)</span> <span class="k">for </span>direct dep github.com/spf13/viper
+Locking <span class="k">in </span>v1.2.0 <span class="o">(</span>2ef7124<span class="o">)</span> <span class="k">for </span>transitive dep github.com/subosito/gotenv
+Using ^0.7.1 as constraint <span class="k">for </span>direct dep github.com/mailru/easyjson
+Locking <span class="k">in </span>v0.7.1 <span class="o">(</span>8edcc4e<span class="o">)</span> <span class="k">for </span>direct dep github.com/mailru/easyjson
+Locking <span class="k">in </span>v1.3.1 <span class="o">(</span>1ffadf5<span class="o">)</span> <span class="k">for </span>transitive dep github.com/spf13/cast
+Locking <span class="k">in </span>v1.0.5 <span class="o">(</span>2e9d26c<span class="o">)</span> <span class="k">for </span>transitive dep github.com/spf13/pflag
+Locking <span class="k">in </span>v1.2.2 <span class="o">(</span>694aaef<span class="o">)</span> <span class="k">for </span>transitive dep github.com/mitchellh/mapstructure
+Locking <span class="k">in </span>v1.55.0 <span class="o">(</span>39bc4dd<span class="o">)</span> <span class="k">for </span>transitive dep gopkg.in/ini.v1
+Using ^1.5.0 as constraint <span class="k">for </span>direct dep github.com/go-sql-driver/mysql
+Locking <span class="k">in </span>v1.5.0 <span class="o">(</span>17ef3dd<span class="o">)</span> <span class="k">for </span>direct dep github.com/go-sql-driver/mysql
+Locking <span class="k">in </span>v1.2.2 <span class="o">(</span>588a75e<span class="o">)</span> <span class="k">for </span>transitive dep github.com/spf13/afero
+Locking <span class="k">in </span>v2.2.8 <span class="o">(</span>53403b5<span class="o">)</span> <span class="k">for </span>transitive dep gopkg.in/yaml.v2
+Locking <span class="k">in </span>v1.0.0 <span class="o">(</span>8cb6e5b<span class="o">)</span> <span class="k">for </span>transitive dep github.com/hashicorp/hcl
+Locking <span class="k">in </span>v1.0.0 <span class="o">(</span>f5c5f50<span class="o">)</span> <span class="k">for </span>transitive dep github.com/jinzhu/inflection
+Locking <span class="k">in </span>master <span class="o">(</span>1957bb5<span class="o">)</span> <span class="k">for </span>transitive dep golang.org/x/sys
+Using ^1.2.1 as constraint <span class="k">for </span>direct dep github.com/rs/xid
+Locking <span class="k">in </span>v1.2.1 <span class="o">(</span>15d2654<span class="o">)</span> <span class="k">for </span>direct dep github.com/rs/xid
+Using ^2.0.0 as constraint <span class="k">for </span>direct dep github.com/gomodule/redigo
+Locking <span class="k">in </span>v2.0.0 <span class="o">(</span>9c11da7<span class="o">)</span> <span class="k">for </span>direct dep github.com/gomodule/redigo
+Locking <span class="k">in </span>v1.1.0 <span class="o">(</span>94f6ae3<span class="o">)</span> <span class="k">for </span>transitive dep github.com/spf13/jwalterweatherman
+Locking <span class="k">in </span>v0.3.2 <span class="o">(</span>342b2e1<span class="o">)</span> <span class="k">for </span>transitive dep golang.org/x/text
+Locking <span class="k">in </span>v1.8.1 <span class="o">(</span>de8848e<span class="o">)</span> <span class="k">for </span>transitive dep github.com/magiconair/properties
+Locking <span class="k">in </span>v1.7.0 <span class="o">(</span>8e8d2a6<span class="o">)</span> <span class="k">for </span>transitive dep github.com/pelletier/go-toml
+Using ^1.9.12 as constraint <span class="k">for </span>direct dep github.com/jinzhu/gorm
+Locking <span class="k">in </span>v1.9.12 <span class="o">(</span>79a77d7<span class="o">)</span> <span class="k">for </span>direct dep github.com/jinzhu/gorm
+Locking <span class="k">in </span>v1.4.9 <span class="o">(</span>45d7d09<span class="o">)</span> <span class="k">for </span>transitive dep github.com/fsnotify/fsnotify
+Using ^1.4.2 as constraint <span class="k">for </span>direct dep github.com/gorilla/websocket
+Locking <span class="k">in </span>v1.4.2 <span class="o">(</span>b65e629<span class="o">)</span> <span class="k">for </span>direct dep github.com/gorilla/websocket
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk add openssh openntp vim
-<span class="nv">$ </span>apk add <span class="nt">--no-cache</span> mysql-client
-<span class="nv">$ </span>apk add docker <span class="nt">--update-cache</span> <span class="nt">--repository</span> http://mirrors.ustc.edu.cn/alpine/v3.4/main/ <span class="nt">--allow-untrusted</span>
+
+<span class="c"># dep status</span>
+The status of 4 projects are unknown due to errors. Rerun with <span class="sb">`</span><span class="nt">-v</span><span class="sb">`</span> flag to see details.
+PROJECT                             CONSTRAINT     VERSION        REVISION  LATEST   PKGS USED
+github.com/fsnotify/fsnotify        v1.4.9         v1.4.9         45d7d09   v1.4.9   1   
+github.com/go-sql-driver/mysql      ^1.5.0         v1.5.0         17ef3dd   v1.5.0   1   
+github.com/gomodule/redigo          ^2.0.0         v2.0.0         9c11da7   v2.0.0   2   
+github.com/gorilla/websocket        ^1.4.2         v1.4.2         b65e629   v1.4.2   1   
+github.com/hashicorp/hcl            v1.0.0         v1.0.0         8cb6e5b   v1.0.0   10  
+github.com/jinzhu/gorm              ^1.9.12        v1.9.12        79a77d7   v1.9.12  2   
+github.com/jinzhu/inflection        v1.0.0         v1.0.0         f5c5f50   v1.0.0   1   
+github.com/magiconair/properties    v1.8.1         v1.8.1         de8848e   v1.8.1   1   
+github.com/mailru/easyjson          ^0.7.1         v0.7.1         8edcc4e   v0.7.1   4   
+github.com/mitchellh/mapstructure   v1.2.2         v1.2.2         694aaef   v1.2.2   1   
+github.com/pelletier/go-toml        v1.7.0         v1.7.0         8e8d2a6   v1.7.0   1   
+github.com/rs/xid                   ^1.2.1         v1.2.1         15d2654   v1.2.1   1   
+github.com/spf13/afero              v1.2.2         v1.2.2         588a75e   v1.2.2   2   
+github.com/spf13/cast               v1.3.1         v1.3.1         1ffadf5   v1.3.1   1   
+github.com/spf13/jwalterweatherman  v1.1.0         v1.1.0         94f6ae3   v1.1.0   1   
+github.com/spf13/pflag              v1.0.5         v1.0.5         2e9d26c   v1.0.5   1   
+github.com/spf13/viper              ^1.6.3         v1.6.3         59b1917   v1.6.3   1   
+github.com/subosito/gotenv          v1.2.0         v1.2.0         2ef7124   v1.2.0   1   
+golang.org/x/sys                    branch master  branch master  1957bb5   unknown  1   
+golang.org/x/text                   v0.3.2         v0.3.2         342b2e1   unknown  6   
+gopkg.in/ini.v1                     v1.55.0        v1.55.0        39bc4dd   v1.55.0  1   
+gopkg.in/yaml.v2                    v2.2.8         v2.2.8         53403b5   v2.2.8   1   
+failed to fetch updates
+
 </code></pre></div></div>
 
-<p>【安装指定版本软件包】</p>
+<h2 id="go-mod">go mod</h2>
+<p>go modules 是 golang 1.11 新加的特性。</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk add <span class="nv">asterisk</span><span class="o">=</span>1.6.0.21-r0
-<span class="nv">$ </span>apk add <span class="s1">'asterisk&lt;1.6.1'</span>
-<span class="nv">$ </span>apk add <span class="s1">'asterisk&gt;1.6.1'</span>
+<ul>
+  <li>模块是相关Go包的集合。</li>
+  <li>modules是源代码交换和版本控制的单元。</li>
+  <li>go命令直接支持使用modules，包括记录和解析对其他模块的依赖性。</li>
+  <li>modules替换旧的基于GOPATH的方法来指定在给定构建中使用哪些源文件。</li>
+</ul>
+
+<h3 id="安装-1">安装</h3>
+
+<ul>
+  <li>无需额外安装，只要Go版本大于1.11，就默认支持go mod工具。</li>
+  <li>设置 GO111MODULE
+    <ul>
+      <li><code class="highlighter-rouge">export GO111MODULE=on</code></li>
+      <li>GO111MODULE 有三个值：off, on和auto（默认值）。</li>
+      <li>GO111MODULE=off，go命令行将不会支持module功能，寻找依赖包的方式将会沿用旧版本那种通过vendor目录或者GOPATH模式来查找。</li>
+      <li>GO111MODULE=on，go命令行会使用modules，而一点也不会去GOPATH目录下查找。</li>
+      <li>GO111MODULE=auto，默认值，go命令行将会根据当前目录来决定是否启用module功能。</li>
+      <li>当modules 功能启用时，依赖包的存放位置变更为$GOPATH/pkg，允许同一个package多个版本并存，且多个项目可以共享缓存的 module。</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="验证-1">验证</h3>
+<p>在命令行输入go mod并回车,会出现以下提示的话，说明已经安装成功了。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Go mod provides access to operations on modules.
+
+Note that support for modules is built into all the go commands,
+not just 'go mod'. For example, day-to-day adding, removing, upgrading,
+and downgrading of dependencies should be done using 'go get'.
+See 'go help modules' for an overview of module functionality.
+
+Usage:
+
+	go mod &lt;command&gt; [arguments]
+
+The commands are:
+
+	download    download modules to local cache
+	edit        edit go.mod from tools or scripts
+	graph       print module requirement graph
+	init        initialize new module in current directory
+	tidy        add missing and remove unused modules
+	vendor      make vendored copy of dependencies
+	verify      verify dependencies have expected content
+	why         explain why packages or modules are needed
+
+Use "go help mod &lt;command&gt;" for more information about a command.
 </code></pre></div></div>
 
-<p><strong>apk del</strong><br />
-<code class="highlighter-rouge">del</code>：卸载并删除PACKAGES</p>
+<h3 id="功能介绍-1">功能介绍</h3>
+<ul>
+  <li><code class="highlighter-rouge">go mod download</code>
+    <ul>
+      <li>下载依赖包</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod edit</code>
+    <ul>
+      <li>编辑go.mod文件</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod graph</code>
+    <ul>
+      <li>打印模块依赖图</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod init</code>
+    <ul>
+      <li>在当前目录初始化，生成go.mod文件</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod tidy</code>
+    <ul>
+      <li>拉取缺少的模块，移除不用的模块</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod vendor</code>
+    <ul>
+      <li>将依赖复制到vendor下</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod verify</code>
+    <ul>
+      <li>验证依赖是否正确</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">go mod why</code>
+    <ul>
+      <li>解释为什么需要依赖</li>
+    </ul>
+  </li>
+</ul>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk del openssh openntp vim
+<blockquote>
+  <p>注：初始化后不会立即下载依赖包，当您在项目目录下执行 <code class="highlighter-rouge">go get</code> , <code class="highlighter-rouge">go build</code>, <code class="highlighter-rouge">go run</code>等命令的时候， 会自动将依赖的包下载, 同时将版本信息写入到 go.mod 文件中，还会生成一个新的 go.sum 详细的记录。</p>
+</blockquote>
+
+<p>go.mod 示例</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>module demo
+
+go 1.14
+
+require <span class="o">(</span>
+	github.com/astaxie/beego v1.12.1
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+	github.com/smartystreets/goconvey v1.6.4
+<span class="o">)</span>
 </code></pre></div></div>
 
-<p><strong>apk upgrade</strong><br />
-<code class="highlighter-rouge">upgrade</code>：升级当前已安装的软件包。</p>
+<h2 id="关于我">关于我</h2>
+<p>name: yison.li<br />
+blog: <a href="http://yyeer.com">http://yyeer.com</a><br />
+github: <a href="https://github.com/yisonli">https://github.com/yisonli</a></p>
 
-<p><code class="highlighter-rouge">upgrade</code>命令升级系统已安装的所有软件包（一般包括内核），当然也可指定仅升级部分软件包（通过<code class="highlighter-rouge">-u</code>或<code class="highlighter-rouge">–upgrade</code>选择指定）。</p>
+<p><img src="http://yyeer.com/assets/img/YisonWechat.png" alt="" /></p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk update <span class="c">#更新最新本地镜像源</span>
-<span class="nv">$ </span>apk upgrade <span class="c">#升级软件</span>
-<span class="nv">$ </span>apk add <span class="nt">--upgrade</span> busybox <span class="c">#指定升级部分软件包</span>
-</code></pre></div></div>
-
-<p><strong>apk search</strong><br />
-<code class="highlighter-rouge">search</code>：搜索软件包。</p>
-
-<p><code class="highlighter-rouge">search</code>命令搜索可用软件包，<code class="highlighter-rouge">-v</code> 参数输出描述内容，支出通配符，<code class="highlighter-rouge">-d</code> 或 <code class="highlighter-rouge">–description</code> 参数指定通过软件包描述查询。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk search <span class="c">#查找所有可用软件包</span>
-<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="c">#查找所有可用软件包及其描述内容</span>
-<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="s1">'acf*'</span> <span class="c">#通过软件包名称查找软件包</span>
-<span class="nv">$ </span>apk search <span class="nt">-v</span> <span class="nt">-d</span> <span class="s1">'docker'</span> <span class="c">#通过描述文件查找特定的软件包</span>
-</code></pre></div></div>
-
-<p><strong>apk info</strong><br />
-<code class="highlighter-rouge">info</code>：列出PACKAGES或镜像源的详细信息。</p>
-
-<p><code class="highlighter-rouge">info</code>命令用于显示软件包的信息。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apk info <span class="c">#列出所有已安装的软件包</span>
-<span class="nv">$ </span>apk info <span class="nt">-a</span> zlib <span class="c">#显示完整的软件包信息</span>
-<span class="nv">$ </span>apk info <span class="nt">--who-owns</span> /sbin/lbu <span class="c">#显示指定文件属于的包</span>
-</code></pre></div></div>
-
-<h2 id="alpine中文支持如何安装locale指令包">alpine中文支持，如何安装locale指令包</h2>
-<p>需要用到<code class="highlighter-rouge">alpine-pkg-glibc</code>库，参考： <a href="https://github.com/sgerrand/alpine-pkg-glibc">https://github.com/sgerrand/alpine-pkg-glibc</a></p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apk <span class="nt">--no-cache</span> add ca-certificates wget
-wget <span class="nt">-q</span> <span class="nt">-O</span> /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk
-apk add glibc-2.29-r0.apk
-
-wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-bin-2.29-r0.apk
-wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-i18n-2.29-r0.apk
-apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
-
-/usr/glibc-compat/bin/localedef <span class="nt">-i</span> en_US <span class="nt">-f</span> UTF-8 en_US.UTF-8
-</code></pre></div></div>
-
-<p>想要了解更多相关技术，快来关注我吧，聪明出于勤奋，天才在于积累，让我们成为更优秀的自己！！！</p>
   
 	</div>
 	<footer class="article-footer clearfix">
@@ -294,7 +415,7 @@ apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
   <span></span> <!--<%- tags.join('') %>-->
   
   
-  <a href="/tags/#PHP">PHP</a>
+  <a href="/tags/#Go">Go</a>
   
   </div>
 
@@ -304,7 +425,7 @@ apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2019/06/09/Alpine%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84apk%E6%8C%87%E4%BB%A4/" data-title="Alpine系统下的apk指令 | Yison's Blog" data-tsina="" class="share clearfix">
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2020/05/09/Go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" data-title="Go依赖管理工具 | Yison's Blog" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -317,21 +438,13 @@ apk add glibc-bin-2.29-r0.apk glibc-i18n-2.29-r0.apk
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2019/03/22/Laravel%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84PHP%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0/" title="Laravel框架下的php辅助函数">
+ <a href="/%E7%BC%96%E7%A8%8B/2019/12/07/%E5%BE%AE%E4%BF%A1%E5%9B%9E%E5%A4%8D%E6%B6%88%E6%81%AF%E7%BC%96%E8%BE%91%E5%99%A8/" title="微信回复消息编辑器">
   <strong>上一篇：</strong><br/>
   <span>
-  Laravel框架下的php辅助函数</span>
+  微信回复消息编辑器</span>
 </a>
 </div>
 
-
-<div class="next">
-<a href="/%E7%BC%96%E7%A8%8B/2019/06/30/%E6%94%B6%E9%9B%86-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"  title="【收集】常用正则表达式">
- <strong>下一篇：</strong><br/> 
- <span>【收集】常用正则表达式
-</span>
-</a>
-</div>
 
 </nav>
 

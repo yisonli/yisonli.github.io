@@ -4,13 +4,290 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2019-12-07T16:41:36+08:00</updated>
+ <updated>2020-05-09T22:59:29+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Go依赖管理工具</title>
+   <link href="http://localhost:4000/%E7%BC%96%E7%A8%8B/2020/05/09/Go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/"/>
+   <updated>2020-05-09T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E7%BC%96%E7%A8%8B/2020/05/09/Go依赖管理工具</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;最早的时候，Go所依赖的所有的第三方库都放在GOPATH这个目录下面，也被很多开发者所吐槽。随着Go语言的发展，从v1.5开始开始引入vendor模式，如果项目目录下有vendor目录，那么go工具链会优先使用vendor内的包进行编译、测试等。&lt;br /&gt;
+下面来介绍两个Golang官方依赖工具。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;dep&quot;&gt;dep&lt;/h2&gt;
+
+&lt;p&gt;dep 是 golang 项目依赖管理之一，是官方的实验项目，选 dep 作为 golang 的依赖管理工具也是比较靠谱的。&lt;/p&gt;
+
+&lt;h3 id=&quot;安装&quot;&gt;安装&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;MacOS
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;brew install dep&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Linux
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Windows
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go get -u github.com/golang/dep/cmd/dep&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;Windows得自己编译，并且确认把 &lt;code class=&quot;highlighter-rouge&quot;&gt;$GOPATH/bin&lt;/code&gt; 添加到环境变量 &lt;code class=&quot;highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; 下&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;验证&quot;&gt;验证&lt;/h3&gt;
+&lt;p&gt;在命令行输入dep并回车,会出现以下提示的话，说明已经安装成功了。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Dep is a tool &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;managing dependencies &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Go projects
+
+Usage: &lt;span class=&quot;s2&quot;&gt;&quot;dep [command]&quot;&lt;/span&gt;
+
+Commands:
+
+  init     Set up a new Go project, or migrate an existing one
+  status   Report the status of the project&lt;span class=&quot;s1&quot;&gt;'s dependencies
+  ensure   Ensure a dependency is safely vendored in the project
+  version  Show the dep version information
+  check    Check if imports, Gopkg.toml, and Gopkg.lock are in sync
+
+Examples:
+  dep init                               set up a new project
+  dep ensure                             install the project'&lt;/span&gt;s dependencies
+  dep ensure &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt;                     update the locked versions of all dependencies
+  dep ensure &lt;span class=&quot;nt&quot;&gt;-add&lt;/span&gt; github.com/pkg/errors  add a dependency to the project
+
+Use &lt;span class=&quot;s2&quot;&gt;&quot;dep help [command]&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information about a command.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;功能介绍&quot;&gt;功能介绍&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dep init&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;初始化创建vendor目录，并下载项目中的所有依赖包，生成Gopkg.lock和Gopkg.toml配置文件。&lt;/li&gt;
+      &lt;li&gt;Gopkg.toml是清单文件，Gopkg.lock是校验描述文件。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dep status&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;用来查看项目依赖的详细信息和状态&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dep ensure&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;检查所有的依赖库是否都已经安装，如果没有则立即下载。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dep ensure -add 指定依赖包&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;下载添加新的依赖包，并增量更新清单文件和校验描述文件&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注：dep不会每次都去下载，而是会优先在本地仓库搜索，本地仓库未找到即在网络上下载，并添加到本地仓库。仓库位于 $GOPATH/pkg/dep/sources&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;示例&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# dep init&lt;/span&gt;
+Using ^1.6.3 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/spf13/viper
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.6.3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;59b1917&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/spf13/viper
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.2.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2ef7124&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/subosito/gotenv
+Using ^0.7.1 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/mailru/easyjson
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v0.7.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;8edcc4e&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/mailru/easyjson
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.3.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1ffadf5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/spf13/cast
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.0.5 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2e9d26c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/spf13/pflag
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.2.2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;694aaef&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/mitchellh/mapstructure
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.55.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;39bc4dd&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep gopkg.in/ini.v1
+Using ^1.5.0 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/go-sql-driver/mysql
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.5.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;17ef3dd&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/go-sql-driver/mysql
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.2.2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;588a75e&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/spf13/afero
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v2.2.8 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;53403b5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep gopkg.in/yaml.v2
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.0.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;8cb6e5b&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/hashicorp/hcl
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.0.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;f5c5f50&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/jinzhu/inflection
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;master &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1957bb5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep golang.org/x/sys
+Using ^1.2.1 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/rs/xid
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.2.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;15d2654&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/rs/xid
+Using ^2.0.0 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/gomodule/redigo
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v2.0.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9c11da7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/gomodule/redigo
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.1.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;94f6ae3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/spf13/jwalterweatherman
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v0.3.2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;342b2e1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep golang.org/x/text
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.8.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;de8848e&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/magiconair/properties
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.7.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;8e8d2a6&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/pelletier/go-toml
+Using ^1.9.12 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/jinzhu/gorm
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.9.12 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;79a77d7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/jinzhu/gorm
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.4.9 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;45d7d09&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;transitive dep github.com/fsnotify/fsnotify
+Using ^1.4.2 as constraint &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/gorilla/websocket
+Locking &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.4.2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b65e629&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;direct dep github.com/gorilla/websocket
+
+
+&lt;span class=&quot;c&quot;&gt;# dep status&lt;/span&gt;
+The status of 4 projects are unknown due to errors. Rerun with &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; flag to see details.
+PROJECT                             CONSTRAINT     VERSION        REVISION  LATEST   PKGS USED
+github.com/fsnotify/fsnotify        v1.4.9         v1.4.9         45d7d09   v1.4.9   1   
+github.com/go-sql-driver/mysql      ^1.5.0         v1.5.0         17ef3dd   v1.5.0   1   
+github.com/gomodule/redigo          ^2.0.0         v2.0.0         9c11da7   v2.0.0   2   
+github.com/gorilla/websocket        ^1.4.2         v1.4.2         b65e629   v1.4.2   1   
+github.com/hashicorp/hcl            v1.0.0         v1.0.0         8cb6e5b   v1.0.0   10  
+github.com/jinzhu/gorm              ^1.9.12        v1.9.12        79a77d7   v1.9.12  2   
+github.com/jinzhu/inflection        v1.0.0         v1.0.0         f5c5f50   v1.0.0   1   
+github.com/magiconair/properties    v1.8.1         v1.8.1         de8848e   v1.8.1   1   
+github.com/mailru/easyjson          ^0.7.1         v0.7.1         8edcc4e   v0.7.1   4   
+github.com/mitchellh/mapstructure   v1.2.2         v1.2.2         694aaef   v1.2.2   1   
+github.com/pelletier/go-toml        v1.7.0         v1.7.0         8e8d2a6   v1.7.0   1   
+github.com/rs/xid                   ^1.2.1         v1.2.1         15d2654   v1.2.1   1   
+github.com/spf13/afero              v1.2.2         v1.2.2         588a75e   v1.2.2   2   
+github.com/spf13/cast               v1.3.1         v1.3.1         1ffadf5   v1.3.1   1   
+github.com/spf13/jwalterweatherman  v1.1.0         v1.1.0         94f6ae3   v1.1.0   1   
+github.com/spf13/pflag              v1.0.5         v1.0.5         2e9d26c   v1.0.5   1   
+github.com/spf13/viper              ^1.6.3         v1.6.3         59b1917   v1.6.3   1   
+github.com/subosito/gotenv          v1.2.0         v1.2.0         2ef7124   v1.2.0   1   
+golang.org/x/sys                    branch master  branch master  1957bb5   unknown  1   
+golang.org/x/text                   v0.3.2         v0.3.2         342b2e1   unknown  6   
+gopkg.in/ini.v1                     v1.55.0        v1.55.0        39bc4dd   v1.55.0  1   
+gopkg.in/yaml.v2                    v2.2.8         v2.2.8         53403b5   v2.2.8   1   
+failed to fetch updates
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;go-mod&quot;&gt;go mod&lt;/h2&gt;
+&lt;p&gt;go modules 是 golang 1.11 新加的特性。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;模块是相关Go包的集合。&lt;/li&gt;
+  &lt;li&gt;modules是源代码交换和版本控制的单元。&lt;/li&gt;
+  &lt;li&gt;go命令直接支持使用modules，包括记录和解析对其他模块的依赖性。&lt;/li&gt;
+  &lt;li&gt;modules替换旧的基于GOPATH的方法来指定在给定构建中使用哪些源文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;安装-1&quot;&gt;安装&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;无需额外安装，只要Go版本大于1.11，就默认支持go mod工具。&lt;/li&gt;
+  &lt;li&gt;设置 GO111MODULE
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;export GO111MODULE=on&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;GO111MODULE 有三个值：off, on和auto（默认值）。&lt;/li&gt;
+      &lt;li&gt;GO111MODULE=off，go命令行将不会支持module功能，寻找依赖包的方式将会沿用旧版本那种通过vendor目录或者GOPATH模式来查找。&lt;/li&gt;
+      &lt;li&gt;GO111MODULE=on，go命令行会使用modules，而一点也不会去GOPATH目录下查找。&lt;/li&gt;
+      &lt;li&gt;GO111MODULE=auto，默认值，go命令行将会根据当前目录来决定是否启用module功能。&lt;/li&gt;
+      &lt;li&gt;当modules 功能启用时，依赖包的存放位置变更为$GOPATH/pkg，允许同一个package多个版本并存，且多个项目可以共享缓存的 module。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;验证-1&quot;&gt;验证&lt;/h3&gt;
+&lt;p&gt;在命令行输入go mod并回车,会出现以下提示的话，说明已经安装成功了。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Go mod provides access to operations on modules.
+
+Note that support for modules is built into all the go commands,
+not just 'go mod'. For example, day-to-day adding, removing, upgrading,
+and downgrading of dependencies should be done using 'go get'.
+See 'go help modules' for an overview of module functionality.
+
+Usage:
+
+	go mod &amp;lt;command&amp;gt; [arguments]
+
+The commands are:
+
+	download    download modules to local cache
+	edit        edit go.mod from tools or scripts
+	graph       print module requirement graph
+	init        initialize new module in current directory
+	tidy        add missing and remove unused modules
+	vendor      make vendored copy of dependencies
+	verify      verify dependencies have expected content
+	why         explain why packages or modules are needed
+
+Use &quot;go help mod &amp;lt;command&amp;gt;&quot; for more information about a command.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;功能介绍-1&quot;&gt;功能介绍&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod download&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;下载依赖包&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod edit&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;编辑go.mod文件&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod graph&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;打印模块依赖图&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod init&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;在当前目录初始化，生成go.mod文件&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;拉取缺少的模块，移除不用的模块&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod vendor&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;将依赖复制到vendor下&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod verify&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;验证依赖是否正确&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go mod why&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;解释为什么需要依赖&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注：初始化后不会立即下载依赖包，当您在项目目录下执行 &lt;code class=&quot;highlighter-rouge&quot;&gt;go get&lt;/code&gt; , &lt;code class=&quot;highlighter-rouge&quot;&gt;go build&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;go run&lt;/code&gt;等命令的时候， 会自动将依赖的包下载, 同时将版本信息写入到 go.mod 文件中，还会生成一个新的 go.sum 详细的记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;go.mod 示例&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;module demo
+
+go 1.14
+
+require &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+	github.com/astaxie/beego v1.12.1
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+	github.com/smartystreets/goconvey v1.6.4
+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;关于我&quot;&gt;关于我&lt;/h2&gt;
+&lt;p&gt;name: yison.li&lt;br /&gt;
+blog: &lt;a href=&quot;http://yyeer.com&quot;&gt;http://yyeer.com&lt;/a&gt;&lt;br /&gt;
+github: &lt;a href=&quot;https://github.com/yisonli&quot;&gt;https://github.com/yisonli&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://yyeer.com/assets/img/YisonWechat.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>微信回复消息编辑器</title>
@@ -6735,88 +7012,6 @@ showOnlySummary：在 &lt;span class=&quot;nt&quot;&gt;--coverage-text&lt;/span&
   &lt;/li&gt;
 &lt;/ul&gt;
 
-</content>
- </entry>
- 
- <entry>
-   <title>使用composer安装lumen</title>
-   <link href="http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85Lumen/"/>
-   <updated>2017-12-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2017/12/08/使用composer安装Lumen</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;Laravel 是一个功能齐全，速度飞快的框架，但是 Lumen 因为去除了很多 Laravel 的配置和可自定义的选项，速度越加飞快，毫秒必争。&lt;br /&gt;
-本文介绍如何搭建PHP的Laravel和Lumen环境&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;安装composer&quot;&gt;安装composer&lt;/h2&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;copy('https://install.phpcomposer.com/installer', 'composer-setup.php');&quot;&lt;/span&gt;
-
-php composer-setup.php
-
-php &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;unlink('composer-setup.php');&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;上述 3 条命令的作用依次是：&lt;/p&gt;
-  &lt;blockquote&gt;
-    &lt;ol&gt;
-      &lt;li&gt;下载安装脚本 － composer-setup.php － 到当前目录。&lt;/li&gt;
-      &lt;li&gt;执行安装过程。&lt;/li&gt;
-      &lt;li&gt;删除安装脚本。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;打开命令行窗口并执行如下命令将前面下载的 composer.phar 文件移动到 /usr/local/bin/目录下面：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;mv composer.phar /usr/local/bin/composer
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;修改镜像地址：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer config &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; repo.packagist composer https://packagist.phpcomposer.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;安装laravel&quot;&gt;安装laravel&lt;/h2&gt;
-&lt;p&gt;使用 Composer 下载 Laravel 安装包：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer global require &lt;span class=&quot;s2&quot;&gt;&quot;laravel/installer&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;安装lumen&quot;&gt;安装lumen&lt;/h2&gt;
-&lt;p&gt;使用下面命令下载 Lumen 命令:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer global require &lt;span class=&quot;s2&quot;&gt;&quot;laravel/lumen-installer&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;请确定把 ~/.composer/vendor/bin 路径放置于您的 PATH 里, 这样 Laravel/Lumen执行文件就会存在你的系统。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'export PATH=&quot;$PATH:~/.composer/vendor/bin&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bashrc
-
-&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.bashrc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;【我这边的目录是：export PATH=”$PATH:/home/yison/.config/composer/vendor/bin”;】&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;用laravel创建项目&quot;&gt;用laravel创建项目&lt;/h2&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;laravel new blog
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;用lumen创建项目&quot;&gt;用lumen创建项目&lt;/h2&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lumen new lumen
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;你也可以通过 Composer 在命令行运行 create-project 命令来安装 Lumen：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;composer create-project &lt;span class=&quot;nt&quot;&gt;--prefer-dist&lt;/span&gt; laravel/lumen blog
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </content>
  </entry>
  
