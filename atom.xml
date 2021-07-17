@@ -4,7 +4,7 @@
  <title>Yison's Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2021-07-17T13:32:24+08:00</updated>
+ <updated>2021-07-17T13:42:23+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>yison</name>
@@ -341,7 +341,7 @@ go mod edit -replace=google.golang.org/grpc=github.com/grpc/grpc-go@latest
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;浏览器访问:  http://127.0.0.1:8000/swagger/&lt;br /&gt;
-&lt;img src=&quot;http://yyeer.com/assets/img/2021-07-17/grpc_swagger.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/img/article/2021-07-17/grpc_swagger.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;至此，你已经学会如何快速搭建一个grpc服务了，赶快动手试试吧。&lt;br /&gt;
 还有，别忘了补习下 &lt;code class=&quot;highlighter-rouge&quot;&gt;proto3&lt;/code&gt; 的配置语法喔。&lt;/p&gt;
