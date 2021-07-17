@@ -1,0 +1,994 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>Grpc一点通 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="Grpc一点通">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2021/07/17/GRPC%E4%B8%80%E7%82%B9%E9%80%9A/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Grpc一点通">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E7%BC%96%E7%A8%8B/2021/07/17/GRPC%E4%B8%80%E7%82%B9%E9%80%9A/" title="Grpc一点通" itemprop="url">Grpc一点通</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2021-07-17 00:00:00 +0800" itemprop="datePublished"> 发表于 2021-07-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>gRPC是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计，带来诸如双向流、流控、头部压缩、单 TCP 连接上的多复用请求等特性，更省电和节省空间占用。<br />
+本文主要讲述如何快速搭建一个grpc服务，附带支持http接口以及swagger文档。</p>
+</blockquote>
+
+<h2 id="定义服务">定义服务</h2>
+<p>示例使用项目名为grpc-demo，在 helloworld/simple.proto 文件内定义服务。</p>
+
+<div class="language-proto highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">syntax</span> <span class="o">=</span> <span class="s">"proto3"</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">"google/api/annotations.proto"</span><span class="p">;</span>
+
+<span class="k">option</span> <span class="na">go_package</span> <span class="o">=</span> <span class="s">"grpc-demo/helloworld"</span><span class="p">;</span>
+
+<span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
+
+<span class="c1">// The greeting service definition.
+</span><span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
+  <span class="c1">// Sends a greeting
+</span>  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">option</span> <span class="p">(</span><span class="n">google.api.http</span><span class="p">)</span> <span class="o">=</span><span class="p">{</span>
+          <span class="n">post</span><span class="o">:</span><span class="s">"/v1/helloworld/sayHello"</span>
+          <span class="n">body</span><span class="o">:</span><span class="s">"*"</span>
+      <span class="p">};</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// The request message containing the user's name.
+</span><span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// The response message containing the greetings
+</span><span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="环境准备">环境准备</h2>
+<p>没安装protobuf的需自行安装，mac下安装比较方便：<code class="highlighter-rouge">brew install protobuf</code>，也可下载源码后编译安装。</p>
+
+<p>准备grpc工具：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go get <span class="nt">-u</span> google.golang.org/grpc
+go get <span class="nt">-u</span> google.golang.org/protobuf/cmd/protoc-gen-go
+go get <span class="nt">-u</span> google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go get <span class="nt">-u</span> github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go get <span class="nt">-u</span> github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+
+go install google.golang.org/protobuf/cmd/protoc-gen-go
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+</code></pre></div></div>
+
+<p>转换HTTP接口需要依赖 googleapis 库 ，先把库准备好：<br />
+<code class="highlighter-rouge">go get github.com/googleapis/googleapis</code><br />
+或者<br />
+<code class="highlighter-rouge">git clone https://github.com/googleapis/googleapis.git $GOPATH/src/github.com/googleapis</code></p>
+
+<p>然后找到googleapis库在本地存放的位置，可能是<code class="highlighter-rouge">$GOPATH/src/github.com/googleapis/googleapis</code></p>
+
+<p>google.golang.org 若无法下载的折中方法：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 非go mod模式：
+git clone https://github.com/grpc/grpc-go.git $GOPATH/src/google.golang.org/grpc
+
+// go mod模式：
+go mod edit -replace=google.golang.org/grpc=github.com/grpc/grpc-go@latest
+</code></pre></div></div>
+
+<h2 id="自动生成代码">自动生成代码</h2>
+<p>用 protobuf 编译器生成服务器和客户端代码：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>protoc <span class="nt">-I</span> <span class="nb">.</span> <span class="se">\</span>
+    <span class="nt">-I</span> <span class="nv">$GOPATH</span>/src/github.com/googleapis/googleapis <span class="se">\</span>
+    <span class="nt">--go_out</span> <span class="nb">.</span> <span class="nt">--go_opt</span> <span class="nv">paths</span><span class="o">=</span>source_relative <span class="se">\</span>
+    <span class="nt">--go-grpc_out</span> <span class="nb">.</span> <span class="nt">--go-grpc_opt</span> <span class="nv">paths</span><span class="o">=</span>source_relative <span class="se">\</span>
+    <span class="nt">--grpc-gateway_out</span> <span class="nb">.</span> <span class="nt">--grpc-gateway_opt</span> <span class="nv">logtostderr</span><span class="o">=</span><span class="nb">true</span> <span class="nt">--grpc-gateway_opt</span> <span class="nv">paths</span><span class="o">=</span>source_relative <span class="se">\</span>
+    <span class="nt">--swagger_out</span> <span class="nb">.</span> <span class="nt">--swagger_opt</span> <span class="nv">logtostderr</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+    simple.proto
+</code></pre></div></div>
+
+<blockquote>
+  <p>注意 $GOPATH/bin 要提前加到PATH环境变量中去，否则工具会找不到。<br />
+这里已经一次性把GRPC结构代码、HTTP的Restful接口、Swagger格式文件都生成好了，后面会补充使用说明。</p>
+</blockquote>
+
+<h2 id="服务实现">服务实现</h2>
+<p>使用 gRPC 的 Go API 为你的服务实现一个简单的客户端和服务器。</p>
+
+<p>client.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// Package main implements a client for Greeter service.</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"context"</span><span class="x">
+	</span><span class="n">pb</span><span class="x"> </span><span class="s">"grpc-demo/helloworld"</span><span class="x">
+	</span><span class="s">"log"</span><span class="x">
+	</span><span class="s">"os"</span><span class="x">
+	</span><span class="s">"time"</span><span class="x">
+
+	</span><span class="s">"google.golang.org/grpc"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="n">address</span><span class="x">     </span><span class="o">=</span><span class="x"> </span><span class="s">"localhost:50051"</span><span class="x">
+	</span><span class="n">defaultName</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"world"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="c">// Set up a connection to the server.</span><span class="x">
+	</span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">grpc</span><span class="o">.</span><span class="n">Dial</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="x"> </span><span class="n">grpc</span><span class="o">.</span><span class="n">WithInsecure</span><span class="p">(),</span><span class="x"> </span><span class="n">grpc</span><span class="o">.</span><span class="n">WithBlock</span><span class="p">())</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"did not connect: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">defer</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+	</span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">pb</span><span class="o">.</span><span class="n">NewGreeterClient</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="x">
+
+	</span><span class="c">// Contact the server and print out its response.</span><span class="x">
+	</span><span class="n">name</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">defaultName</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">name</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">ctx</span><span class="p">,</span><span class="x"> </span><span class="n">cancel</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">WithTimeout</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">Background</span><span class="p">(),</span><span class="x"> </span><span class="m">20</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+	</span><span class="k">defer</span><span class="x"> </span><span class="n">cancel</span><span class="p">()</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">r</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">c</span><span class="o">.</span><span class="n">SayHello</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">pb</span><span class="o">.</span><span class="n">HelloRequest</span><span class="p">{</span><span class="n">Name</span><span class="o">:</span><span class="x"> </span><span class="n">name</span><span class="p">})</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"could not greet: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Greeting: %s"</span><span class="p">,</span><span class="x"> </span><span class="n">r</span><span class="o">.</span><span class="n">GetMessage</span><span class="p">())</span><span class="x">
+		</span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">1</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>server.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// Package main implements a server for Greeter service.</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"context"</span><span class="x">
+	</span><span class="s">"grpc-demo/gateway"</span><span class="x">
+	</span><span class="n">pb</span><span class="x"> </span><span class="s">"grpc-demo/helloworld"</span><span class="x">
+	</span><span class="s">"log"</span><span class="x">
+	</span><span class="s">"net"</span><span class="x">
+
+	</span><span class="s">"google.golang.org/grpc"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="n">port</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">":50051"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="c">// server is used to implement helloworld.GreeterServer.</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">server</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">pb</span><span class="o">.</span><span class="n">UnimplementedGreeterServer</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="c">// SayHello implements helloworld.GreeterServer</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">s</span><span class="x"> </span><span class="o">*</span><span class="n">server</span><span class="p">)</span><span class="x"> </span><span class="n">SayHello</span><span class="p">(</span><span class="n">ctx</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span><span class="x"> </span><span class="n">in</span><span class="x"> </span><span class="o">*</span><span class="n">pb</span><span class="o">.</span><span class="n">HelloRequest</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="o">*</span><span class="n">pb</span><span class="o">.</span><span class="n">HelloReply</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Received: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">in</span><span class="o">.</span><span class="n">GetName</span><span class="p">())</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">pb</span><span class="o">.</span><span class="n">HelloReply</span><span class="p">{</span><span class="n">Message</span><span class="o">:</span><span class="x"> </span><span class="s">"Hello "</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">in</span><span class="o">.</span><span class="n">GetName</span><span class="p">()},</span><span class="x"> </span><span class="no">nil</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">lis</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="n">port</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"failed to listen: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">s</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">grpc</span><span class="o">.</span><span class="n">NewServer</span><span class="p">()</span><span class="x">
+	</span><span class="n">pb</span><span class="o">.</span><span class="n">RegisterGreeterServer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">server</span><span class="p">{})</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"GRPC server listening at %v"</span><span class="p">,</span><span class="x"> </span><span class="n">lis</span><span class="o">.</span><span class="n">Addr</span><span class="p">())</span><span class="x">
+	</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">listener</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="s">"127.0.0.1:8000"</span><span class="p">)</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"net.Listen err: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+		</span><span class="c">//使用gateway把grpcServer转成httpServer</span><span class="x">
+		</span><span class="n">httpServer</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">gateway</span><span class="o">.</span><span class="n">ProvideHTTP</span><span class="p">(</span><span class="s">"127.0.0.1:8000"</span><span class="p">,</span><span class="x"> </span><span class="n">s</span><span class="p">)</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">httpServer</span><span class="o">.</span><span class="n">Serve</span><span class="p">(</span><span class="n">listener</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="s">"HTTP ListenAndServe: "</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}()</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">s</span><span class="o">.</span><span class="n">Serve</span><span class="p">(</span><span class="n">lis</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"failed to serve: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>gateway/gateway.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">gateway</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"context"</span><span class="x">
+	</span><span class="s">"log"</span><span class="x">
+	</span><span class="s">"net/http"</span><span class="x">
+	</span><span class="s">"strings"</span><span class="x">
+
+	</span><span class="n">pb</span><span class="x"> </span><span class="s">"grpc-demo/helloworld"</span><span class="x">
+
+	</span><span class="s">"github.com/grpc-ecosystem/grpc-gateway/runtime"</span><span class="x">
+	</span><span class="s">"golang.org/x/net/http2"</span><span class="x">
+	</span><span class="s">"golang.org/x/net/http2/h2c"</span><span class="x">
+	</span><span class="s">"google.golang.org/grpc"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="c">// ProvideHTTP 把gRPC服务转成HTTP服务，让gRPC同时支持HTTP</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">ProvideHTTP</span><span class="p">(</span><span class="n">endpoint</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">grpcServer</span><span class="x"> </span><span class="o">*</span><span class="n">grpc</span><span class="o">.</span><span class="n">Server</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Server</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">ctx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">Background</span><span class="p">()</span><span class="x">
+	</span><span class="n">dopts</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="p">[]</span><span class="n">grpc</span><span class="o">.</span><span class="n">DialOption</span><span class="p">{</span><span class="n">grpc</span><span class="o">.</span><span class="n">WithInsecure</span><span class="p">()}</span><span class="x">
+	</span><span class="c">//新建gwmux，它是grpc-gateway的请求复用器。它将http请求与模式匹配，并调用相应的处理程序。</span><span class="x">
+	</span><span class="n">gwmux</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">runtime</span><span class="o">.</span><span class="n">NewServeMux</span><span class="p">()</span><span class="x">
+	</span><span class="c">//将服务的http处理程序注册到gwmux。处理程序通过endpoint转发请求到grpc端点</span><span class="x">
+	</span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">pb</span><span class="o">.</span><span class="n">RegisterGreeterHandlerFromEndpoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="x"> </span><span class="n">gwmux</span><span class="p">,</span><span class="x"> </span><span class="n">endpoint</span><span class="p">,</span><span class="x"> </span><span class="n">dopts</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"Register Endpoint err: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="c">//新建mux，它是http的请求复用器</span><span class="x">
+	</span><span class="n">mux</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">NewServeMux</span><span class="p">()</span><span class="x">
+	</span><span class="c">//注册gwmux</span><span class="x">
+	</span><span class="n">mux</span><span class="o">.</span><span class="n">Handle</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="x"> </span><span class="n">gwmux</span><span class="p">)</span><span class="x">
+	</span><span class="c">// 设置静态目录</span><span class="x">
+	</span><span class="n">fsh</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">FileServer</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Dir</span><span class="p">(</span><span class="s">"swagger"</span><span class="p">))</span><span class="x">
+	</span><span class="n">mux</span><span class="o">.</span><span class="n">Handle</span><span class="p">(</span><span class="s">"/swagger/"</span><span class="p">,</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">StripPrefix</span><span class="p">(</span><span class="s">"/swagger/"</span><span class="p">,</span><span class="x"> </span><span class="n">fsh</span><span class="p">))</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">endpoint</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="s">" HTTP.Listing ..."</span><span class="p">)</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">http</span><span class="o">.</span><span class="n">Server</span><span class="p">{</span><span class="x">
+		</span><span class="n">Addr</span><span class="o">:</span><span class="x">    </span><span class="n">endpoint</span><span class="p">,</span><span class="x">
+		</span><span class="n">Handler</span><span class="o">:</span><span class="x"> </span><span class="n">grpcHandlerFunc</span><span class="p">(</span><span class="n">grpcServer</span><span class="p">,</span><span class="x"> </span><span class="n">mux</span><span class="p">),</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="c">// grpcHandlerFunc 根据不同的请求重定向到指定的Handler处理</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">grpcHandlerFunc</span><span class="p">(</span><span class="n">grpcServer</span><span class="x"> </span><span class="o">*</span><span class="n">grpc</span><span class="o">.</span><span class="n">Server</span><span class="p">,</span><span class="x"> </span><span class="n">otherHandler</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="p">)</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">h2c</span><span class="o">.</span><span class="n">NewHandler</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">w</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span><span class="x"> </span><span class="n">r</span><span class="x"> </span><span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">r</span><span class="o">.</span><span class="n">ProtoMajor</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">strings</span><span class="o">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">),</span><span class="x"> </span><span class="s">"application/grpc"</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">grpcServer</span><span class="o">.</span><span class="n">ServeHTTP</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="x"> </span><span class="n">r</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">otherHandler</span><span class="o">.</span><span class="n">ServeHTTP</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="x"> </span><span class="n">r</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}),</span><span class="x"> </span><span class="o">&amp;</span><span class="n">http2</span><span class="o">.</span><span class="n">Server</span><span class="p">{})</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<h2 id="扩展http接口">扩展HTTP接口</h2>
+<p>上面示例中已包含此功能，注意查看server.go的如下代码段，增加了8000作为http的服务端口</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="x">    </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">listener</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="s">"127.0.0.1:8000"</span><span class="p">)</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s">"net.Listen err: %v"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+		</span><span class="c">//使用gateway把grpcServer转成httpServer</span><span class="x">
+		</span><span class="n">httpServer</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">gateway</span><span class="o">.</span><span class="n">ProvideHTTP</span><span class="p">(</span><span class="s">"127.0.0.1:8000"</span><span class="p">,</span><span class="x"> </span><span class="n">s</span><span class="p">)</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">httpServer</span><span class="o">.</span><span class="n">Serve</span><span class="p">(</span><span class="n">listener</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="s">"HTTP ListenAndServe: "</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}()</span><span class="x">
+</span></code></pre></div></div>
+
+<h2 id="扩展swagger文档">扩展swagger文档</h2>
+
+<ol>
+  <li>
+    <p>下载swagger-ui<br />
+<code class="highlighter-rouge">git clone https://github.com/swagger-api/swagger-ui</code>，把<code class="highlighter-rouge">dist</code>目录下的所有文件拷贝我们项目的<code class="highlighter-rouge">swagger/</code>目录下。</p>
+  </li>
+  <li>
+    <p>http设置静态目录<br />
+注意<code class="highlighter-rouge">gateway/gateway.go</code>如下代码段</p>
+  </li>
+</ol>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="x">    </span><span class="n">fsh</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">FileServer</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Dir</span><span class="p">(</span><span class="s">"swagger"</span><span class="p">))</span><span class="x">
+	</span><span class="n">mux</span><span class="o">.</span><span class="n">Handle</span><span class="p">(</span><span class="s">"/swagger/"</span><span class="p">,</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">StripPrefix</span><span class="p">(</span><span class="s">"/swagger/"</span><span class="p">,</span><span class="x"> </span><span class="n">fsh</span><span class="p">))</span><span class="x">
+</span></code></pre></div></div>
+
+<ol>
+  <li>将自动生成的<code class="highlighter-rouge">simple.swagger.json</code>覆盖到<code class="highlighter-rouge">swagger/swagger.json</code>文件</li>
+  <li>修改<code class="highlighter-rouge">swagger/index.html</code>文件，url换成 <code class="highlighter-rouge">url: "swagger.json"</code></li>
+</ol>
+
+<h2 id="编译运行">编译运行</h2>
+<p>编译客户端: <code class="highlighter-rouge">go build -o c client.go</code><br />
+编译服务端: <code class="highlighter-rouge">go build -o s server.go</code></p>
+
+<p>启动服务端: <code class="highlighter-rouge">./s</code><br />
+启动客户端: <code class="highlighter-rouge">./c</code></p>
+
+<p>运行效果</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ./s</span>
+2021/07/17 13:27:38 GRPC server listening at <span class="o">[</span>::]:50051
+2021/07/17 13:27:38 127.0.0.1:8000 HTTP.Listing ...
+2021/07/17 13:30:58 Received: world
+2021/07/17 13:30:59 Received: world
+2021/07/17 13:31:00 Received: world
+2021/07/17 13:31:01 Received: world
+2021/07/17 13:31:02 Received: world
+2021/07/17 13:31:03 Received: world
+2021/07/17 13:31:04 Received: world
+2021/07/17 13:31:05 Received: world
+2021/07/17 13:31:06 Received: world
+2021/07/17 13:31:07 Received: world
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ./c</span>
+2021/07/17 13:30:58 Greeting: Hello world
+2021/07/17 13:30:59 Greeting: Hello world
+2021/07/17 13:31:00 Greeting: Hello world
+2021/07/17 13:31:01 Greeting: Hello world
+2021/07/17 13:31:02 Greeting: Hello world
+2021/07/17 13:31:03 Greeting: Hello world
+2021/07/17 13:31:04 Greeting: Hello world
+2021/07/17 13:31:05 Greeting: Hello world
+2021/07/17 13:31:06 Greeting: Hello world
+2021/07/17 13:31:07 Greeting: Hello world
+</code></pre></div></div>
+
+<p>浏览器访问:  http://127.0.0.1:8000/swagger/<br />
+<img src="http://yyeer.com/assets/img/2021-07-17/grpc_swagger.jpg" alt="" /></p>
+
+<p>至此，你已经学会如何快速搭建一个grpc服务了，赶快动手试试吧。<br />
+还有，别忘了补习下 <code class="highlighter-rouge">proto3</code> 的配置语法喔。</p>
+
+<h2 id="关于我">关于我</h2>
+<p>name: yison.li<br />
+blog: <a href="http://yyeer.com">http://yyeer.com</a><br />
+github: <a href="https://github.com/yisonli">https://github.com/yisonli</a></p>
+
+<p><img src="http://yyeer.com/assets/img/YisonWechat.png" alt="" /></p>
+
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#编程">编程</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  <a href="/tags/#Go">Go</a>
+  
+  <a href="/tags/#GRPC">GRPC</a>
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2021/07/17/GRPC%E4%B8%80%E7%82%B9%E9%80%9A/" data-title="Grpc一点通 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E8%AF%BB%E4%B9%A6/%E7%BC%96%E7%A8%8B/2020/12/03/Go%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B-%E9%89%B4%E8%B5%8F/" title="《go语言编程》☞鉴赏">
+  <strong>上一篇：</strong><br/>
+  <span>
+  《go语言编程》☞鉴赏</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>20</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>6</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Cache" title="Cache">Cache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Go" title="Go">Go<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#GRPC" title="GRPC">GRPC<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
