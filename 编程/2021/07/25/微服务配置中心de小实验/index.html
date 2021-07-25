@@ -1,0 +1,900 @@
+
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+    
+    
+    
+    
+    <title>微服务配置中心de小实验 | Yison's Blog</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="yison">
+    
+
+    
+    <!--<%- open_graph({twitter_id: theme.author.twitter, google_plus: theme.author.google_plus}) %>-->
+
+    <meta name="description" content="page.description">
+    
+    <meta property="og:type" content="article">
+    
+    <meta property="og:title" content="微服务配置中心de小实验">
+    <meta property="og:url" content="/%E7%BC%96%E7%A8%8B/2021/07/25/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83de%E5%B0%8F%E5%AE%9E%E9%AA%8C/">
+    <meta property="og:site_name" content="Yison's Blog">
+    <meta property="og:description" content="">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="微服务配置中心de小实验">
+    <meta name="twitter:description" content="page.description">
+    <meta name="twitter:creator" content="@">
+    <link rel="publisher" href="">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Yison's Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/assets/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/assets/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/jacman.jpg">
+    
+
+    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/highlight.css" type="text/css">
+    
+    
+</head>
+
+  <body>
+    <header>
+        <div>
+		    
+			<div id="imglogo">
+				<a href="/"><img src="/assets/img/logo.png" alt="Yison's Blog" title="Yison's Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yison's Blog">Yison's Blog</a></h1>
+				<h2 class="blog-motto">Do one thing at a time, and do well.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search" method="get" accept-charset="utf-8">
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      
+
+
+
+<div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+	<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/%E7%BC%96%E7%A8%8B/2021/07/25/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83de%E5%B0%8F%E5%AE%9E%E9%AA%8C/" title="微服务配置中心de小实验" itemprop="url">微服务配置中心de小实验</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="yison" target="_blank" itemprop="author">yison</a>
+		
+  <p class="article-time">
+    <time datetime="2021-07-25 00:00:00 +0800" itemprop="datePublished"> 发表于 2021-07-25</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article toc-content" style="display: none;">
+		
+			<!--<%- toc(item.content) %>-->
+		
+		</div>
+		
+		<blockquote>
+  <p>本文是个人在学习书籍《Go语言高并发与微服务实战》第8章内容过程中，而动手做的小实验，涉及spring cloud config和yaml相关知识，仅供参考。</p>
+</blockquote>
+
+<h2 id="准备spring-boot环境">准备spring boot环境</h2>
+<p>对java熟悉的童鞋可以直接使用IDEA，安装插件即可直接使用。<br />
+本人使用Mac机器，在这里尝试使用CLI模式搭建环境（PS：因对java不专，最后发现此步骤非必须，但还是保留搭建记录吧）。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># brew tap spring-io/tap</span>
+<span class="c"># brew install spring-boot</span>
+</code></pre></div></div>
+
+<p>试一下helloworld运行，新建并编辑文件app.groovy：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@RestController
+class ThisWillActuallyRun {
+
+    @RequestMapping("/")
+    String home() {
+        "Hello World!"
+    }
+
+}
+</code></pre></div></div>
+
+<p>运行效果：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># spring run app.groovy</span>
+Resolving dependencies..............................................................................
+
+  <span class="nb">.</span>   ____          _            __ _ _
+ /<span class="se">\\</span> / ___<span class="s1">'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '</span>_ | <span class="s1">'_| | '</span>_ <span class="se">\/</span> _<span class="sb">`</span> | <span class="se">\ \ \ \</span>
+ <span class="se">\\</span>/  ___<span class="o">)</span>| |_<span class="o">)</span>| | | | | <span class="o">||</span> <span class="o">(</span>_| |  <span class="o">)</span> <span class="o">)</span> <span class="o">)</span> <span class="o">)</span>
+  <span class="s1">'  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.2)
+
+2021-07-19 14:58:03.533  INFO 40088 --- [       runner-0] o.s.boot.SpringApplication               : Starting application using Java 1.8.0_281 on lijingzhaodeMacBook-Pro.local with PID 40088 (started by lijingzhao in /Users/lijingzhao/LocalProject/spring/config-demo)
+2021-07-19 14:58:03.548  INFO 40088 --- [       runner-0] o.s.boot.SpringApplication               : No active profile set, falling back to default profiles: default
+2021-07-19 14:58:05.353  INFO 40088 --- [       runner-0] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-07-19 14:58:05.375  INFO 40088 --- [       runner-0] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-07-19 14:58:05.375  INFO 40088 --- [       runner-0] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.48]
+2021-07-19 14:58:05.435  INFO 40088 --- [       runner-0] org.apache.catalina.loader.WebappLoader  : Unknown class loader [org.springframework.boot.cli.compiler.ExtendedGroovyClassLoader$DefaultScopeParentClassLoader@63cb21ef] of class [class org.springframework.boot.cli.compiler.ExtendedGroovyClassLoader$DefaultScopeParentClassLoader]
+2021-07-19 14:58:05.478  INFO 40088 --- [       runner-0] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-07-19 14:58:05.478  INFO 40088 --- [       runner-0] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1599 ms
+2021-07-19 14:58:06.727  INFO 40088 --- [       runner-0] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-07-19 14:58:06.748  INFO 40088 --- [       runner-0] o.s.boot.SpringApplication               : Started application in 4.243 seconds (JVM running for 132.146)
+2021-07-19 14:59:21.243  INFO 40088 --- [nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet '</span>dispatcherServlet<span class="s1">'
+2021-07-19 14:59:21.244  INFO 40088 --- [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet '</span>dispatcherServlet<span class="s1">'
+2021-07-19 14:59:21.249  INFO 40088 --- [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>打开 http://localhost:8080/ 即可看到效果</p>
+</blockquote>
+
+<h2 id="部署配置中心server端">部署配置中心server端</h2>
+<p>使用IDEA Initializr可生成依赖Config Server的项目。<br />
+也可以使用网页工具 https://start.spring.io/ 帮你生成项目代码，本文使用项目名为config-server。</p>
+
+<p>生成代码后，修改 <code class="highlighter-rouge">src/main/java/com/example/configserver/ConfigServerApplication.java</code> 文件，增加 @EnableConfigServer ，整体代码如下：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">configserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.cloud.config.server.EnableConfigServer</span><span class="o">;</span>
+
+<span class="nd">@EnableConfigServer</span>
+<span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConfigServerApplication</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ConfigServerApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>新增配置文件 <code class="highlighter-rouge">src/main/resources/application.yml</code> 内容如下：</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">server</span><span class="pi">:</span>
+  <span class="na">port</span><span class="pi">:</span> <span class="s">8888</span>
+<span class="na">spring</span><span class="pi">:</span>
+  <span class="na">application</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">config-server</span>
+  <span class="na">profiles</span><span class="pi">:</span>
+    <span class="na">active</span><span class="pi">:</span> <span class="s">git</span> <span class="c1">#设置使用本地配置(默认是git,可以设置：subversion(SVN)，native(本地))</span>
+  <span class="na">cloud</span><span class="pi">:</span>
+    <span class="na">config</span><span class="pi">:</span>
+      <span class="na">server</span><span class="pi">:</span>
+        <span class="c1">#如下是GIT配置</span>
+        <span class="na">git</span><span class="pi">:</span>
+          <span class="na">uri</span><span class="pi">:</span> <span class="s">https://github.com/longjoy/config-repo.git</span> 
+          <span class="na">search-paths</span><span class="pi">:</span> <span class="s">${APP_ENV:dev}</span>
+          <span class="na">username</span><span class="pi">:</span> 
+          <span class="na">password</span><span class="pi">:</span> 
+          <span class="na">default-label</span><span class="pi">:</span> <span class="s">master</span>
+</code></pre></div></div>
+
+<p>使用marven工具编译打包成jar，java指令运行：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ./mvnw clean package</span>
+<span class="c"># java -jar target/config-server-0.0.1-SNAPSHOT.jar</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>运行成功后，可使用curl指令 <code class="highlighter-rouge">curl http://localhost:8888/master/client-demo-dev.yaml</code> 查看结果</p>
+</blockquote>
+
+<h2 id="编写client端代码">编写client端代码</h2>
+
+<p>resume.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"github.com/longjoy/micro-go-book/ch8-config/conf"</span><span class="x">
+	</span><span class="s">"github.com/spf13/viper"</span><span class="x">
+	</span><span class="s">"log"</span><span class="x">
+	</span><span class="s">"net/http"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">http</span><span class="o">.</span><span class="n">HandleFunc</span><span class="p">(</span><span class="s">"/resumes"</span><span class="p">,</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">w</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span><span class="x"> </span><span class="n">req</span><span class="x"> </span><span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="c">//q := events.goreq.URL.Query().Get("q")</span><span class="x">
+		</span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">_</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="x"> </span><span class="s">"个人信息：</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span><span class="x">
+		</span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">_</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="x"> </span><span class="s">"姓名：%s，</span><span class="se">\n</span><span class="s">性别：%s，</span><span class="se">\n</span><span class="s">年龄 %d!"</span><span class="p">,</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">"resume.name"</span><span class="p">),</span><span class="x"> </span><span class="n">conf</span><span class="o">.</span><span class="n">Resume</span><span class="o">.</span><span class="n">Sex</span><span class="p">,</span><span class="x"> </span><span class="n">conf</span><span class="o">.</span><span class="n">Resume</span><span class="o">.</span><span class="n">Age</span><span class="p">)</span><span class="x"> </span><span class="c">//这个写入到w的是输出到客户端的</span><span class="x">
+	</span><span class="p">})</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s">":8081"</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<p>conf/config.go</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">conf</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"log"</span><span class="x">
+	</span><span class="s">"net/http"</span><span class="x">
+
+	</span><span class="s">"github.com/spf13/viper"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="n">kAppName</span><span class="x">       </span><span class="o">=</span><span class="x"> </span><span class="s">"APP_NAME"</span><span class="x">
+	</span><span class="n">kConfigServer</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="s">"CONFIG_SERVER"</span><span class="x">
+	</span><span class="n">kConfigLabel</span><span class="x">   </span><span class="o">=</span><span class="x"> </span><span class="s">"CONFIG_LABEL"</span><span class="x">
+	</span><span class="n">kConfigProfile</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"CONFIG_PROFILE"</span><span class="x">
+	</span><span class="n">kConfigType</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"CONFIG_TYPE"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">var</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="n">Resume</span><span class="x"> </span><span class="n">ResumeConfig</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">ResumeConfig</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Name</span><span class="x"> </span><span class="kt">string</span><span class="x">
+	</span><span class="n">Age</span><span class="x">  </span><span class="kt">int</span><span class="x">
+	</span><span class="n">Sex</span><span class="x">  </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">init</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">AutomaticEnv</span><span class="p">()</span><span class="x">
+	</span><span class="n">initDefault</span><span class="p">()</span><span class="x">
+
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">loadRemoteConfig</span><span class="p">();</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="s">"Fail to load config"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sub</span><span class="p">(</span><span class="s">"resume"</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Resume</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="s">"Fail to parse config"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">initDefault</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetDefault</span><span class="p">(</span><span class="n">kAppName</span><span class="p">,</span><span class="x"> </span><span class="s">"client-demo"</span><span class="p">)</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetDefault</span><span class="p">(</span><span class="n">kConfigServer</span><span class="p">,</span><span class="x"> </span><span class="s">"http://localhost:8888"</span><span class="p">)</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetDefault</span><span class="p">(</span><span class="n">kConfigLabel</span><span class="p">,</span><span class="x"> </span><span class="s">"master"</span><span class="p">)</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetDefault</span><span class="p">(</span><span class="n">kConfigProfile</span><span class="p">,</span><span class="x"> </span><span class="s">"dev"</span><span class="p">)</span><span class="x">
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetDefault</span><span class="p">(</span><span class="n">kConfigType</span><span class="p">,</span><span class="x"> </span><span class="s">"yaml"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">loadRemoteConfig</span><span class="p">()</span><span class="x"> </span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">confAddr</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"%v/%v/%v-%v.%v"</span><span class="p">,</span><span class="x">
+		</span><span class="n">viper</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">kConfigServer</span><span class="p">),</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">kConfigLabel</span><span class="p">),</span><span class="x">
+		</span><span class="n">viper</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">kAppName</span><span class="p">),</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">kConfigProfile</span><span class="p">),</span><span class="x">
+		</span><span class="n">viper</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">kConfigType</span><span class="p">))</span><span class="x">
+	</span><span class="n">resp</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">confAddr</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">defer</span><span class="x"> </span><span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+
+	</span><span class="n">viper</span><span class="o">.</span><span class="n">SetConfigType</span><span class="p">(</span><span class="n">viper</span><span class="o">.</span><span class="n">GetString</span><span class="p">(</span><span class="n">kConfigType</span><span class="p">))</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">ReadConfig</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="p">);</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Load config from: "</span><span class="p">,</span><span class="x"> </span><span class="n">confAddr</span><span class="p">)</span><span class="x">
+	</span><span class="k">return</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">sub</span><span class="p">(</span><span class="n">key</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">value</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="kt">error</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"配置文件的前缀为：%v"</span><span class="p">,</span><span class="x"> </span><span class="n">key</span><span class="p">)</span><span class="x">
+	</span><span class="n">sub</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">viper</span><span class="o">.</span><span class="n">Sub</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="x">
+	</span><span class="n">sub</span><span class="o">.</span><span class="n">AutomaticEnv</span><span class="p">()</span><span class="x">
+	</span><span class="n">sub</span><span class="o">.</span><span class="n">SetEnvPrefix</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">sub</span><span class="o">.</span><span class="n">Unmarshal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
+
+<h2 id="编译运行">编译运行</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># go run resume.go</span>
+2021/07/19 18:10:38 Load config from:  http://localhost:8888/master/client-demo-dev.yaml
+2021/07/19 18:10:38 配置文件的前缀为：resume
+</code></pre></div></div>
+
+<blockquote>
+  <p>浏览器访问 http://127.0.0.1:8081/resumes ，或使用curl指令<code class="highlighter-rouge">curl http://127.0.0.1:8081/resumes</code> 可以查看client程序获取到的配置内容。</p>
+</blockquote>
+
+<h2 id="总结">总结</h2>
+<ul>
+  <li>spring cloud config是一个比较容易上手的配置中心，通过它我们可以快速了解配置中心的功能、原理及其使用。</li>
+  <li>yaml是其中一种配置文件格式，而viper是一个比较方便的配置解析工具，支持的格式也比较多，可以灵活使用。</li>
+  <li>关于热更新问题，书中提到的方案是amqp，其实用的是消息队列通知，本文则不做演示；因为配置改动频率不高，且引入mq感觉不太划算，而且还有别的方式可以实现。</li>
+</ul>
+
+<h2 id="关于我">关于我</h2>
+<p>name: yison.li<br />
+blog: <a href="http://yyeer.com">http://yyeer.com</a><br />
+github: <a href="https://github.com/yisonli">https://github.com/yisonli</a></p>
+
+<p><img src="http://yyeer.com/assets/img/YisonWechat.png" alt="" /></p>
+  
+	</div>
+	<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <!--
+  <%- list_categories(item.categories, {
+      show_count: false,
+      class: 'article-category',
+      style: 'none',
+      separator: '►'
+  }) %>
+  -->
+  
+  <a class="article-category-link" href="/categories/#编程">编程</a>
+  
+</div>
+
+
+  <div class="article-tags">
+  <!--
+  <% var tags = [];
+    item.tags.forEach(function(tag){
+      tags.push('<a href="' + config.root + tag.path + '">' + tag.name + '</a>');
+    }); %>-->
+  <span></span> <!--<%- tags.join('') %>-->
+  
+  
+  <a href="/tags/#Go">Go</a>
+  
+  <a href="/tags/#微服务">微服务</a>
+  
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://localhost:4000/%E7%BC%96%E7%A8%8B/2021/07/25/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83de%E5%B0%8F%E5%AE%9E%E9%AA%8C/" data-title="微服务配置中心de小实验 | Yison's Blog" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+   
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/%E8%AF%BB%E4%B9%A6/%E7%BC%96%E7%A8%8B/2021/07/20/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0de%E5%B0%8F%E5%AE%9E%E9%AA%8C/" title="微服务注册发现de小实验">
+  <strong>上一篇：</strong><br/>
+  <span>
+  微服务注册发现de小实验</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/assets/js/md5.js"></script>
+<div id="gitalk-container" style="padding:0 4%;"></div>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6e26f3ed90af4176bf66',
+    clientSecret: 'e4c758e742cf68cec349df440464d743a619b1f9',
+    repo: 'comment',
+    owner: 'yisonli',
+    admin: ['yisonli'],
+    id: hex_md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+
+</div>  
+
+      
+      
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside toc-content">
+ 
+ <!--<%- toc(item.content) %>-->
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/#版本控制" title="版本控制">版本控制<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#编程" title="编程">编程<sup>22</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#操作系统" title="操作系统">操作系统<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#数据库" title="数据库">数据库<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/#读书" title="读书">读书<sup>7</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/#Git" title="Git">Git<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#PHP" title="PHP">PHP<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Nginx" title="Nginx">Nginx<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Linux" title="Linux">Linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Mysql" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#云" title="云">云<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#前端" title="前端">前端<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#管理" title="管理">管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Laravel" title="Laravel">Laravel<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#大数据" title="大数据">大数据<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#C" title="C">C<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Docker" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Cache" title="Cache">Cache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#Go" title="Go">Go<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#GRPC" title="GRPC">GRPC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/#微服务" title="微服务">微服务<sup>2</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            <a href="https://yisonli.cnblogs.com" target="_blank" title="Yisonli博客园">Yisonli博客园</a>
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I'm Yison Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	<!--
+			<%  Array.prototype.S=String.fromCharCode(2);
+			  Array.prototype.in_array=function(e){
+    			var r=new RegExp(this.S+e+this.S);
+    			return (r.test(this.S+this.join(this.S)+this.S));
+				};
+				var cc = new Array('by','by-nc','by-nc-nd','by-nc-sa','by-nd','by-sa','zero'); %>
+		<% if (cc.in_array(theme.creative_commons) ) { %>
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/<%= theme.creative_commons %>/4.0" class="cc-opacity" target="_blank">
+            <img src="<%- config.root %>img/cc-<%= theme.creative_commons %>.svg" alt="Creative Commons" />
+          </a>
+        </div>
+    <% } %>
+				-->
+
+		<p class="copyright">
+		Powered by <a href="http://jekyllrb.com" target="_blank" title="jekyll">jekyll</a> and Theme by <a href="https://github.com/simpleyyt/jekyll-jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="about" target="_blank" title="yison">yison</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/jquery.imagesloaded.min.js"></script>
+<script src="/assets/js/gallery.js"></script>
+<script src="/assets/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="/assets/js/toc.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+
+  
+
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "文章目录",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "文章目录",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+<style type="text/css">
+  .article-share-qq:before { content: "\f1d6"; }
+  .article-share-qq:hover { background: #00aced; text-shadow: 0 1px #008abe }
+  .bdshare-button-style1-16 {}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = location.href,//$this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://qr.liantu.com/api.php?text=' + encodedUrl + '"/></div>',
+  // '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  // '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&sharesource=qzone&title=' + title + '" class="article-share-qq" target="_blank" title="QQ空间"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+/*
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      //$('.hoverqrcode').hide();
+  });
+  */
+});
+</script>
+
+
+
+
+
+
+<!--
+
+-->
+
+
+
+
+<link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/assets/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      if ($(this).hasClass('emoji')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<!-- Analytics Begin -->
+
+
+
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3f1c1d7a96a77c3559936efffb01e0cc' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/assets/img/scrollup.png"/></a>
+	</div>
+	<script src="/assets/js/totop.js"></script>
+
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
+
