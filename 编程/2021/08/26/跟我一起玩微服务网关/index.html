@@ -239,131 +239,131 @@ gateway/main.go</p>
 
 <p>main.go 增加endpoint的初始化</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    extraEndpoint := MakeExtraEndpoint(svc)
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="x">    </span><span class="n">extraEndpoint</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">MakeExtraEndpoint</span><span class="p">(</span><span class="n">svc</span><span class="p">)</span><span class="x">
 
-	//把算术运算Endpoint和健康检查Endpoint封装至StringEndpoints
-	endpts := StringEndpoints{
-		StringEndpoint:      endpoint,
-		HealthCheckEndpoint: healthEndpoint,
-		ExtraEndpoint:       extraEndpoint,
-	}
-</code></pre></div></div>
+	</span><span class="c">//把算术运算Endpoint和健康检查Endpoint封装至StringEndpoints</span><span class="x">
+	</span><span class="n">endpts</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">StringEndpoints</span><span class="p">{</span><span class="x">
+		</span><span class="n">StringEndpoint</span><span class="o">:</span><span class="x">      </span><span class="n">endpoint</span><span class="p">,</span><span class="x">
+		</span><span class="n">HealthCheckEndpoint</span><span class="o">:</span><span class="x"> </span><span class="n">healthEndpoint</span><span class="p">,</span><span class="x">
+		</span><span class="n">ExtraEndpoint</span><span class="o">:</span><span class="x">       </span><span class="n">extraEndpoint</span><span class="p">,</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>endpoints.go 结构体变更，并增加扩展方法</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// CalculateEndpoint define endpoint
-type StringEndpoints struct {
-	StringEndpoint      endpoint.Endpoint
-	HealthCheckEndpoint endpoint.Endpoint
-	ExtraEndpoint       endpoint.Endpoint
-}
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// CalculateEndpoint define endpoint</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">StringEndpoints</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">StringEndpoint</span><span class="x">      </span><span class="n">endpoint</span><span class="o">.</span><span class="n">Endpoint</span><span class="x">
+	</span><span class="n">HealthCheckEndpoint</span><span class="x"> </span><span class="n">endpoint</span><span class="o">.</span><span class="n">Endpoint</span><span class="x">
+	</span><span class="n">ExtraEndpoint</span><span class="x">       </span><span class="n">endpoint</span><span class="o">.</span><span class="n">Endpoint</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-type ExtraRequest struct {
-	Extra string `json:"extra"`
-}
-type ExtraResponse struct {
-	Extra string `json:"extra"`
-}
+</span><span class="k">type</span><span class="x"> </span><span class="n">ExtraRequest</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Extra</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="s">`json:"extra"`</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">ExtraResponse</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Extra</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="s">`json:"extra"`</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-// MakeExtraEndpoint 自己测试扩充一个Endpoint
-func MakeExtraEndpoint(svc Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req := request.(ExtraRequest)
-		extra := svc.Extra(req.Extra)
-		return ExtraResponse{extra}, nil
-	}
-}
-</code></pre></div></div>
+</span><span class="c">// MakeExtraEndpoint 自己测试扩充一个Endpoint</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">MakeExtraEndpoint</span><span class="p">(</span><span class="n">svc</span><span class="x"> </span><span class="n">Service</span><span class="p">)</span><span class="x"> </span><span class="n">endpoint</span><span class="o">.</span><span class="n">Endpoint</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">ctx</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span><span class="x"> </span><span class="n">request</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="p">(</span><span class="n">response</span><span class="x"> </span><span class="k">interface</span><span class="p">{},</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">req</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">request</span><span class="o">.</span><span class="p">(</span><span class="n">ExtraRequest</span><span class="p">)</span><span class="x">
+		</span><span class="n">extra</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">svc</span><span class="o">.</span><span class="n">Extra</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">Extra</span><span class="p">)</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="n">ExtraResponse</span><span class="p">{</span><span class="n">extra</span><span class="p">},</span><span class="x"> </span><span class="no">nil</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>service.go 增加接口定义，并实现扩展服务</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Service Define a service interface
-type Service interface {
-	// Concat a and b
-	Concat(a, b string) (string, error)
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// Service Define a service interface</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">Service</span><span class="x"> </span><span class="k">interface</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="c">// Concat a and b</span><span class="x">
+	</span><span class="n">Concat</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">
 
-	// a,b pkg string value
-	Diff(a, b string) (string, error)
+	</span><span class="c">// a,b pkg string value</span><span class="x">
+	</span><span class="n">Diff</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">
 
-	// Extra Service demo
-	Extra(extra string) string
+	</span><span class="c">// Extra Service demo</span><span class="x">
+	</span><span class="n">Extra</span><span class="p">(</span><span class="n">extra</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x">
 
-	// HealthCheck check service health status
-	HealthCheck() bool
-}
+	</span><span class="c">// HealthCheck check service health status</span><span class="x">
+	</span><span class="n">HealthCheck</span><span class="p">()</span><span class="x"> </span><span class="kt">bool</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-// 扩展的一个Service
-func (s StringService) Extra(extra string) string {
-	return extra + "." + time.Now().String()
-}
-</code></pre></div></div>
+</span><span class="c">// 扩展的一个Service</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">s</span><span class="x"> </span><span class="n">StringService</span><span class="p">)</span><span class="x"> </span><span class="n">Extra</span><span class="p">(</span><span class="n">extra</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">extra</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="s">"."</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">String</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <p>transports.go 扩展一个路由，并增加decode方法</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func MakeHttpHandler(ctx context.Context, endpoints StringEndpoints, logger log.Logger) http.Handler {
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">MakeHttpHandler</span><span class="p">(</span><span class="n">ctx</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span><span class="x"> </span><span class="n">endpoints</span><span class="x"> </span><span class="n">StringEndpoints</span><span class="p">,</span><span class="x"> </span><span class="n">logger</span><span class="x"> </span><span class="n">log</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="x"> </span><span class="p">{</span><span class="x">
 
-    // 扩展一个路由
-	r.Methods("GET").Path("/extra/{extra}").Handler(kithttp.NewServer(
-		endpoints.ExtraEndpoint,
-		decodeExtraRequest,
-		encodeStringResponse,
-		options...,
-	))
-	return r
-}
+    </span><span class="c">// 扩展一个路由</span><span class="x">
+	</span><span class="n">r</span><span class="o">.</span><span class="n">Methods</span><span class="p">(</span><span class="s">"GET"</span><span class="p">)</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s">"/extra/{extra}"</span><span class="p">)</span><span class="o">.</span><span class="n">Handler</span><span class="p">(</span><span class="n">kithttp</span><span class="o">.</span><span class="n">NewServer</span><span class="p">(</span><span class="x">
+		</span><span class="n">endpoints</span><span class="o">.</span><span class="n">ExtraEndpoint</span><span class="p">,</span><span class="x">
+		</span><span class="n">decodeExtraRequest</span><span class="p">,</span><span class="x">
+		</span><span class="n">encodeStringResponse</span><span class="p">,</span><span class="x">
+		</span><span class="n">options</span><span class="o">...</span><span class="p">,</span><span class="x">
+	</span><span class="p">))</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">r</span><span class="x">
+</span><span class="p">}</span><span class="x">
 
-// 扩展一个解码方法
-func decodeExtraRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	vars := mux.Vars(r)
+</span><span class="c">// 扩展一个解码方法</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">decodeExtraRequest</span><span class="p">(</span><span class="n">_</span><span class="x"> </span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span><span class="x"> </span><span class="n">r</span><span class="x"> </span><span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="k">interface</span><span class="p">{},</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">vars</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">mux</span><span class="o">.</span><span class="n">Vars</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="x">
 
-	extra, ok := vars["extra"]
-	if !ok {
-		return nil, ErrorBadRequest
-	}
+	</span><span class="n">extra</span><span class="p">,</span><span class="x"> </span><span class="n">ok</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">vars</span><span class="p">[</span><span class="s">"extra"</span><span class="p">]</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">ok</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="n">ErrorBadRequest</span><span class="x">
+	</span><span class="p">}</span><span class="x">
 
-	return ExtraRequest{
-		Extra: extra,
-	}, nil
-}
-</code></pre></div></div>
+	</span><span class="k">return</span><span class="x"> </span><span class="n">ExtraRequest</span><span class="p">{</span><span class="x">
+		</span><span class="n">Extra</span><span class="o">:</span><span class="x"> </span><span class="n">extra</span><span class="p">,</span><span class="x">
+	</span><span class="p">},</span><span class="x"> </span><span class="no">nil</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre></div></div>
 
 <h3 id="运行结果">运行结果</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 编译服务
-cd string-service
-go build -o string-service *.go
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 编译服务
+<span class="nb">cd </span>string-service
+go build <span class="nt">-o</span> string-service <span class="k">*</span>.go
 
 // 编译网关
-cd gateway
-go build -o gateway *.go
+<span class="nb">cd </span>gateway
+go build <span class="nt">-o</span> gateway <span class="k">*</span>.go
 
 // 启动consul
-consul agent -dev
+consul agent <span class="nt">-dev</span>
 
 // 启动服务1
-./string-service -consul.host localhost -consul.port 8500 -service.host 127.0.0.1 -service.port 8000
+./string-service <span class="nt">-consul</span>.host localhost <span class="nt">-consul</span>.port 8500 <span class="nt">-service</span>.host 127.0.0.1 <span class="nt">-service</span>.port 8000
 
 // 启动服务2
-./string-service -consul.host localhost -consul.port 8500 -service.host 127.0.0.1 -service.port 8001
+./string-service <span class="nt">-consul</span>.host localhost <span class="nt">-consul</span>.port 8500 <span class="nt">-service</span>.host 127.0.0.1 <span class="nt">-service</span>.port 8001
 
 // 启动网关
-./gateway -consul.host localhost -consul.port 8500
+./gateway <span class="nt">-consul</span>.host localhost <span class="nt">-consul</span>.port 8500
 
 // CURL请求测试
-curl localhost:9090/string-service/op/Diff/abc/bcd -X POST
+curl localhost:9090/string-service/op/Diff/abc/bcd <span class="nt">-X</span> POST
 
 // 扩展的服务也正常
 curl localhost:9090/string-service/extra/abcdefg
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 请求端
-{"result":"bc","error":null}
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 请求端</span>
+<span class="o">{</span><span class="s2">"result"</span>:<span class="s2">"bc"</span>,<span class="s2">"error"</span>:null<span class="o">}</span>
 
-# 网关端
-ts=2021-08-04T07:16:50.78641Z caller=main.go:55 transport=HTTP addr=9090
-ts=2021-08-04T07:18:56.531668Z caller=main.go:95 serviceid=string-service8aa99dfb-23ac-4618-9f55-d8e877808dc9
-ts=2021-08-04T07:19:49.585397Z caller=main.go:95 serviceid=string-servicef6eed43e-26fb-420f-8fd8-384844a1aab9
-ts=2021-08-04T07:19:51.449128Z caller=main.go:95 serviceid=string-servicef6eed43e-26fb-420f-8fd8-384844a1aab9
+<span class="c"># 网关端</span>
+<span class="nv">ts</span><span class="o">=</span>2021-08-04T07:16:50.78641Z <span class="nb">caller</span><span class="o">=</span>main.go:55 <span class="nv">transport</span><span class="o">=</span>HTTP <span class="nv">addr</span><span class="o">=</span>9090
+<span class="nv">ts</span><span class="o">=</span>2021-08-04T07:18:56.531668Z <span class="nb">caller</span><span class="o">=</span>main.go:95 <span class="nv">serviceid</span><span class="o">=</span>string-service8aa99dfb-23ac-4618-9f55-d8e877808dc9
+<span class="nv">ts</span><span class="o">=</span>2021-08-04T07:19:49.585397Z <span class="nb">caller</span><span class="o">=</span>main.go:95 <span class="nv">serviceid</span><span class="o">=</span>string-servicef6eed43e-26fb-420f-8fd8-384844a1aab9
+<span class="nv">ts</span><span class="o">=</span>2021-08-04T07:19:51.449128Z <span class="nb">caller</span><span class="o">=</span>main.go:95 <span class="nv">serviceid</span><span class="o">=</span>string-servicef6eed43e-26fb-420f-8fd8-384844a1aab9
 </code></pre></div></div>
 
 <h2 id="网关kong的初体验">网关Kong的初体验</h2>
@@ -375,43 +375,43 @@ ts=2021-08-04T07:19:51.449128Z caller=main.go:95 serviceid=string-servicef6eed43
 
 <p>Docker环境可按照如下步骤搭建：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull kong/kong-gateway:2.4.1.0-alpine
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull kong/kong-gateway:2.4.1.0-alpine
 docker tag kong/kong-gateway:2.4.1.0-alpine kong-ee
 docker network create kong-ee-net
 
-docker run -d --name kong-ee-database \
-  --network=kong-ee-net \
-  -p 5432:5432 \
-  -e "POSTGRES_USER=kong" \
-  -e "POSTGRES_DB=kong" \
-  -e "POSTGRES_PASSWORD=kong" \
+docker run <span class="nt">-d</span> <span class="nt">--name</span> kong-ee-database <span class="se">\</span>
+  <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="se">\</span>
+  <span class="nt">-p</span> 5432:5432 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"POSTGRES_USER=kong"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"POSTGRES_DB=kong"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"POSTGRES_PASSWORD=kong"</span> <span class="se">\</span>
   postgres:9.6
 
-docker run --rm --network=kong-ee-net \
-  -e "KONG_DATABASE=postgres" \
-  -e "KONG_PG_HOST=kong-ee-database" \
-  -e "KONG_PG_PASSWORD=kong" \
-  -e "KONG_PASSWORD=kong" \
+docker run <span class="nt">--rm</span> <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_DATABASE=postgres"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PG_HOST=kong-ee-database"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PG_PASSWORD=kong"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PASSWORD=kong"</span> <span class="se">\</span>
   kong-ee kong migrations bootstrap
   
-docker run -d --name kong-ee --network=kong-ee-net \
-  -e "KONG_DATABASE=postgres" \
-  -e "KONG_PG_HOST=kong-ee-database" \
-  -e "KONG_PG_PASSWORD=kong" \
-  -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
-  -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
-  -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
-  -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
-  -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" \
-  -e "KONG_ADMIN_GUI_URL=http://{HOST_NAME}:8002" \
-    -p 8000:8000 \
-    -p 8443:8443 \
-    -p 8001:8001 \
-    -p 8444:8444 \
-    -p 8002:8002 \
-    -p 8445:8445 \
-    -p 8003:8003 \
-    -p 8004:8004 \
+docker run <span class="nt">-d</span> <span class="nt">--name</span> kong-ee <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_DATABASE=postgres"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PG_HOST=kong-ee-database"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PG_PASSWORD=kong"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PROXY_ACCESS_LOG=/dev/stdout"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_ADMIN_ACCESS_LOG=/dev/stdout"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_PROXY_ERROR_LOG=/dev/stderr"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_ADMIN_ERROR_LOG=/dev/stderr"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_ADMIN_LISTEN=0.0.0.0:8001"</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="s2">"KONG_ADMIN_GUI_URL=http://{HOST_NAME}:8002"</span> <span class="se">\</span>
+    <span class="nt">-p</span> 8000:8000 <span class="se">\</span>
+    <span class="nt">-p</span> 8443:8443 <span class="se">\</span>
+    <span class="nt">-p</span> 8001:8001 <span class="se">\</span>
+    <span class="nt">-p</span> 8444:8444 <span class="se">\</span>
+    <span class="nt">-p</span> 8002:8002 <span class="se">\</span>
+    <span class="nt">-p</span> 8445:8445 <span class="se">\</span>
+    <span class="nt">-p</span> 8003:8003 <span class="se">\</span>
+    <span class="nt">-p</span> 8004:8004 <span class="se">\</span>
     kong-ee
 </code></pre></div></div>
 
@@ -443,54 +443,54 @@ http://{HOST_NAME}:8002/default/dashboard</p>
 
 <p>指令方式操作如下</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 新增服务
-curl -X POST \
-  --url "http://{HOST_NAME}:8001/services" \
-  --data "name=yison-blog" \
-  --data "url=http://yyeer.com/about"
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 新增服务
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">--url</span> <span class="s2">"http://{HOST_NAME}:8001/services"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"name=yison-blog"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"url=http://yyeer.com/about"</span>
 
 // 新增路由
-curl -X POST \
-  --url "http://{HOST_NAME}:8001/services/yison-blog/routes" \
-  --data "name=yison-blog.about" \
-  --data "hosts[]={HOST_NAME}:8000" \
-  --data "paths[]=/about"
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">--url</span> <span class="s2">"http://{HOST_NAME}:8001/services/yison-blog/routes"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"name=yison-blog.about"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"hosts[]={HOST_NAME}:8000"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"paths[]=/about"</span>
 </code></pre></div></div>
 
 <h3 id="安装使用jwt插件">安装&amp;使用JWT插件</h3>
 
 <p>指令方式操作如下</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 安装插件
-curl -X POST \
-  --url "http://{HOST_NAME}:8001/routes/c4a868a5-262c-4ef2-89ce-205088de56a2/plugins" \
-  --data "name=jwt"
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 安装插件
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">--url</span> <span class="s2">"http://{HOST_NAME}:8001/routes/c4a868a5-262c-4ef2-89ce-205088de56a2/plugins"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"name=jwt"</span>
 
 // 新增消费者
-curl -X POST \
-  --url "http://{HOST_NAME}:8001/consumers" \
-  --data "username=yison"  
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">--url</span> <span class="s2">"http://{HOST_NAME}:8001/consumers"</span> <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s2">"username=yison"</span>  
 
 // 生成消费者密钥
-curl -X POST \
-  --url "http://{HOST_NAME}:8001/consumers/yison/jwt"
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">--url</span> <span class="s2">"http://{HOST_NAME}:8001/consumers/yison/jwt"</span>
 </code></pre></div></div>
 
 <p>密钥示例：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
-    "rsa_public_key": null,
-    "id": "61f80e92-0c63-4a18-afd5-e342f51930bd",
-    "secret": "1hRGbvkH4cGzm17CzfcwwBrMXmjpe2V9",
-    "created_at": 1627382073,
-    "tags": null,
-    "consumer": {
-        "id": "57ead688-da98-481f-b7c8-e4bea7e4eaf8"
-    },
-    "algorithm": "HS256",
-    "key": "DibULfaLzE0KZ29uJ28MTD9cCQjEuV8J"
-}
-</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"rsa_public_key"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"61f80e92-0c63-4a18-afd5-e342f51930bd"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1hRGbvkH4cGzm17CzfcwwBrMXmjpe2V9"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1627382073</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"tags"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"consumer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"57ead688-da98-481f-b7c8-e4bea7e4eaf8"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"algorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HS256"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DibULfaLzE0KZ29uJ28MTD9cCQjEuV8J"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
 
 <h3 id="prometheus插件">prometheus插件</h3>
 <p>这里为方便体验，直接用后台操作插件新增和配置就行了。</p>
@@ -499,19 +499,19 @@ curl -X POST \
 
 <p>部署prometheus+grafana服务：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 容器启动prometheus
-docker run --network=kong-ee-net --name prometheus -d -p 9090:9090 prom/prometheus
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 容器启动prometheus
+docker run <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="nt">--name</span> prometheus <span class="nt">-d</span> <span class="nt">-p</span> 9090:9090 prom/prometheus
 
 // 修改配置文件，监听8001端口
-docker exec -it prometheus /bin/sh
+docker <span class="nb">exec</span> <span class="nt">-it</span> prometheus /bin/sh
 vi /etc/prometheus/prometheus.yml
-`- targets: ['localhost:9090','{HOST_NAME}:8001'] `
+<span class="sb">`</span>- targets: <span class="o">[</span><span class="s1">'localhost:9090'</span>,<span class="s1">'{HOST_NAME}:8001'</span><span class="o">]</span> <span class="sb">`</span>
 
 // 重新启动，加载新的配置文件
 docker restart prometheus
 
 // 容器启动grafana服务
-docker run -d --network=kong-ee-net --name=grafana -p 3000:3000 grafana/grafana
+docker run <span class="nt">-d</span> <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="nt">--name</span><span class="o">=</span>grafana <span class="nt">-p</span> 3000:3000 grafana/grafana
 </code></pre></div></div>
 
 <p>运行效果：
@@ -521,8 +521,8 @@ docker run -d --network=kong-ee-net --name=grafana -p 3000:3000 grafana/grafana
 
 <p>部署zipkin服务：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull openzipkin/zipkin
-docker run --network=kong-ee-net --name zipkin -d -p 9411:9411 openzipkin/zipkin
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull openzipkin/zipkin
+docker run <span class="nt">--network</span><span class="o">=</span>kong-ee-net <span class="nt">--name</span> zipkin <span class="nt">-d</span> <span class="nt">-p</span> 9411:9411 openzipkin/zipkin
 </code></pre></div></div>
 
 <p>Kong手动安装zipkin插件，然后配置http endpoint地址:   <code class="highlighter-rouge">http://{HOST_NAME}:9411/api/v2/spans</code></p>
