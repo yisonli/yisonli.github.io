@@ -1,5 +1,6 @@
 .DS_Store
 sitemap.txt
+sitemap.xml
 comment.rb
 robots.txt
 Gemfile
