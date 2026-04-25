@@ -1,18 +1,18 @@
 ---
-title: 你应该了解的PHP缓存技术
-date: '2019-01-09T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2019-01-09
+description: PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存
+image: /images/cover-programming.svg
+lastmod: 2019-01-09
 tags:
 - PHP
 - 缓存
 - Memcached
 - Redis
-description: PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存
-lastmod: 2019-01-09
-image: /images/cover-programming.svg
+title: 你应该了解的PHP缓存技术
 ---
+
 > 缓存是现代系统中必不可少的模块，已经成为高并发高性能架构的关键组件。
 
 ## 缓存概念

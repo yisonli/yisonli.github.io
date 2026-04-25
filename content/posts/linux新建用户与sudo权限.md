@@ -1,17 +1,17 @@
 ---
-title: Linux新建用户与sudo权限
-date: '2017-04-10T00:00:00'
-draft: false
 categories:
 - 操作系统
+date: 2017-04-10
+description: Linux 系统下创建用户、用户组以及配置 sudo 权限的完整指南
+image: /images/cover-os.svg
+lastmod: 2017-04-10
 tags:
 - Linux
 - 用户管理
 - sudo
-description: Linux 系统下创建用户、用户组以及配置 sudo 权限的完整指南
-lastmod: 2017-04-10
-image: /images/cover-os.svg
+title: Linux新建用户与sudo权限
 ---
+
 > 如何用命令行新建一个带超管权限的账号
 
 ## 用户管理基础

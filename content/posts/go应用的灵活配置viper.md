@@ -1,17 +1,17 @@
 ---
-title: Go应用的灵活配置Viper
-date: '2019-10-10T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2019-10-10
+description: Go 语言 Viper 配置管理库详解，支持多格式配置、环境变量、远程配置
+image: /images/cover-programming.svg
+lastmod: 2019-10-10
 tags:
 - Go
 - 配置管理
 - Viper
-description: Go 语言 Viper 配置管理库详解，支持多格式配置、环境变量、远程配置
-lastmod: 2019-10-10
-image: /images/cover-programming.svg
+title: Go应用的灵活配置Viper
 ---
+
 > Viper 是一个完整的 Go 应用程序配置解决方案，它可以处理所有类型的配置需求和格式。
 
 ## Viper 功能特性

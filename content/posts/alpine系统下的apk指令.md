@@ -1,18 +1,18 @@
 ---
-title: Alpine系统下的apk指令
-date: '2019-06-09T00:00:00'
-draft: false
 categories:
 - 操作系统
+date: 2019-06-09
+description: Alpine Linux 包管理工具 apk 的完整使用指南
+image: /images/cover-os.svg
+lastmod: 2019-06-09
 tags:
 - Linux
 - Alpine
 - Docker
 - apk
-description: Alpine Linux 包管理工具 apk 的完整使用指南
-lastmod: 2019-06-09
-image: /images/cover-os.svg
+title: Alpine系统下的apk指令
 ---
+
 > Alpine Linux 是一个面向安全应用的轻量级 Linux 发行版。它采用了 musl libc 和 busybox 以减小系统的体积和运行时资源消耗，同时还提供了自己的包管理工具 apk。
 
 ## apk 常用命令速查

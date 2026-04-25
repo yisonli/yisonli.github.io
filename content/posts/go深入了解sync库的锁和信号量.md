@@ -1,19 +1,19 @@
 ---
-title: Go深入了解sync库的锁和信号量
-date: '2019-10-15T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2019-10-15
+description: Go sync 包完全指南：Mutex、RWMutex、Cond、WaitGroup、Once、Pool、Map
+image: /images/cover-programming.svg
+lastmod: 2019-10-15
 tags:
 - Go
 - 并发
 - sync
 - 锁
 - 信号量
-description: Go sync 包完全指南：Mutex、RWMutex、Cond、WaitGroup、Once、Pool、Map
-lastmod: 2019-10-15
-image: /images/cover-programming.svg
+title: Go深入了解sync库的锁和信号量
 ---
+
 > sync 包提供了 Go 语言的基本同步基元，如互斥锁。除了 Once 和 WaitGroup 类型，大部分都适用于低水平程序线程，高水平的同步使用 channel 通信更好。
 
 ## 并发与同步

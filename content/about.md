@@ -2,6 +2,9 @@
 title: 关于
 date: 2026-04-18
 type: page
+layout: page
+hidden: true
+toc: false
 ---
 
 <div class="about-container">

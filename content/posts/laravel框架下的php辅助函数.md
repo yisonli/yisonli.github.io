@@ -1,17 +1,17 @@
 ---
-title: Laravel框架下的PHP辅助函数
-date: '2019-03-22T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2019-03-22
+description: Laravel 框架内置 PHP 辅助函数详解：数组、字符串、路径、URL 函数
+image: /images/cover-programming.svg
+lastmod: 2019-03-22
 tags:
 - PHP
 - Laravel
 - 辅助函数
-description: Laravel 框架内置 PHP 辅助函数详解：数组、字符串、路径、URL 函数
-lastmod: 2019-03-22
-image: /images/cover-programming.svg
+title: Laravel框架下的PHP辅助函数
 ---
+
 > Laravel 框架自带了一系列 PHP 辅助函数，很多被框架自身使用。了解这些函数方便我们在代码中善用它们。
 
 ## 数组函数

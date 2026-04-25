@@ -1,17 +1,17 @@
 ---
-title: 使用GD库给图片铺满水印
-date: '2017-12-08T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2017-12-08
+description: 使用 PHP GD 库为图片批量添加平铺水印的完整方案
+image: /images/cover-programming.svg
+lastmod: 2017-12-08
 tags:
 - PHP
 - GD库
 - 图片处理
-description: 使用 PHP GD 库为图片批量添加平铺水印的完整方案
-lastmod: 2017-12-08
-image: /images/cover-programming.svg
+title: 使用GD库给图片铺满水印
 ---
+
 > PHP 使用 GD 库生成平铺水印的方法，可以将水印图片铺满整个图片。
 
 ## 原理说明

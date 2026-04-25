@@ -1,7 +1,9 @@
 ---
 categories:
 - 读书
+date: 2017-10-28
 image: /images/cover-reading.svg
+lastmod: 2017-10-28
 tags:
 - Web前端
 title: 《Web全栈工程师的自我修养》读书笔记

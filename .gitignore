@@ -1,0 +1,19 @@
+# Hugo 构建产物
+public/
+resources/
+.hugo_build.lock
+
+# 临时文件
+*.log
+*.tmp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 备份文件
+*.bak
+*~

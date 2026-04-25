@@ -1,7 +1,11 @@
 ---
 categories:
 - 读书
-- 编程
+date: 2020-12-03
+image: /images/cover-reading.svg
+lastmod: 2020-12-03
+tags:
+- Go
 title: 《Go语言编程》☞鉴赏
 ---
 

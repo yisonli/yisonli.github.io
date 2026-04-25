@@ -1,6 +1,12 @@
 ---
 categories:
+- 编程
+date: 2018-12-22
+image: /images/cover-programming.svg
+lastmod: 2018-12-22
+tags:
 - 数据库
+- MySQL
 title: 分库分表de那些事【理论篇】
 ---
 

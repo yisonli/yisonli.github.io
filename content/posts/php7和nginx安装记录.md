@@ -1,17 +1,17 @@
 ---
-title: PHP7和Nginx安装记录
-date: '2016-06-02T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2016-06-02
+description: Linux 环境下 PHP7 + Nginx 的编译安装与环境配置完整记录
+image: /images/cover-programming.svg
+lastmod: 2016-06-02
 tags:
 - PHP
 - Nginx
 - Linux
-description: Linux 环境下 PHP7 + Nginx 的编译安装与环境配置完整记录
-lastmod: 2016-06-02
-image: /images/cover-programming.svg
+title: PHP7和Nginx安装记录
 ---
+
 > 本文主要记录 PHP7 + Nginx 的编译安装以及环境搭建的操作步骤
 
 ## 1. 获取 PHP 源码

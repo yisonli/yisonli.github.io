@@ -1,18 +1,18 @@
 ---
-title: PHP的OpenSSL加密扩展使用小结
-date: '2018-07-25T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2018-07-25
+description: PHP OpenSSL 扩展详解：对称加密、非对称加密、数字签名完整指南
+image: /images/cover-programming.svg
+lastmod: 2018-07-25
 tags:
 - PHP
 - OpenSSL
 - 加密解密
 - 安全
-description: PHP OpenSSL 扩展详解：对称加密、非对称加密、数字签名完整指南
-lastmod: 2018-07-25
-image: /images/cover-programming.svg
+title: PHP的OpenSSL加密扩展使用小结
 ---
+
 > 互联网的发展史上，安全性一直是开发者们相当重视的主题。为了实现数据传输安全，我们需要保证：数据来源（防伪造）、数据完整性（防篡改）、数据私密性（防窃听）。
 
 ## 加密基础

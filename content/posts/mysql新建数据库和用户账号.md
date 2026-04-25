@@ -1,16 +1,16 @@
 ---
-title: MySQL新建数据库和用户账号
-date: '2017-05-03T00:00:00'
-draft: false
 categories:
 - 数据库
+date: 2017-05-03
+description: MySQL 数据库和用户管理的基本操作指南
+image: /images/cover-database.svg
+lastmod: 2017-05-03
 tags:
 - MySQL
 - 数据库管理
-description: MySQL 数据库和用户管理的基本操作指南
-lastmod: 2017-05-03
-image: /images/cover-database.svg
+title: MySQL新建数据库和用户账号
 ---
+
 > MySQL 数据库账号的基本用法，适合初学者快速上手。
 
 ## 登陆数据库

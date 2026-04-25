@@ -1,18 +1,18 @@
 ---
-title: Docker从零构建php-nginx-alpine镜像
-date: '2018-11-09T00:00:00'
-draft: false
 categories:
 - 编程
+date: 2018-11-09
+description: 从零开始构建 PHP + Nginx + Alpine 精简镜像的完整教程
+image: /images/cover-programming.svg
+lastmod: 2018-11-09
 tags:
 - Docker
 - PHP
 - Nginx
 - Alpine
-description: 从零开始构建 PHP + Nginx + Alpine 精简镜像的完整教程
-lastmod: 2018-11-09
-image: /images/cover-programming.svg
+title: Docker从零构建php-nginx-alpine镜像
 ---
+
 > 虽然之前用 Docker 环境运行了一些项目，但对于镜像这块还不是很理解，且网上现成的镜像都包含太多用不到的库，所以决定从零开始构建一个自己的镜像。
 
 ## 选择 Alpine Linux 作为基础镜像
