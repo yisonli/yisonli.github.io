@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="WordPress 接入腾讯云 COS 实现图片外链的完整配置教程">
+<title>WordPress如何使用腾讯云COS</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/wordpress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91cos/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="WordPress如何使用腾讯云COS">
+<meta property='og:description' content="WordPress 接入腾讯云 COS 实现图片外链的完整配置教程">
+<meta property='og:url' content='https://yison.life/posts/wordpress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91cos/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='WordPress' /><meta property='article:tag' content='腾讯云' /><meta property='article:tag' content='COS' /><meta property='article:tag' content='对象存储' /><meta property='article:published_time' content='2017-05-03T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2017-05-03T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="WordPress如何使用腾讯云COS">
+<meta name="twitter:description" content="WordPress 接入腾讯云 COS 实现图片外链的完整配置教程">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#一cos-开通与配置">一、COS 开通与配置</a>
+      <ul>
+        <li><a href="#1-开通对象存储服务">1. 开通对象存储服务</a></li>
+        <li><a href="#2-创建-bucket">2. 创建 Bucket</a></li>
+        <li><a href="#3-获取密钥">3. 获取密钥</a></li>
+      </ul>
+    </li>
+    <li><a href="#二安装-cos-插件">二、安装 COS 插件</a>
+      <ul>
+        <li><a href="#安装步骤">安装步骤</a></li>
+        <li><a href="#插件配置">插件配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#三享受-cos-内网流量">三、享受 COS 内网流量</a>
+      <ul>
+        <li><a href="#方法-a自建代理服务">方法 A：自建代理服务</a></li>
+        <li><a href="#方法-bnginx-反向代理推荐">方法 B：Nginx 反向代理（推荐）</a></li>
+      </ul>
+    </li>
+    <li><a href="#四插件优化配置">四、插件优化配置</a>
+      <ul>
+        <li><a href="#问题-a媒体库缩略图显示异常">问题 A：媒体库缩略图显示异常</a></li>
+        <li><a href="#问题-b预览看不到图片">问题 B：预览看不到图片</a></li>
+      </ul>
+    </li>
+    <li><a href="#五完整配置示例">五、完整配置示例</a>
+      <ul>
+        <li><a href="#docker-composeyml">docker-compose.yml</a></li>
+        <li><a href="#nginx-配置生产环境">Nginx 配置（生产环境）</a></li>
+      </ul>
+    </li>
+    <li><a href="#六常见问题">六、常见问题</a>
+      <ul>
+        <li><a href="#q-bucket-地域选错了怎么办">Q: Bucket 地域选错了怎么办？</a></li>
+        <li><a href="#q-内网流量仍然收费">Q: 内网流量仍然收费？</a></li>
+        <li><a href="#q-图片加载很慢">Q: 图片加载很慢？</a></li>
+      </ul>
+    </li>
+    <li><a href="#七费用说明">七、费用说明</a></li>
+    <li><a href="#八小结">八、小结</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E7%BC%96%E7%A8%8B/" style="background-color: hsl(268, 60%, 84%); color: hsl(268, 60%, 15%);">
+                编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/wordpress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91cos/">WordPress如何使用腾讯云COS</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            WordPress 接入腾讯云 COS 实现图片外链的完整配置教程
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                    <time class="article-time--published" datetime='2017-05-03T00:00:00Z'>2017年5月3日</time>
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 4 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#一cos-开通与配置">一、COS 开通与配置</a>
+      <ul>
+        <li><a href="#1-开通对象存储服务">1. 开通对象存储服务</a></li>
+        <li><a href="#2-创建-bucket">2. 创建 Bucket</a></li>
+        <li><a href="#3-获取密钥">3. 获取密钥</a></li>
+      </ul>
+    </li>
+    <li><a href="#二安装-cos-插件">二、安装 COS 插件</a>
+      <ul>
+        <li><a href="#安装步骤">安装步骤</a></li>
+        <li><a href="#插件配置">插件配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#三享受-cos-内网流量">三、享受 COS 内网流量</a>
+      <ul>
+        <li><a href="#方法-a自建代理服务">方法 A：自建代理服务</a></li>
+        <li><a href="#方法-bnginx-反向代理推荐">方法 B：Nginx 反向代理（推荐）</a></li>
+      </ul>
+    </li>
+    <li><a href="#四插件优化配置">四、插件优化配置</a>
+      <ul>
+        <li><a href="#问题-a媒体库缩略图显示异常">问题 A：媒体库缩略图显示异常</a></li>
+        <li><a href="#问题-b预览看不到图片">问题 B：预览看不到图片</a></li>
+      </ul>
+    </li>
+    <li><a href="#五完整配置示例">五、完整配置示例</a>
+      <ul>
+        <li><a href="#docker-composeyml">docker-compose.yml</a></li>
+        <li><a href="#nginx-配置生产环境">Nginx 配置（生产环境）</a></li>
+      </ul>
+    </li>
+    <li><a href="#六常见问题">六、常见问题</a>
+      <ul>
+        <li><a href="#q-bucket-地域选错了怎么办">Q: Bucket 地域选错了怎么办？</a></li>
+        <li><a href="#q-内网流量仍然收费">Q: 内网流量仍然收费？</a></li>
+        <li><a href="#q-图片加载很慢">Q: 图片加载很慢？</a></li>
+      </ul>
+    </li>
+    <li><a href="#七费用说明">七、费用说明</a></li>
+    <li><a href="#八小结">八、小结</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>COS 是腾讯云的对象存储服务，免费 50G 存储空间，按外网流量收费，内网调用免流量。本文介绍如何让 WordPress 使用 COS 存储图片并享受内网流量。</p>
+
+    </blockquote>
+<h2 id="一cos-开通与配置">一、COS 开通与配置
+</h2><h3 id="1-开通对象存储服务">1. 开通对象存储服务
+</h3><p>登录 <a class="link" href="https://console.cloud.tencent.com/cos5"  target="_blank" rel="noopener"
+    >腾讯云控制台</a>，按照提示开通 COS 服务。</p>
+<h3 id="2-创建-bucket">2. 创建 Bucket
+</h3>
+    <blockquote>
+        <p>⚠️ <strong>重要</strong>：Bucket 所属地域必须与 ECS 服务器一致，否则无法享受内网流量！</p>
+
+    </blockquote>
+<p>在 COS 控制台创建存储桶：</p>
+<ul>
+<li>选择与 ECS 相同地域（如广州、上海等）</li>
+<li>设置访问权限（建议私有读写）</li>
+<li>记录 Bucket 名称和地域</li>
+</ul>
+<h3 id="3-获取密钥">3. 获取密钥
+</h3><p>在 <a class="link" href="https://console.cloud.tencent.com/cam/capi"  target="_blank" rel="noopener"
+    >访问密钥管理</a> 页面获取：</p>
+<ul>
+<li>SecretId</li>
+<li>SecretKey</li>
+</ul>
+<h2 id="二安装-cos-插件">二、安装 COS 插件
+</h2><p>本文采用 <a class="link" href="https://www.slmwp.com/cos-sync-plugins.html"  target="_blank" rel="noopener"
+    >cos-sync 插件</a>，上传图片时自动同步到 COS。</p>
+<h3 id="安装步骤">安装步骤
+</h3><ol>
+<li>下载插件并解压</li>
+<li>上传到 WordPress 插件目录</li>
+<li>在 WordPress 后台启用插件</li>
+<li>配置插件参数（SecretId、SecretKey、Bucket、地域等）</li>
+</ol>
+<h3 id="插件配置">插件配置
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#75715e">// 插件配置参数示例
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">cos_options</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;secretId&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;你的SecretId&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;secretKey&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;你的SecretKey&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;bucket&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;your-bucket-1250000000&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;regional&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;ap-guangzhou&#39;</span>,  <span style="color:#75715e">// 地域代码
+</span></span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;domain&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;https://your-bucket.cos.ap-guangzhou.myqcloud.com&#39;</span>
+</span></span><span style="display:flex;"><span>];
+</span></span></code></pre></div><h2 id="三享受-cos-内网流量">三、享受 COS 内网流量
+</h2><h3 id="方法-a自建代理服务">方法 A：自建代理服务
+</h3><p>在服务器上实现一个读取 COS 图片的服务：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// proxy.php - COS 代理服务
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">empty</span>($_GET[<span style="color:#e6db74">&#34;file&#34;</span>])) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">die</span>(<span style="color:#e6db74">&#39;no access&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">require_once</span> <span style="color:#66d9ef">__DIR__</span> <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;/../../../wp-blog-header.php&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">require_once</span> <span style="color:#e6db74">&#39;vendor/autoload.php&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> <span style="color:#a6e22e">Qcloud\Cos\Client</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> <span style="color:#a6e22e">Qcloud\Cos\Exception\ServiceResponseException</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$cos_options <span style="color:#f92672">=</span> <span style="color:#a6e22e">get_option</span>(<span style="color:#e6db74">&#39;cos_options&#39;</span>, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>$secretId <span style="color:#f92672">=</span> $cos_options[<span style="color:#e6db74">&#39;secretId&#39;</span>];
+</span></span><span style="display:flex;"><span>$secretKey <span style="color:#f92672">=</span> $cos_options[<span style="color:#e6db74">&#39;secretKey&#39;</span>];
+</span></span><span style="display:flex;"><span>$bucket <span style="color:#f92672">=</span> $cos_options[<span style="color:#e6db74">&#39;bucket&#39;</span>];
+</span></span><span style="display:flex;"><span>$region <span style="color:#f92672">=</span> $cos_options[<span style="color:#e6db74">&#39;regional&#39;</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$client <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Client</span>([
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;region&#39;</span> <span style="color:#f92672">=&gt;</span> $region,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;credentials&#39;</span> <span style="color:#f92672">=&gt;</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;secretId&#39;</span> <span style="color:#f92672">=&gt;</span> $secretId,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;secretKey&#39;</span> <span style="color:#f92672">=&gt;</span> $secretKey,
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$file <span style="color:#f92672">=</span> $_GET[<span style="color:#e6db74">&#34;file&#34;</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>    $result <span style="color:#f92672">=</span> $client<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getObject</span>([
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Bucket&#39;</span> <span style="color:#f92672">=&gt;</span> $bucket,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Key&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">ltrim</span>($file, <span style="color:#e6db74">&#39;/&#39;</span>),
+</span></span><span style="display:flex;"><span>    ]);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设置 Content-Type
+</span></span></span><span style="display:flex;"><span>    $contentType <span style="color:#f92672">=</span> $result[<span style="color:#e6db74">&#39;ContentType&#39;</span>] <span style="color:#f92672">??</span> <span style="color:#e6db74">&#39;application/octet-stream&#39;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">header</span>(<span style="color:#e6db74">&#39;Content-Type: &#39;</span> <span style="color:#f92672">.</span> $contentType);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">echo</span> $result[<span style="color:#e6db74">&#39;Body&#39;</span>];
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">ServiceResponseException</span> $e) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">http_response_code</span>(<span style="color:#ae81ff">404</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">die</span>(<span style="color:#e6db74">&#39;File not found&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>评价</strong>：</p>
+<ul>
+<li>✅ 实现灵活，可自定义缓存、压缩等</li>
+<li>❌ 需要处理 COS 的 keep-alive 问题</li>
+<li>❌ 需要设置合理的超时时间</li>
+</ul>
+<h3 id="方法-bnginx-反向代理推荐">方法 B：Nginx 反向代理（推荐）
+</h3><p>使用 Nginx 代理 COS 请求，实现内网访问：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">80</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">your-blog.com</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># WordPress 其他请求
+</span></span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">try_files</span> $uri $uri/ <span style="color:#e6db74">/index.php?</span>$query_string;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># COS 图片代理
+</span></span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">^~</span> <span style="color:#e6db74">/cos/</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 去掉 /cos/ 前缀，重写为实际 COS 路径
+</span></span></span><span style="display:flex;"><span>        <span style="color:#f92672">rewrite</span> <span style="color:#e6db74">^/cos/(.*)</span> <span style="color:#e6db74">/</span>$1 <span style="color:#e6db74">break</span>;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 代理到 COS
+</span></span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">https://your-bucket.cos.ap-guangzhou.myqcloud.com/</span>;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 代理配置
+</span></span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Host</span> $host;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Real-IP</span> $remote_addr;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Forwarded-For</span> $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 超时设置
+</span></span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_connect_timeout</span> <span style="color:#e6db74">60s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_read_timeout</span> <span style="color:#e6db74">60s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_send_timeout</span> <span style="color:#e6db74">60s</span>;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 缓存设置
+</span></span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_cache</span> <span style="color:#e6db74">cache</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_cache_valid</span> <span style="color:#ae81ff">200</span> <span style="color:#e6db74">7d</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">add_header</span> <span style="color:#e6db74">X-Cache-Status</span> $upstream_cache_status;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> ~ <span style="color:#e6db74">\.php$</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">fastcgi_pass</span> <span style="color:#e6db74">unix:/run/php/php-fpm.sock</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">fastcgi_index</span> <span style="color:#e6db74">index.php</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">include</span> <span style="color:#e6db74">fastcgi_params</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">fastcgi_param</span> <span style="color:#e6db74">SCRIPT_FILENAME</span> $document_root$fastcgi_script_name;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>访问方式</strong>：<code>http://your-blog.com/cos/uploads/2023/01/image.jpg</code></p>
+<p><strong>评价</strong>：</p>
+<ul>
+<li>✅ 实现简单，配置灵活</li>
+<li>✅ 响应及时，支持缓存</li>
+<li>✅ 可复用 Nginx 的各种优化</li>
+</ul>
+<h2 id="四插件优化配置">四、插件优化配置
+</h2><h3 id="问题-a媒体库缩略图显示异常">问题 A：媒体库缩略图显示异常
+</h3>
+    <blockquote>
+        <p><strong>现象</strong>：不勾选&quot;本地保存&quot;后，媒体库缩略图显示不正确</p>
+
+    </blockquote>
+<p><strong>原因</strong>：服务器不存储图片，无法获取尺寸，默认宽高为 1px</p>
+<p><strong>解决</strong>：修改 WordPress 核心文件最小尺寸</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#75715e">// wp-includes/media.php，约 444 行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 将 $w 和 $h 的最小值改为 150
+</span></span></span><span style="display:flex;"><span>$w <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">150</span>, (<span style="color:#a6e22e">int</span>) <span style="color:#a6e22e">round</span>($current_width <span style="color:#f92672">*</span> $ratio));
+</span></span><span style="display:flex;"><span>$h <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">150</span>, (<span style="color:#a6e22e">int</span>) <span style="color:#a6e22e">round</span>($current_height <span style="color:#f92672">*</span> $ratio));
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#75715e">// wp-admin/includes/image-edit.php，约 606 行
+</span></span></span><span style="display:flex;"><span>$w2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">150</span>, $w <span style="color:#f92672">*</span> $ratio);
+</span></span><span style="display:flex;"><span>$h2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">150</span>, $h <span style="color:#f92672">*</span> $ratio);
+</span></span></code></pre></div><h3 id="问题-b预览看不到图片">问题 B：预览看不到图片
+</h3><p><strong>解决</strong>：修改媒体模板文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#75715e">// wp-includes/media-template.php，约 680 行和 931 行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 在 else 分支中设置 size 为 full
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#75715e"># } else { #&gt;
+</span></span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;</span><span style="color:#a6e22e">label</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;setting&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span><span style="color:#a6e22e">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hidden&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;size&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;full&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span><span style="color:#a6e22e">label</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#75715e"># } #&gt;
+</span></span></span></code></pre></div><h2 id="五完整配置示例">五、完整配置示例
+</h2><h3 id="docker-composeyml">docker-compose.yml
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">wordpress</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">wordpress:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8080:80&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./wp-content:/var/www/html/wp-content</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">WORDPRESS_DB_HOST=db</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">WORDPRESS_DB_NAME=wordpress</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">WORDPRESS_DB_USER=wp_user</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">WORDPRESS_DB_PASSWORD=wp_password</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">db</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">mysql:8.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">MYSQL_ROOT_PASSWORD=root_password</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">MYSQL_DATABASE=wordpress</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">MYSQL_USER=wp_user</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">MYSQL_PASSWORD=wp_password</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">db_data:/var/lib/mysql</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">db_data</span>:
+</span></span></code></pre></div><h3 id="nginx-配置生产环境">Nginx 配置（生产环境）
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span><span style="color:#66d9ef">upstream</span> <span style="color:#e6db74">wordpress</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server</span> 127.0.0.1:<span style="color:#ae81ff">8080</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">your-blog.com</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_certificate</span> <span style="color:#e6db74">/etc/ssl/certs/your-blog.crt</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_certificate_key</span> <span style="color:#e6db74">/etc/ssl/private/your-blog.key</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">root</span> <span style="color:#e6db74">/var/www/html</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">index</span> <span style="color:#e6db74">index.php</span> <span style="color:#e6db74">index.html</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># COS 代理
+</span></span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">^~</span> <span style="color:#e6db74">/cos/</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">rewrite</span> <span style="color:#e6db74">^/cos/(.*)</span> <span style="color:#e6db74">/</span>$1 <span style="color:#e6db74">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">https://your-bucket.cos.ap-guangzhou.myqcloud.com/</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_cache_valid</span> <span style="color:#ae81ff">200</span> <span style="color:#e6db74">30d</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">expires</span> <span style="color:#e6db74">30d</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># WordPress
+</span></span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">http://wordpress</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Host</span> $host;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Real-IP</span> $remote_addr;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> ~ <span style="color:#e6db74">\.php$</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">http://wordpress</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">fastcgi_pass</span> <span style="color:#e6db74">unix:/run/php/php-fpm.sock</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">include</span> <span style="color:#e6db74">fastcgi_params</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="六常见问题">六、常见问题
+</h2><h3 id="q-bucket-地域选错了怎么办">Q: Bucket 地域选错了怎么办？
+</h3><p>A: 可以删除重建，或在插件中手动指定地域参数。</p>
+<h3 id="q-内网流量仍然收费">Q: 内网流量仍然收费？
+</h3><p>A: 检查 ECS 和 COS 是否同地域，确保使用内网域名访问。</p>
+<h3 id="q-图片加载很慢">Q: 图片加载很慢？
+</h3><p>A: 建议开启 CDN 加速，配合 Nginx 缓存优化。</p>
+<h2 id="七费用说明">七、费用说明
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">项目</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">存储空间</td>
+          <td style="text-align: left">免费 50GB</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">内网流量</td>
+          <td style="text-align: left">免费</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">外网下行流量</td>
+          <td style="text-align: left">按量计费</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">请求次数</td>
+          <td style="text-align: left">按量计费</td>
+      </tr>
+  </tbody>
+</table></div>
+
+    <blockquote>
+        <p>💡 <strong>建议</strong>：将 ECS 和 COS 放在同一地域，使用 <strong>内网 Endpoint（内网域名）</strong> 访问存储与回源，可省去外网下行流量费用并降低访问延迟。若站点必须对公网用户分发图片，可在 COS 或 CDN 侧单独配置外网访问与缓存策略，按业务场景权衡成本与性能。</p>
+
+    </blockquote>
+<h2 id="八小结">八、小结
+</h2><p>按本文完成 COS 对接与域名配置后，媒体资源可走对象存储承载流量，ECS 专注计算；后续若有访问热点，再结合 CDN 与缓存策略进一步优化即可。</p>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/wordpress/">WordPress</a>
+        
+            <a href="/tags/%E8%85%BE%E8%AE%AF%E4%BA%91/">腾讯云</a>
+        
+            <a href="/tags/cos/">COS</a>
+        
+            <a href="/tags/%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">对象存储</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/wordpress%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91cos/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post WordPress如何使用腾讯云COS" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WordPress如何使用腾讯云COS</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

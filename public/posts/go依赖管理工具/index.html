@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Go 语言依赖管理工具详解：dep 和 go modules 的完整使用指南">
+<title>Go依赖管理工具</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="Go依赖管理工具">
+<meta property='og:description' content="Go 语言依赖管理工具详解：dep 和 go modules 的完整使用指南">
+<meta property='og:url' content='https://yison.life/posts/go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Go' /><meta property='article:tag' content='Go Modules' /><meta property='article:tag' content='dep' /><meta property='article:tag' content='依赖管理' /><meta property='article:published_time' content='2020-05-09T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2020-05-09T00:00:00&#43;00:00'/><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="Go依赖管理工具">
+<meta name="twitter:description" content="Go 语言依赖管理工具详解：dep 和 go modules 的完整使用指南"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#依赖管理演进">依赖管理演进</a></li>
+    <li><a href="#dep已过时">dep（已过时）</a>
+      <ul>
+        <li><a href="#安装">安装</a></li>
+        <li><a href="#常用命令">常用命令</a></li>
+        <li><a href="#使用示例">使用示例</a></li>
+        <li><a href="#配置文件">配置文件</a></li>
+      </ul>
+    </li>
+    <li><a href="#go-modules推荐">go modules（推荐）</a>
+      <ul>
+        <li><a href="#核心概念">核心概念</a></li>
+        <li><a href="#启用方式">启用方式</a></li>
+        <li><a href="#常用命令-1">常用命令</a></li>
+        <li><a href="#初始化项目">初始化项目</a></li>
+        <li><a href="#gomod-示例">go.mod 示例</a></li>
+        <li><a href="#gosum-示例">go.sum 示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整使用流程">完整使用流程</a>
+      <ul>
+        <li><a href="#1-创建新项目">1. 创建新项目</a></li>
+        <li><a href="#2-添加依赖">2. 添加依赖</a></li>
+        <li><a href="#3-升级降级依赖">3. 升级/降级依赖</a></li>
+        <li><a href="#4-使用-vendor">4. 使用 vendor</a></li>
+      </ul>
+    </li>
+    <li><a href="#代理配置">代理配置</a>
+      <ul>
+        <li><a href="#设置-goproxy">设置 GOPROXY</a></li>
+        <li><a href="#代理参数">代理参数</a></li>
+      </ul>
+    </li>
+    <li><a href="#私有模块">私有模块</a>
+      <ul>
+        <li><a href="#设置-gonosumdb">设置 GONOSUMDB</a></li>
+        <li><a href="#设置-goprivate">设置 GOPRIVATE</a></li>
+        <li><a href="#配置-netrc">配置 netrc</a></li>
+      </ul>
+    </li>
+    <li><a href="#常见问题">常见问题</a>
+      <ul>
+        <li><a href="#q-依赖下载失败">Q: 依赖下载失败</a></li>
+        <li><a href="#q-gomod-和-gosum-不同步">Q: go.mod 和 go.sum 不同步</a></li>
+        <li><a href="#q-vendor-和-mod-冲突">Q: vendor 和 mod 冲突</a></li>
+        <li><a href="#q-循环导入">Q: 循环导入</a></li>
+      </ul>
+    </li>
+    <li><a href="#最佳实践">最佳实践</a></li>
+    <li><a href="#延伸阅读">延伸阅读</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
+            <img alt="Featured image of post Go依赖管理工具" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-programming.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E7%BC%96%E7%A8%8B/" style="background-color: hsl(268, 60%, 84%); color: hsl(268, 60%, 15%);">
+                编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">Go依赖管理工具</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Go 语言依赖管理工具详解：dep 和 go modules 的完整使用指南
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                    <time class="article-time--published" datetime='2020-05-09T00:00:00Z'>2020年5月9日</time>
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 3 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#依赖管理演进">依赖管理演进</a></li>
+    <li><a href="#dep已过时">dep（已过时）</a>
+      <ul>
+        <li><a href="#安装">安装</a></li>
+        <li><a href="#常用命令">常用命令</a></li>
+        <li><a href="#使用示例">使用示例</a></li>
+        <li><a href="#配置文件">配置文件</a></li>
+      </ul>
+    </li>
+    <li><a href="#go-modules推荐">go modules（推荐）</a>
+      <ul>
+        <li><a href="#核心概念">核心概念</a></li>
+        <li><a href="#启用方式">启用方式</a></li>
+        <li><a href="#常用命令-1">常用命令</a></li>
+        <li><a href="#初始化项目">初始化项目</a></li>
+        <li><a href="#gomod-示例">go.mod 示例</a></li>
+        <li><a href="#gosum-示例">go.sum 示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整使用流程">完整使用流程</a>
+      <ul>
+        <li><a href="#1-创建新项目">1. 创建新项目</a></li>
+        <li><a href="#2-添加依赖">2. 添加依赖</a></li>
+        <li><a href="#3-升级降级依赖">3. 升级/降级依赖</a></li>
+        <li><a href="#4-使用-vendor">4. 使用 vendor</a></li>
+      </ul>
+    </li>
+    <li><a href="#代理配置">代理配置</a>
+      <ul>
+        <li><a href="#设置-goproxy">设置 GOPROXY</a></li>
+        <li><a href="#代理参数">代理参数</a></li>
+      </ul>
+    </li>
+    <li><a href="#私有模块">私有模块</a>
+      <ul>
+        <li><a href="#设置-gonosumdb">设置 GONOSUMDB</a></li>
+        <li><a href="#设置-goprivate">设置 GOPRIVATE</a></li>
+        <li><a href="#配置-netrc">配置 netrc</a></li>
+      </ul>
+    </li>
+    <li><a href="#常见问题">常见问题</a>
+      <ul>
+        <li><a href="#q-依赖下载失败">Q: 依赖下载失败</a></li>
+        <li><a href="#q-gomod-和-gosum-不同步">Q: go.mod 和 go.sum 不同步</a></li>
+        <li><a href="#q-vendor-和-mod-冲突">Q: vendor 和 mod 冲突</a></li>
+        <li><a href="#q-循环导入">Q: 循环导入</a></li>
+      </ul>
+    </li>
+    <li><a href="#最佳实践">最佳实践</a></li>
+    <li><a href="#延伸阅读">延伸阅读</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>最早的时候，Go 所依赖的所有第三方库都放在 GOPATH 目录下。随着 Go 语言的发展，从 v1.5 开始引入 vendor 模式。本文介绍两个 Golang 官方依赖管理工具。</p>
+
+    </blockquote>
+<h2 id="依赖管理演进">依赖管理演进
+</h2><pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────┐
+│                    Go 依赖管理演进                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  GOPATH 时代 ──▶ Vendor 时代 ──▶ dep 时代 ──▶ go mod 时代  │
+│      (2012)          (2014)          (2017)         (2018) │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+</code></pre><h2 id="dep已过时">dep（已过时）
+</h2>
+    <blockquote>
+        <p>⚠️ <strong>提示</strong>：dep 已停止维护，建议使用 go modules。</p>
+
+    </blockquote>
+<h3 id="安装">安装
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># macOS</span>
+</span></span><span style="display:flex;"><span>brew install dep
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Linux</span>
+</span></span><span style="display:flex;"><span>curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Windows</span>
+</span></span><span style="display:flex;"><span>go get -u github.com/golang/dep/cmd/dep
+</span></span></code></pre></div><h3 id="常用命令">常用命令
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">命令</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>dep init</code></td>
+          <td style="text-align: left">初始化项目，生成 Gopkg.toml 和 Gopkg.lock</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>dep status</code></td>
+          <td style="text-align: left">查看依赖状态</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>dep ensure</code></td>
+          <td style="text-align: left">确保依赖已安装</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>dep ensure -add</code></td>
+          <td style="text-align: left">添加新依赖</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>dep ensure -update</code></td>
+          <td style="text-align: left">更新依赖版本</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>dep check</code></td>
+          <td style="text-align: left">检查导入是否同步</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="使用示例">使用示例
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 初始化项目</span>
+</span></span><span style="display:flex;"><span>dep init
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 添加依赖</span>
+</span></span><span style="display:flex;"><span>dep ensure -add github.com/spf13/viper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 更新所有依赖</span>
+</span></span><span style="display:flex;"><span>dep ensure -update
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看状态</span>
+</span></span><span style="display:flex;"><span>dep status
+</span></span></code></pre></div><h3 id="配置文件">配置文件
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#75715e"># Gopkg.toml</span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#a6e22e">constraint</span>]]
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/spf13/viper&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;^1.6.0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#a6e22e">constraint</span>]]
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/go-sql-driver/mysql&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;^1.5.0&#34;</span>
+</span></span></code></pre></div><h2 id="go-modules推荐">go modules（推荐）
+</h2><p>go modules 是 Go 1.11 引入的官方依赖管理方案，现在已是主流。</p>
+<h3 id="核心概念">核心概念
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">概念</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>Module</strong></td>
+          <td style="text-align: left">相关 Go 包的集合，是版本控制的单元</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>go.mod</strong></td>
+          <td style="text-align: left">模块定义文件，记录依赖关系</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>go.sum</strong></td>
+          <td style="text-align: left">依赖校验文件，确保构建一致性</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>GOPROXY</strong></td>
+          <td style="text-align: left">依赖代理服务器，加速下载</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="启用方式">启用方式
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Go 1.11+ 默认启用</span>
+</span></span><span style="display:flex;"><span>export GO111MODULE<span style="color:#f92672">=</span>on  <span style="color:#75715e"># 显式启用</span>
+</span></span><span style="display:flex;"><span>export GO111MODULE<span style="color:#f92672">=</span>off <span style="color:#75715e"># 禁用（使用 GOPATH）</span>
+</span></span><span style="display:flex;"><span>export GO111MODULE<span style="color:#f92672">=</span>auto <span style="color:#75715e"># 自动检测（默认）</span>
+</span></span></code></pre></div><h3 id="常用命令-1">常用命令
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">命令</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>go mod init</code></td>
+          <td style="text-align: left">初始化模块，生成 go.mod</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod tidy</code></td>
+          <td style="text-align: left">整理依赖（添加缺失，移除未用）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod download</code></td>
+          <td style="text-align: left">下载依赖到本地缓存</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod vendor</code></td>
+          <td style="text-align: left">将依赖复制到 vendor 目录</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod graph</code></td>
+          <td style="text-align: left">打印依赖图</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod verify</code></td>
+          <td style="text-align: left">验证依赖是否正确</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>go mod why</code></td>
+          <td style="text-align: left">解释为什么需要某依赖</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="初始化项目">初始化项目
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 在项目目录执行</span>
+</span></span><span style="display:flex;"><span>go mod init github.com/username/project
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 或指定模块名</span>
+</span></span><span style="display:flex;"><span>go mod init mymodule
+</span></span></code></pre></div><h3 id="gomod-示例">go.mod 示例
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">module</span> <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">username</span><span style="color:#f92672">/</span><span style="color:#a6e22e">project</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">go</span> <span style="color:#ae81ff">1.21</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">require</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gin</span><span style="color:#f92672">-</span><span style="color:#a6e22e">gonic</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gin</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.9.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#66d9ef">go</span><span style="color:#f92672">-</span><span style="color:#a6e22e">sql</span><span style="color:#f92672">-</span><span style="color:#a6e22e">driver</span><span style="color:#f92672">/</span><span style="color:#a6e22e">mysql</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.7.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">spf13</span><span style="color:#f92672">/</span><span style="color:#a6e22e">viper</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.16.0</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">require</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">bytedance</span><span style="color:#f92672">/</span><span style="color:#a6e22e">sonic</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.9.1</span> <span style="color:#75715e">// indirect</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">chenzhuoyu</span><span style="color:#f92672">/</span><span style="color:#a6e22e">base64x</span> <span style="color:#a6e22e">v0</span><span style="color:#ae81ff">.0.0</span><span style="color:#f92672">-</span><span style="color:#ae81ff">20221115062448</span><span style="color:#f92672">-</span><span style="color:#a6e22e">fe3a3abad311</span> <span style="color:#75715e">// indirect</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gabriel</span><span style="color:#f92672">-</span><span style="color:#a6e22e">vasile</span><span style="color:#f92672">/</span><span style="color:#a6e22e">mimetype</span> <span style="color:#a6e22e">v1</span><span style="color:#ae81ff">.4.2</span> <span style="color:#75715e">// indirect</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h3 id="gosum-示例">go.sum 示例
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>github.com/gin-gonic/gin v1.9.1 h1:4idEAncQnU5cB7BeOkPtxjfCSye0AAm1R0RVIqJ+Jmg=
+</span></span><span style="display:flex;"><span>github.com/gin-gonic/gin v1.9.1/go.mod h1:hPrL7YrpYKXt5YIdfeAwnHoK0S2RThAQPz7AH81q6Us=
+</span></span><span style="display:flex;"><span>github.com/go-sql-driver/mysql v1.7.1 h1:lUIinVbN1DY0xBg0eMOzmmtGoHwWBbvnWubQUrtU8EI=
+</span></span><span style="display:flex;"><span>github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
+</span></span></code></pre></div><h2 id="完整使用流程">完整使用流程
+</h2><h3 id="1-创建新项目">1. 创建新项目
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 创建项目目录</span>
+</span></span><span style="display:flex;"><span>mkdir myproject <span style="color:#f92672">&amp;&amp;</span> cd myproject
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 初始化模块</span>
+</span></span><span style="display:flex;"><span>go mod init github.com/username/myproject
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建主文件</span>
+</span></span><span style="display:flex;"><span>cat &gt; main.go <span style="color:#e6db74">&lt;&lt; &#39;EOF&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">package main
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">import (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;fmt&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;github.com/gin-gonic/gin&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">func main() {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    r := gin.Default()
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    r.GET(&#34;/ping&#34;, func(c *gin.Context) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        c.JSON(200, gin.H{&#34;message&#34;: &#34;pong&#34;})
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    })
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    r.Run()
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 下载依赖并整理</span>
+</span></span><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div><h3 id="2-添加依赖">2. 添加依赖
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 方式一：go get</span>
+</span></span><span style="display:flex;"><span>go get github.com/spf13/viper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定版本</span>
+</span></span><span style="display:flex;"><span>go get github.com/spf13/viper@v1.16.0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 最新版本</span>
+</span></span><span style="display:flex;"><span>go get github.com/spf13/viper@latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定分支</span>
+</span></span><span style="display:flex;"><span>go get github.com/spf13/viper@master
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定 commit</span>
+</span></span><span style="display:flex;"><span>go get github.com/spf13/viper@e3861e3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 方式二：直接编辑 go.mod</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;github.com/redis/go-redis/v9 v9.0.0&#39;</span> &gt;&gt; go.mod
+</span></span><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div><h3 id="3-升级降级依赖">3. 升级/降级依赖
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 升级到最新版本</span>
+</span></span><span style="display:flex;"><span>go get -u github.com/gin-gonic/gin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 升级到指定版本</span>
+</span></span><span style="display:flex;"><span>go get github.com/gin-gonic/gin@v1.9.0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 清理未使用的依赖</span>
+</span></span><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div><h3 id="4-使用-vendor">4. 使用 vendor
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 将依赖复制到 vendor 目录</span>
+</span></span><span style="display:flex;"><span>go mod vendor
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看 vendor 内容</span>
+</span></span><span style="display:flex;"><span>ls vendor/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用 vendor 构建</span>
+</span></span><span style="display:flex;"><span>go build -mod<span style="color:#f92672">=</span>vendor
+</span></span></code></pre></div><h2 id="代理配置">代理配置
+</h2><h3 id="设置-goproxy">设置 GOPROXY
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 阿里云代理（推荐国内使用）</span>
+</span></span><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://mirrors.aliyun.com/goproxy/,direct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 官方代理</span>
+</span></span><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://proxy.golang.org,direct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 七牛云</span>
+</span></span><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,direct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 多个代理（逗号分隔）</span>
+</span></span><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,https://proxy.golang.org,direct
+</span></span></code></pre></div><h3 id="代理参数">代理参数
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">参数</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>direct</code></td>
+          <td style="text-align: left">直连源站</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>off</code></td>
+          <td style="text-align: left">禁用代理</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>=https://proxy.golang.org</code></td>
+          <td style="text-align: left">官方代理</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="私有模块">私有模块
+</h2><h3 id="设置-gonosumdb">设置 GONOSUMDB
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 跳过校验的域名</span>
+</span></span><span style="display:flex;"><span>go env -w GONOSUMDB<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gitlab.com/mycompany/*&#34;</span>
+</span></span></code></pre></div><h3 id="设置-goprivate">设置 GOPRIVATE
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 私有模块不走代理</span>
+</span></span><span style="display:flex;"><span>go env -w GOPRIVATE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gitlab.com/mycompany,github.com/myteam&#34;</span>
+</span></span></code></pre></div><h3 id="配置-netrc">配置 netrc
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># ~/.netrc</span>
+</span></span><span style="display:flex;"><span>machine github.com
+</span></span><span style="display:flex;"><span>login your-username
+</span></span><span style="display:flex;"><span>password your-token
+</span></span></code></pre></div><h2 id="常见问题">常见问题
+</h2><h3 id="q-依赖下载失败">Q: 依赖下载失败
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 清理缓存</span>
+</span></span><span style="display:flex;"><span>go clean -modcache
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置国内镜像</span>
+</span></span><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,direct
+</span></span></code></pre></div><h3 id="q-gomod-和-gosum-不同步">Q: go.mod 和 go.sum 不同步
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div><h3 id="q-vendor-和-mod-冲突">Q: vendor 和 mod 冲突
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 删除 vendor，使用 go mod</span>
+</span></span><span style="display:flex;"><span>rm -rf vendor
+</span></span><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div><h3 id="q-循环导入">Q: 循环导入
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 检查依赖图</span>
+</span></span><span style="display:flex;"><span>go mod graph | grep <span style="color:#e6db74">&#34;:&#34;</span>
+</span></span></code></pre></div><h2 id="最佳实践">最佳实践
+</h2><ol>
+<li><strong>始终使用 go mod tidy</strong> 保持依赖整洁</li>
+<li><strong>使用 vendor</strong> 确保构建可重复</li>
+<li><strong>使用国内镜像</strong> 加速下载</li>
+<li><strong>定期升级依赖</strong> 获取安全补丁</li>
+<li><strong>提交 <code>go.sum</code></strong> 锁校验和到版本库，CI 使用 <code>go mod verify</code> 防止依赖被篡改。</li>
+</ol>
+<h2 id="延伸阅读">延伸阅读
+</h2><ul>
+<li><code>go help modules</code></li>
+<li><a class="link" href="https://go.dev/ref/mod"  target="_blank" rel="noopener"
+    >Go Modules Reference</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/go/">Go</a>
+        
+            <a href="/tags/go-modules/">Go Modules</a>
+        
+            <a href="/tags/dep/">Dep</a>
+        
+            <a href="/tags/%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86/">依赖管理</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/go%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post Go依赖管理工具" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Go依赖管理工具</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/go%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3sync%E5%BA%93%E7%9A%84%E9%94%81%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post Go深入了解sync库的锁和信号量" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Go深入了解sync库的锁和信号量</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/go%E5%BA%94%E7%94%A8%E7%9A%84%E7%81%B5%E6%B4%BB%E9%85%8D%E7%BD%AEviper/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post Go应用的灵活配置Viper" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Go应用的灵活配置Viper</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

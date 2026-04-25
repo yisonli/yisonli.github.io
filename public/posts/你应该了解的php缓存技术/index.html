@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存">
+<title>你应该了解的PHP缓存技术</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84php%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="你应该了解的PHP缓存技术">
+<meta property='og:description' content="PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存">
+<meta property='og:url' content='https://yison.life/posts/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84php%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='PHP' /><meta property='article:tag' content='缓存' /><meta property='article:tag' content='Memcached' /><meta property='article:tag' content='Redis' /><meta property='article:published_time' content='2019-01-09T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2019-01-09T00:00:00&#43;00:00'/><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="你应该了解的PHP缓存技术">
+<meta name="twitter:description" content="PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#缓存概念">缓存概念</a>
+      <ul>
+        <li><a href="#什么是缓存">什么是缓存</a></li>
+        <li><a href="#缓存分类">缓存分类</a></li>
+      </ul>
+    </li>
+    <li><a href="#php-缓存类型">PHP 缓存类型</a>
+      <ul>
+        <li><a href="#php-编译缓存">PHP 编译缓存</a></li>
+        <li><a href="#启用-opcache">启用 OPcache</a></li>
+        <li><a href="#php-数据缓存">PHP 数据缓存</a></li>
+      </ul>
+    </li>
+    <li><a href="#缓存优势">缓存优势</a>
+      <ul>
+        <li><a href="#1-提升性能">1. 提升性能</a></li>
+        <li><a href="#2-缓解数据库压力">2. 缓解数据库压力</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用缓存方案">常用缓存方案</a>
+      <ul>
+        <li><a href="#1-文件缓存">1. 文件缓存</a></li>
+        <li><a href="#2-memcached">2. Memcached</a></li>
+        <li><a href="#3-redis">3. Redis</a></li>
+      </ul>
+    </li>
+    <li><a href="#选型小结">选型小结</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84php%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/">
+            <img alt="Featured image of post 你应该了解的PHP缓存技术" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-programming.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E7%BC%96%E7%A8%8B/" style="background-color: hsl(268, 60%, 84%); color: hsl(268, 60%, 15%);">
+                编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84php%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF/">你应该了解的PHP缓存技术</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            PHP 缓存技术全面解析：编译缓存、数据缓存、内存缓存、分布式缓存
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                    <time class="article-time--published" datetime='2019-01-09T00:00:00Z'>2019年1月9日</time>
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 3 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#缓存概念">缓存概念</a>
+      <ul>
+        <li><a href="#什么是缓存">什么是缓存</a></li>
+        <li><a href="#缓存分类">缓存分类</a></li>
+      </ul>
+    </li>
+    <li><a href="#php-缓存类型">PHP 缓存类型</a>
+      <ul>
+        <li><a href="#php-编译缓存">PHP 编译缓存</a></li>
+        <li><a href="#启用-opcache">启用 OPcache</a></li>
+        <li><a href="#php-数据缓存">PHP 数据缓存</a></li>
+      </ul>
+    </li>
+    <li><a href="#缓存优势">缓存优势</a>
+      <ul>
+        <li><a href="#1-提升性能">1. 提升性能</a></li>
+        <li><a href="#2-缓解数据库压力">2. 缓解数据库压力</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用缓存方案">常用缓存方案</a>
+      <ul>
+        <li><a href="#1-文件缓存">1. 文件缓存</a></li>
+        <li><a href="#2-memcached">2. Memcached</a></li>
+        <li><a href="#3-redis">3. Redis</a></li>
+      </ul>
+    </li>
+    <li><a href="#选型小结">选型小结</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>缓存是现代系统中必不可少的模块，已经成为高并发高性能架构的关键组件。</p>
+
+    </blockquote>
+<h2 id="缓存概念">缓存概念
+</h2><h3 id="什么是缓存">什么是缓存
+</h3><p>缓存是将程序或系统经常要调用的对象存在内存中，以便快速调用，不必重复创建实例。这样可以减少系统开销，提高系统效率。</p>
+<h3 id="缓存分类">缓存分类
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">类型</th>
+          <th style="text-align: left">说明</th>
+          <th style="text-align: left">示例</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>文件缓存</strong></td>
+          <td style="text-align: left">数据存储在磁盘上</td>
+          <td style="text-align: left">XML、JSON、序列化文件</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>内存缓存</strong></td>
+          <td style="text-align: left">存储在静态内存区域</td>
+          <td style="text-align: left">Application、静态 Map</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>分布式缓存</strong></td>
+          <td style="text-align: left">跨进程、跨域访问</td>
+          <td style="text-align: left">Redis、Memcached</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="php-缓存类型">PHP 缓存类型
+</h2><h3 id="php-编译缓存">PHP 编译缓存
+</h3><p>PHP 是解释型语言，执行过程包括：</p>
+<ol>
+<li><strong>编译过程</strong>：读取文件，编译成中间码</li>
+<li><strong>执行过程</strong>：直接执行中间码</li>
+</ol>
+<p><strong>问题</strong>：</p>
+<ul>
+<li>即使代码文件未改变，也会被重新编译</li>
+<li>引用文件也需要重新编译</li>
+</ul>
+<p><strong>解决方案</strong>：PHP 编译缓存工具</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">工具</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">APC</td>
+          <td style="text-align: left">Alternative PHP Cache</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">OPcache</td>
+          <td style="text-align: left">PHP 内置（PHP 5.5+）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">XCache</td>
+          <td style="text-align: left">国产高性能编译器</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="启用-opcache">启用 OPcache
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#75715e">; php.ini</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">zend_extension</span><span style="color:#f92672">=</span><span style="color:#e6db74">opcache.so</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; 基本配置</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">opcache.enable</span><span style="color:#f92672">=</span><span style="color:#e6db74">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">opcache.memory_consumption</span><span style="color:#f92672">=</span><span style="color:#e6db74">128</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">opcache.max_accelerated_files</span><span style="color:#f92672">=</span><span style="color:#e6db74">10000</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">opcache.revalidate_freq</span><span style="color:#f92672">=</span><span style="color:#e6db74">2</span>
+</span></span></code></pre></div><h3 id="php-数据缓存">PHP 数据缓存
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">类型</th>
+          <th style="text-align: left">缓存内容</th>
+          <th style="text-align: left">工具</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">数据库缓存</td>
+          <td style="text-align: left">查询结果</td>
+          <td style="text-align: left">Memcached、Redis</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">模板缓存</td>
+          <td style="text-align: left">页面模板</td>
+          <td style="text-align: left">Smarty、Twig</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="缓存优势">缓存优势
+</h2><h3 id="1-提升性能">1. 提升性能
+</h3><ul>
+<li>减少数据库查询</li>
+<li>加速远程调用</li>
+<li>降低响应时间</li>
+</ul>
+<h3 id="2-缓解数据库压力">2. 缓解数据库压力
+</h3><pre tabindex="0"><code>┌─────────┐    请求    ┌─────────┐
+│   用户   │ ───────▶ │  Nginx  │
+└─────────┘          └────┬────┘
+                         │
+                   ┌─────▼─────┐
+                   │   缓存层   │ ◀──────┐ 命中
+                   └─────┬─────┘        │
+                         │ 未命中      │
+                   ┌─────▼─────┐        │
+                   │  数据库   │ ──────┘ 写入
+                   └───────────┘
+</code></pre><h2 id="常用缓存方案">常用缓存方案
+</h2><h3 id="1-文件缓存">1. 文件缓存
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> * 简单文件缓存类
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileCache</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> $cacheDir;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> $expire <span style="color:#f92672">=</span> <span style="color:#ae81ff">3600</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">__construct</span>(<span style="color:#a6e22e">string</span> $cacheDir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;./cache&#39;</span>, <span style="color:#a6e22e">int</span> $expire <span style="color:#f92672">=</span> <span style="color:#ae81ff">3600</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">cacheDir</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">rtrim</span>($cacheDir, <span style="color:#e6db74">&#39;/&#39;</span>);
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">expire</span> <span style="color:#f92672">=</span> $expire;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">is_dir</span>($this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">cacheDir</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">mkdir</span>($this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">cacheDir</span>, <span style="color:#ae81ff">0755</span>, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 设置缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">string</span> $key, $value, <span style="color:#f92672">?</span><span style="color:#a6e22e">int</span> $expire <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $file <span style="color:#f92672">=</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getFilePath</span>($key);
+</span></span><span style="display:flex;"><span>        $data <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;value&#39;</span> <span style="color:#f92672">=&gt;</span> $value,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;expire&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">time</span>() <span style="color:#f92672">+</span> ($expire <span style="color:#f92672">??</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">expire</span>),
+</span></span><span style="display:flex;"><span>        ];
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">file_put_contents</span>(
+</span></span><span style="display:flex;"><span>            $file,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">serialize</span>($data),
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">LOCK_EX</span>
+</span></span><span style="display:flex;"><span>        ) <span style="color:#f92672">!==</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 获取缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">string</span> $key, $default <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $file <span style="color:#f92672">=</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getFilePath</span>($key);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">file_exists</span>($file)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> $default;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        $content <span style="color:#f92672">=</span> <span style="color:#a6e22e">file_get_contents</span>($file);
+</span></span><span style="display:flex;"><span>        $data <span style="color:#f92672">=</span> <span style="color:#a6e22e">unserialize</span>($content);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ($data[<span style="color:#e6db74">&#39;expire&#39;</span>] <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">time</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">unlink</span>($file);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> $default;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $data[<span style="color:#e6db74">&#39;value&#39;</span>];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">delete</span>(<span style="color:#a6e22e">string</span> $key)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $file <span style="color:#f92672">=</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getFilePath</span>($key);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">file_exists</span>($file) <span style="color:#f92672">?</span> <span style="color:#a6e22e">unlink</span>($file) <span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 清除所有缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">clear</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $files <span style="color:#f92672">=</span> <span style="color:#a6e22e">glob</span>($this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">cacheDir</span> <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;/*&#39;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">foreach</span> ($files <span style="color:#66d9ef">as</span> $file) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">is_file</span>($file)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">unlink</span>($file);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getFilePath</span>(<span style="color:#a6e22e">string</span> $key)<span style="color:#f92672">:</span> <span style="color:#a6e22e">string</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">cacheDir</span> <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">.</span> <span style="color:#a6e22e">md5</span>($key) <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;.cache&#39;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用示例
+</span></span></span><span style="display:flex;"><span>$cache <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">FileCache</span>(<span style="color:#e6db74">&#39;./cache&#39;</span>, <span style="color:#ae81ff">3600</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 设置缓存
+</span></span></span><span style="display:flex;"><span>$cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;user_1&#39;</span>, [<span style="color:#e6db74">&#39;name&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;John&#39;</span>, <span style="color:#e6db74">&#39;email&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;john@example.com&#39;</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取缓存
+</span></span></span><span style="display:flex;"><span>$user <span style="color:#f92672">=</span> $cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;user_1&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ($user) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;缓存命中: &#34;</span> <span style="color:#f92672">.</span> <span style="color:#a6e22e">json_encode</span>($user);
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从数据库获取
+</span></span></span><span style="display:flex;"><span>    $user <span style="color:#f92672">=</span> <span style="color:#a6e22e">fetchUserFromDB</span>(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    $cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;user_1&#39;</span>, $user);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="2-memcached">2. Memcached
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> * Memcached 缓存封装
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MemcachedCache</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> $memcached;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">__construct</span>(<span style="color:#66d9ef">array</span> $servers <span style="color:#f92672">=</span> [])
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Memcached</span>();
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">empty</span>($servers)) {
+</span></span><span style="display:flex;"><span>            $servers <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>                [<span style="color:#e6db74">&#39;127.0.0.1&#39;</span>, <span style="color:#ae81ff">11211</span>, <span style="color:#ae81ff">100</span>],
+</span></span><span style="display:flex;"><span>            ];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">addServers</span>($servers);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 设置缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">string</span> $key, $value, <span style="color:#a6e22e">int</span> $ttl <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>($key, $value, $ttl);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 获取缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">string</span> $key)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>($key);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">delete</span>(<span style="color:#a6e22e">string</span> $key)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">delete</span>($key);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 增加数值
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">increment</span>(<span style="color:#a6e22e">string</span> $key, <span style="color:#a6e22e">int</span> $offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">increment</span>($key, $offset);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 清除所有缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flush</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">flush</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 获取多条缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getMulti</span>(<span style="color:#66d9ef">array</span> $keys)<span style="color:#f92672">:</span> <span style="color:#66d9ef">array</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getMulti</span>($keys);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 批量设置
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setMulti</span>(<span style="color:#66d9ef">array</span> $items, <span style="color:#a6e22e">int</span> $ttl <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">memcached</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">setMulti</span>($items, $ttl);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用示例
+</span></span></span><span style="display:flex;"><span>$cache <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">MemcachedCache</span>([
+</span></span><span style="display:flex;"><span>    [<span style="color:#e6db74">&#39;127.0.0.1&#39;</span>, <span style="color:#ae81ff">11211</span>],
+</span></span><span style="display:flex;"><span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 设置缓存
+</span></span></span><span style="display:flex;"><span>$cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;user_1&#39;</span>, [<span style="color:#e6db74">&#39;name&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;John&#39;</span>], <span style="color:#ae81ff">3600</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取缓存
+</span></span></span><span style="display:flex;"><span>$user <span style="color:#f92672">=</span> $cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;user_1&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 计数器
+</span></span></span><span style="display:flex;"><span>$cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;page_views&#39;</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>$cache<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">increment</span>(<span style="color:#e6db74">&#39;page_views&#39;</span>);
+</span></span></code></pre></div><h3 id="3-redis">3. Redis
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> * Redis 缓存封装
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RedisCache</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> $redis;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">__construct</span>(<span style="color:#a6e22e">string</span> $host <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;127.0.0.1&#39;</span>, <span style="color:#a6e22e">int</span> $port <span style="color:#f92672">=</span> <span style="color:#ae81ff">6379</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Redis</span>();
+</span></span><span style="display:flex;"><span>        $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">connect</span>($host, $port);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 设置缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">string</span> $key, $value, <span style="color:#f92672">?</span><span style="color:#a6e22e">int</span> $ttl <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $value <span style="color:#f92672">=</span> <span style="color:#a6e22e">is_array</span>($value) <span style="color:#f92672">?</span> <span style="color:#a6e22e">json_encode</span>($value) <span style="color:#f92672">:</span> $value;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ($ttl <span style="color:#f92672">===</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>($key, $value);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">setex</span>($key, $ttl, $value);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 获取缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">string</span> $key)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $value <span style="color:#f92672">=</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>($key);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ($value <span style="color:#f92672">===</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 尝试 JSON 解码
+</span></span></span><span style="display:flex;"><span>        $decoded <span style="color:#f92672">=</span> <span style="color:#a6e22e">json_decode</span>($value, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">json_last_error</span>() <span style="color:#f92672">===</span> <span style="color:#a6e22e">JSON_ERROR_NONE</span> <span style="color:#f92672">?</span> $decoded <span style="color:#f92672">:</span> $value;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">delete</span>(<span style="color:#a6e22e">string</span> $key)<span style="color:#f92672">:</span> <span style="color:#a6e22e">int</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (<span style="color:#a6e22e">int</span>) $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">del</span>($key);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 判断键是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exists</span>(<span style="color:#a6e22e">string</span> $key)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">exists</span>($key) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     * 设置过期时间（秒）
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">expire</span>(<span style="color:#a6e22e">string</span> $key, <span style="color:#a6e22e">int</span> $seconds)<span style="color:#f92672">:</span> <span style="color:#a6e22e">bool</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $this<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">redis</span><span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">expire</span>($key, $seconds);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用示例
+</span></span></span><span style="display:flex;"><span>$redis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">RedisCache</span>();
+</span></span><span style="display:flex;"><span>$redis<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;foo&#39;</span>, <span style="color:#e6db74">&#39;bar&#39;</span>, <span style="color:#ae81ff">60</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">var_dump</span>($redis<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;foo&#39;</span>));
+</span></span><span style="display:flex;"><span>$redis<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">delete</span>(<span style="color:#e6db74">&#39;foo&#39;</span>);
+</span></span></code></pre></div>
+    <blockquote>
+        <p>提示：生产环境建议加连接池、统一 Key 前缀、超时与熔断，并结合业务决定哪些数据适合落在 Redis。</p>
+
+    </blockquote>
+<h2 id="选型小结">选型小结
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">场景</th>
+          <th style="text-align: left">建议</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">单机小规模、持久化不重要</td>
+          <td style="text-align: left">文件缓存 / APCu</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">多节点共享会话、计数</td>
+          <td style="text-align: left">Memcached</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">丰富数据结构 + 持久化</td>
+          <td style="text-align: left">Redis</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>结合 OPcache 减少 PHP 脚本重复编译，再配合数据缓存，通常能在成本可控的前提下显著提升站点响应速度。</p>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/php/">PHP</a>
+        
+            <a href="/tags/%E7%BC%93%E5%AD%98/">缓存</a>
+        
+            <a href="/tags/memcached/">Memcached</a>
+        
+            <a href="/tags/redis/">Redis</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/docker%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BAphp-nginx-alpine%E9%95%9C%E5%83%8F/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post Docker从零构建php-nginx-alpine镜像" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker从零构建php-nginx-alpine镜像</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/php7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post PHP7内存管理 - 谁动了我的内存" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PHP7内存管理 - 谁动了我的内存</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/php7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E8%B0%81%E5%8A%A8%E4%BA%86%E6%88%91%E7%9A%84%E5%86%85%E5%AD%98/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post PHP7内存管理 - 谁动了我的内存" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PHP7内存管理 - 谁动了我的内存</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/php%E7%9A%84openssl%E5%8A%A0%E5%AF%86%E6%89%A9%E5%B1%95%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post PHP的OpenSSL加密扩展使用小结" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PHP的OpenSSL加密扩展使用小结</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/%E5%9C%A8yii2%E6%A1%86%E6%9E%B6%E4%B8%8A%E4%BD%BF%E7%94%A8phpunit%E5%81%9A%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%8E%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 在Yii2框架上使用PHPUnit做单元测试与代码覆盖率" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">在Yii2框架上使用PHPUnit做单元测试与代码覆盖率</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

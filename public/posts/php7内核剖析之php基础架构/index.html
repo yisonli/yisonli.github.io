@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="深入理解 PHP 的基本构成、生命周期以及各阶段的工作流程">
+<title>《PHP7内核剖析》之PHP基础架构</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/php7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%E4%B9%8Bphp%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="《PHP7内核剖析》之PHP基础架构">
+<meta property='og:description' content="深入理解 PHP 的基本构成、生命周期以及各阶段的工作流程">
+<meta property='og:url' content='https://yison.life/posts/php7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%E4%B9%8Bphp%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='PHP' /><meta property='article:tag' content='内核' /><meta property='article:tag' content='底层原理' /><meta property='article:published_time' content='2018-04-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-27T00:00:00&#43;00:00'/><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="《PHP7内核剖析》之PHP基础架构">
+<meta name="twitter:description" content="深入理解 PHP 的基本构成、生命周期以及各阶段的工作流程"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#php-的构成">PHP 的构成</a>
+      <ul>
+        <li><a href="#核心模块说明">核心模块说明</a></li>
+        <li><a href="#各模块协作关系">各模块协作关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#php-的生命周期">PHP 的生命周期</a>
+      <ul>
+        <li><a href="#1-模块初始化阶段-minit">1. 模块初始化阶段 (MINIT)</a></li>
+        <li><a href="#2-请求初始化阶段-rinit">2. 请求初始化阶段 (RINIT)</a></li>
+        <li><a href="#3-执行脚本阶段">3. 执行脚本阶段</a></li>
+        <li><a href="#4-请求关闭阶段-rshutdown">4. 请求关闭阶段 (RSHUTDOWN)</a></li>
+        <li><a href="#5-模块关闭阶段-mshutdown">5. 模块关闭阶段 (MSHUTDOWN)</a></li>
+      </ul>
+    </li>
+    <li><a href="#不同的-sapi-模式">不同的 SAPI 模式</a>
+      <ul>
+        <li><a href="#php-fpm-生命周期">PHP-FPM 生命周期</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/php7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%E4%B9%8Bphp%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/">
+            <img alt="Featured image of post 《PHP7内核剖析》之PHP基础架构" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-programming.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E7%BC%96%E7%A8%8B/" style="background-color: hsl(268, 60%, 84%); color: hsl(268, 60%, 15%);">
+                编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/php7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%E4%B9%8Bphp%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/">《PHP7内核剖析》之PHP基础架构</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            深入理解 PHP 的基本构成、生命周期以及各阶段的工作流程
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                    <time class="article-time--published" datetime='2018-04-27T00:00:00Z'>2018年4月27日</time>
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 5 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#php-的构成">PHP 的构成</a>
+      <ul>
+        <li><a href="#核心模块说明">核心模块说明</a></li>
+        <li><a href="#各模块协作关系">各模块协作关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#php-的生命周期">PHP 的生命周期</a>
+      <ul>
+        <li><a href="#1-模块初始化阶段-minit">1. 模块初始化阶段 (MINIT)</a></li>
+        <li><a href="#2-请求初始化阶段-rinit">2. 请求初始化阶段 (RINIT)</a></li>
+        <li><a href="#3-执行脚本阶段">3. 执行脚本阶段</a></li>
+        <li><a href="#4-请求关闭阶段-rshutdown">4. 请求关闭阶段 (RSHUTDOWN)</a></li>
+        <li><a href="#5-模块关闭阶段-mshutdown">5. 模块关闭阶段 (MSHUTDOWN)</a></li>
+      </ul>
+    </li>
+    <li><a href="#不同的-sapi-模式">不同的 SAPI 模式</a>
+      <ul>
+        <li><a href="#php-fpm-生命周期">PHP-FPM 生命周期</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>有幸在读秦朋的《PHP 内核剖析》一书，收获良多。为了加深理解，依照书中内容整理了 PHP 的基本架构和生命周期。</p>
+
+    </blockquote>
+<h2 id="php-的构成">PHP 的构成
+</h2><p>PHP 的源代码主要由以下几个核心模块组成：</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────┐
+│                    PHP 架构图                        │
+├─────────────────────────────────────────────────────┤
+│  ┌─────────┐                                        │
+│  │  SAPI   │  ← 应用接口层（Apache2Handler/FastCGI）│
+│  └────┬────┘                                        │
+│  ┌────▼────┐                                        │
+│  │  main   │  ← 输入/输出、Web通信、框架初始化        │
+│  └────┬────┘                                        │
+│  ┌────▼────┐                                        │
+│  │  Zend   │  ← PHP 解析器核心（Zend Engine）        │
+│  └────┬────┘                                        │
+│  ┌────▼────┐                                        │
+│  │   ext   │  ← PHP 扩展目录                         │
+│  └─────────┘                                        │
+│  ┌─────────┐                                        │
+│  │  TSRM   │  ← 线程安全资源管理                     │
+│  └─────────┘                                        │
+└─────────────────────────────────────────────────────┘
+</code></pre><h3 id="核心模块说明">核心模块说明
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">模块</th>
+          <th style="text-align: left">说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>SAPI</strong></td>
+          <td style="text-align: left">Server Application Programming Interface，PHP 的应用接口层，负责与 Web 服务器交互</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>main</strong></td>
+          <td style="text-align: left">PHP 的核心代码，处理输入/输出、Web 通信、扩展加载、配置解析等工作</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Zend</strong></td>
+          <td style="text-align: left">PHP 解析器的主要实现，即 Zend Engine，是 PHP 语言的核心</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>ext</strong></td>
+          <td style="text-align: left">PHP 的扩展目录，提供了各种功能的扩展（GD、MySQL、JSON 等）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>TSRM</strong></td>
+          <td style="text-align: left">Thread Safe Resource Manager，线程安全相关的实现</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="各模块协作关系">各模块协作关系
+</h3><pre tabindex="0"><code>Web Server (Apache/Nginx)
+        │
+        ▼
+    SAPI Layer
+        │
+        ▼
+    main (请求初始化、配置解析)
+        │
+        ▼
+    Zend Engine (词法分析 → 语法分析 → 编译 → 执行)
+        │
+        ▼
+    PHP Extensions (提供各种内置函数)
+</code></pre><h2 id="php-的生命周期">PHP 的生命周期
+</h2><pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────┐
+│                    PHP 生命周期                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌───────────────────┐                                     │
+│  │  模块初始化阶段    │  MINIT (Module Initialization)    │
+│  │  (PHP-FPM 启动时) │  - 加载扩展                        │
+│  └─────────┬─────────┘  - 初始化扩展                      │
+│            │            - 注册常量/函数                     │
+│            ▼                                              │
+│  ┌───────────────────┐                                     │
+│  │  请求初始化阶段    │  RINIT (Request Initialization)   │
+│  │  (每个请求开始时)  │  - 重置全局变量                    │
+│  └─────────┬─────────┘  - 初始化静态变量                   │
+│            │            - 启动 session                      │
+│            ▼                                              │
+│  ┌───────────────────┐                                     │
+│  │  执行脚本阶段      │  Execute Script                     │
+│  │  (核心执行期)      │  - 编译 PHP 代码为 OpCodes        │
+│  └─────────┬─────────┘  - 执行 OpCodes                     │
+│            │            - 输出响应                          │
+│            ▼                                              │
+│  ┌───────────────────┐                                     │
+│  │  请求关闭阶段      │  RSHUTDOWN (Request Shutdown)      │
+│  │  (每个请求结束时)  │  - 刷新输出缓冲区                  │
+│  └─────────┬─────────┘  - 发送 HTTP 响应                   │
+│            │            - 清理全局变量                      │
+│            ▼                                              │
+│  ┌───────────────────┐                                     │
+│  │  模块关闭阶段      │  MSHUTDOWN (Module Shutdown)       │
+│  │  (PHP-FPM 关闭时)  │  - 关闭扩展                       │
+│  └───────────────────┘  - 释放资源                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="1-模块初始化阶段-minit">1. 模块初始化阶段 (MINIT)
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// PHP 扩展中的模块初始化函数
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">PHP_MINIT_FUNCTION</span>(my_extension)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 注册常量
+</span></span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">REGISTER_STRING_CONSTANT</span>(<span style="color:#e6db74">&#34;MY_EXT_VERSION&#34;</span>, <span style="color:#e6db74">&#34;1.0.0&#34;</span>, CONST_PERSISTENT);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 注册函数
+</span></span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">REGISTER_FUNCTION</span>(MyNamespace, my_function);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 初始化类
+</span></span></span><span style="display:flex;"><span>    zend_class_entry ce;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">INIT_CLASS_ENTRY</span>(ce, <span style="color:#e6db74">&#34;MyClass&#34;</span>, my_class_methods);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>主要任务：</strong></p>
+<ul>
+<li>加载并初始化 PHP 扩展</li>
+<li>注册常量和函数</li>
+<li>注册类接口</li>
+<li>初始化线程安全</li>
+</ul>
+<h3 id="2-请求初始化阶段-rinit">2. 请求初始化阶段 (RINIT)
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// 请求开始时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">PHP_RINIT_FUNCTION</span>(my_extension)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 重置全局变量
+</span></span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">MyG</span>(enabled) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 启动 session（如果配置了 auto_start）
+</span></span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">php_session_start</span>();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>主要任务：</strong></p>
+<ul>
+<li>重置全局变量</li>
+<li>初始化静态变量</li>
+<li>启动 session</li>
+<li>初始化用户级别的计数器</li>
+</ul>
+<h3 id="3-执行脚本阶段">3. 执行脚本阶段
+</h3><pre tabindex="0"><code>PHP 代码
+    │
+    ▼
+┌─────────────────┐
+│  Lexer (词法)   │  将代码转换为 Token
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Parser (语法)  │  将 Token 转换为 AST
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Compiler (编译) │  将 AST 转换为 OpArray
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Executor (执行) │  逐条执行 OpCode
+└─────────────────┘
+</code></pre><p><strong>主要任务：</strong></p>
+<ul>
+<li>词法分析 → 语法分析 → 编译</li>
+<li>生成 OpCode（操作码）</li>
+<li>执行 OpCode</li>
+<li>输出响应内容</li>
+</ul>
+<h3 id="4-请求关闭阶段-rshutdown">4. 请求关闭阶段 (RSHUTDOWN)
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// 请求结束时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">PHP_RSHUTDOWN_FUNCTION</span>(my_extension)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 刷新输出
+</span></span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">OG</span>(ob_nesting_level) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        og_level<span style="color:#f92672">--</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 清理用户空间对象
+</span></span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>主要任务：</strong></p>
+<ul>
+<li>刷新输出缓冲区</li>
+<li>发送 HTTP 响应</li>
+<li>清理全局变量</li>
+<li>关闭 session</li>
+</ul>
+<h3 id="5-模块关闭阶段-mshutdown">5. 模块关闭阶段 (MSHUTDOWN)
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// PHP-FPM 关闭时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">PHP_MSHUTDOWN_FUNCTION</span>(my_extension)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 注销常量和类
+</span></span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 释放持久化资源
+</span></span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>主要任务：</strong></p>
+<ul>
+<li>关闭所有扩展</li>
+<li>释放持久化资源</li>
+<li>清理线程安全数据</li>
+</ul>
+<h2 id="不同的-sapi-模式">不同的 SAPI 模式
+</h2><p>PHP 在不同运行环境下，工作模式有所差异：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">SAPI</th>
+          <th style="text-align: center">启动次数</th>
+          <th style="text-align: left">生命周期</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>CLI/CGI</strong></td>
+          <td style="text-align: center">每次请求</td>
+          <td style="text-align: left">完整生命周期</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>PHP-FPM</strong></td>
+          <td style="text-align: center">一次启动</td>
+          <td style="text-align: left">MINIT 一次，请求周期重复</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>mod_php (Apache)</strong></td>
+          <td style="text-align: center">一次启动</td>
+          <td style="text-align: left">MINIT 一次，请求周期重复</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="php-fpm-生命周期">PHP-FPM 生命周期
+</h3><pre tabindex="0"><code>┌─────────────────────────────────────────────────────┐
+│              PHP-FPM Master Process                  │
+│  - 监听端口                                         │
+│  - 管理 Worker 进程                                  │
+│  - MINIT 只执行一次                                  │
+└───────────────────────┬─────────────────────────────┘
+                        │ fork
+                        ▼
+┌─────────────────────────────────────────────────────┐
+│              PHP-FPM Worker Process                 │
+│  - 处理请求                                         │
+│  - 重复执行 RINIT → 执行 → RSHUTDOWN               │
+└─────────────────────────────────────────────────────┘
+</code></pre><h2 id="总结">总结
+</h2><ol>
+<li>PHP 架构由 SAPI、main、Zend、ext、TSRM 五大模块组成</li>
+<li>PHP 生命周期分为 5 个阶段：模块初始化、请求初始化、脚本执行、请求关闭、模块关闭</li>
+<li>不同 SAPI 模式下，生命周期有所差异（CLI 每次都完整执行，PHP-FPM 只在启动时执行 MINIT）</li>
+<li>理解 PHP 生命周期对于编写高效扩展和排查问题非常重要</li>
+</ol>
+<h2 id="参考资料">参考资料
+</h2><ul>
+<li>《PHP 内核剖析》- 秦朋</li>
+<li><a class="link" href="https://www.php.net/manual/zh/internals2.php"  target="_blank" rel="noopener"
+    >PHP 官方文档</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/php/">PHP</a>
+        
+            <a href="/tags/%E5%86%85%E6%A0%B8/">内核</a>
+        
+            <a href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">底层原理</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/php7%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%E4%B9%8Bphp%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 《PHP7内核剖析》之PHP基础架构" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">《PHP7内核剖析》之PHP基础架构</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85laravel/lumen/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 使用Composer安装Laravel/Lumen" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">使用Composer安装Laravel/Lumen</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85laravel/lumen/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 使用Composer安装Laravel/Lumen" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">使用Composer安装Laravel/Lumen</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/%E4%BD%BF%E7%94%A8gd%E5%BA%93%E7%BB%99%E5%9B%BE%E7%89%87%E9%93%BA%E6%BB%A1%E6%B0%B4%E5%8D%B0/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 使用GD库给图片铺满水印" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">使用GD库给图片铺满水印</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="has-image">
+    <a href="/posts/php7%E5%92%8Cnginx%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post PHP7和Nginx安装记录" loading="lazy" src="/images/cover-programming.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PHP7和Nginx安装记录</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="一台机器配置多个 GitHub 账号的 SSH Key，实现多仓库管理">
+<title>同时使用多个GitHub的SSH Key配置</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgithub%E7%9A%84ssh-key%E9%85%8D%E7%BD%AE/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="同时使用多个GitHub的SSH Key配置">
+<meta property='og:description' content="一台机器配置多个 GitHub 账号的 SSH Key，实现多仓库管理">
+<meta property='og:url' content='https://yison.life/posts/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgithub%E7%9A%84ssh-key%E9%85%8D%E7%BD%AE/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Git' /><meta property='article:tag' content='GitHub' /><meta property='article:tag' content='SSH' /><meta property='article:published_time' content='2016-05-29T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2016-05-29T00:00:00&#43;00:00'/><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="同时使用多个GitHub的SSH Key配置">
+<meta name="twitter:description" content="一台机器配置多个 GitHub 账号的 SSH Key，实现多仓库管理"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#问题背景">问题背景</a></li>
+    <li><a href="#配置步骤">配置步骤</a>
+      <ul>
+        <li><a href="#一生成第一个-ssh-key">一、生成第一个 SSH Key</a></li>
+        <li><a href="#二生成第二个-ssh-key">二、生成第二个 SSH Key</a></li>
+        <li><a href="#三创建-ssh-配置文件">三、创建 SSH 配置文件</a></li>
+        <li><a href="#四修改本地仓库配置">四、修改本地仓库配置</a>
+          <ul>
+            <li><a href="#方法一直接修改-gitconfig">方法一：直接修改 .git/config</a></li>
+            <li><a href="#方法二使用-git-remote-命令">方法二：使用 git remote 命令</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#验证配置">验证配置</a></li>
+    <li><a href="#多账号管理最佳实践">多账号管理最佳实践</a>
+      <ul>
+        <li><a href="#1-清晰的命名规范">1. 清晰的命名规范</a></li>
+        <li><a href="#2-windows-用户注意">2. Windows 用户注意</a></li>
+        <li><a href="#3-github-多账号使用">3. GitHub 多账号使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#常见问题">常见问题</a>
+      <ul>
+        <li><a href="#q-permission-denied-publickey">Q: Permission denied (publickey)</a></li>
+        <li><a href="#q-仍然提示需要密码">Q: 仍然提示需要密码</a></li>
+        <li><a href="#q-windows-git-bash-无法识别-config">Q: Windows Git Bash 无法识别 config</a></li>
+      </ul>
+    </li>
+    <li><a href="#简化版-config-示例">简化版 config 示例</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgithub%E7%9A%84ssh-key%E9%85%8D%E7%BD%AE/">
+            <img alt="Featured image of post 同时使用多个GitHub的SSH Key配置" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-vcs.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="background-color: hsl(29, 60%, 84%); color: hsl(29, 60%, 15%);">
+                版本控制
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgithub%E7%9A%84ssh-key%E9%85%8D%E7%BD%AE/">同时使用多个GitHub的SSH Key配置</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            一台机器配置多个 GitHub 账号的 SSH Key，实现多仓库管理
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                    <time class="article-time--published" datetime='2016-05-29T00:00:00Z'>2016年5月29日</time>
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 2 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#问题背景">问题背景</a></li>
+    <li><a href="#配置步骤">配置步骤</a>
+      <ul>
+        <li><a href="#一生成第一个-ssh-key">一、生成第一个 SSH Key</a></li>
+        <li><a href="#二生成第二个-ssh-key">二、生成第二个 SSH Key</a></li>
+        <li><a href="#三创建-ssh-配置文件">三、创建 SSH 配置文件</a></li>
+        <li><a href="#四修改本地仓库配置">四、修改本地仓库配置</a>
+          <ul>
+            <li><a href="#方法一直接修改-gitconfig">方法一：直接修改 .git/config</a></li>
+            <li><a href="#方法二使用-git-remote-命令">方法二：使用 git remote 命令</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#验证配置">验证配置</a></li>
+    <li><a href="#多账号管理最佳实践">多账号管理最佳实践</a>
+      <ul>
+        <li><a href="#1-清晰的命名规范">1. 清晰的命名规范</a></li>
+        <li><a href="#2-windows-用户注意">2. Windows 用户注意</a></li>
+        <li><a href="#3-github-多账号使用">3. GitHub 多账号使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#常见问题">常见问题</a>
+      <ul>
+        <li><a href="#q-permission-denied-publickey">Q: Permission denied (publickey)</a></li>
+        <li><a href="#q-仍然提示需要密码">Q: 仍然提示需要密码</a></li>
+        <li><a href="#q-windows-git-bash-无法识别-config">Q: Windows Git Bash 无法识别 config</a></li>
+      </ul>
+    </li>
+    <li><a href="#简化版-config-示例">简化版 config 示例</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>GitHub 中一个 deploy key 只能用在一个仓库内，如果一台机器要管理多个仓库，就需要配置多个 SSH Key。</p>
+
+    </blockquote>
+<h2 id="问题背景">问题背景
+</h2><p>在一台机器上可能需要：</p>
+<ul>
+<li>管理多个 GitHub 账号</li>
+<li>同时操作多个 GitHub 仓库</li>
+<li>区分个人仓库和工作仓库</li>
+</ul>
+<h2 id="配置步骤">配置步骤
+</h2><h3 id="一生成第一个-ssh-key">一、生成第一个 SSH Key
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 生成第一个 SSH Key（用于个人仓库）</span>
+</span></span><span style="display:flex;"><span>ssh-keygen -t rsa -C <span style="color:#e6db74">&#34;your_email@example.com&#34;</span>
+</span></span></code></pre></div><p>一路回车，会在 <code>~/.ssh/</code> 目录下生成：</p>
+<ul>
+<li><code>id_rsa</code> - 私钥</li>
+<li><code>id_rsa.pub</code> - 公钥</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 查看公钥内容</span>
+</span></span><span style="display:flex;"><span>cat ~/.ssh/id_rsa.pub
+</span></span></code></pre></div><p>复制公钥内容，到 GitHub 添加 SSH Keys（仓库1）</p>
+<h3 id="二生成第二个-ssh-key">二、生成第二个 SSH Key
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 生成第二个 SSH Key（用于另一个仓库）</span>
+</span></span><span style="display:flex;"><span>ssh-keygen -t rsa -C <span style="color:#e6db74">&#34;another_email@example.com&#34;</span>
+</span></span></code></pre></div><p><strong>注意：给这个文件起一个专属名字</strong>，例如 <code>id_rsa_work</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 查看第二个公钥内容</span>
+</span></span><span style="display:flex;"><span>cat ~/.ssh/id_rsa_work.pub
+</span></span></code></pre></div><p>复制公钥内容，到 GitHub 添加 SSH Keys（仓库2）</p>
+<h3 id="三创建-ssh-配置文件">三、创建 SSH 配置文件
+</h3><p>在 <code>~/.ssh/</code> 目录下创建 <code>config</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 编辑 config 文件</span>
+</span></span><span style="display:flex;"><span>nano ~/.ssh/config
+</span></span></code></pre></div><p>填入以下内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 个人仓库（默认）</span>
+</span></span><span style="display:flex;"><span>Host github.com
+</span></span><span style="display:flex;"><span>    HostName github.com
+</span></span><span style="display:flex;"><span>    PreferredAuthentications publickey
+</span></span><span style="display:flex;"><span>    IdentityFile ~/.ssh/id_rsa
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 工作仓库（自定义别名）</span>
+</span></span><span style="display:flex;"><span>Host github-work
+</span></span><span style="display:flex;"><span>    HostName github.com
+</span></span><span style="display:flex;"><span>    PreferredAuthentications publickey
+</span></span><span style="display:flex;"><span>    IdentityFile ~/.ssh/id_rsa_work
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 也可以用域名区分</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Host github.com-company</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     HostName github.com</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     IdentityFile ~/.ssh/id_rsa_company</span>
+</span></span></code></pre></div><h3 id="四修改本地仓库配置">四、修改本地仓库配置
+</h3><h4 id="方法一直接修改-gitconfig">方法一：直接修改 .git/config
+</h4><p>打开仓库的 <code>.git/config</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#75715e"># 仓库1（个人）</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[remote &#34;origin&#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">git@github.com:username/personal-repo.git</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 仓库2（工作）</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[remote &#34;origin&#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">git@github-work:company/work-repo.git</span>
+</span></span></code></pre></div><h4 id="方法二使用-git-remote-命令">方法二：使用 git remote 命令
+</h4><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 克隆时指定 host</span>
+</span></span><span style="display:flex;"><span>git clone git@github-work:company/work-repo.git
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 或者修改已存在的仓库</span>
+</span></span><span style="display:flex;"><span>git remote set-url origin git@github-work:company/work-repo.git
+</span></span></code></pre></div><h2 id="验证配置">验证配置
+</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 测试连接</span>
+</span></span><span style="display:flex;"><span>ssh -T git@github.com
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 期望输出：Hi username! You&#39;ve successfully authenticated...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ssh -T git@github-work
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 期望输出：Hi company! You&#39;ve successfully authenticated...</span>
+</span></span></code></pre></div><h2 id="多账号管理最佳实践">多账号管理最佳实践
+</h2><h3 id="1-清晰的命名规范">1. 清晰的命名规范
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/.ssh/
+</span></span><span style="display:flex;"><span>├── id_rsa              <span style="color:#75715e"># 个人主账号</span>
+</span></span><span style="display:flex;"><span>├── id_rsa.pub
+</span></span><span style="display:flex;"><span>├── id_rsa_work         <span style="color:#75715e"># 工作账号</span>
+</span></span><span style="display:flex;"><span>├── id_rsa_work.pub
+</span></span><span style="display:flex;"><span>├── id_rsa_client1      <span style="color:#75715e"># 客户项目A</span>
+</span></span><span style="display:flex;"><span>├── id_rsa_client1.pub
+</span></span><span style="display:flex;"><span>└── config              <span style="color:#75715e"># SSH 配置文件</span>
+</span></span></code></pre></div><h3 id="2-windows-用户注意">2. Windows 用户注意
+</h3><p>Windows 系统 SSH 配置文件位置：<code>C:\Users\用户名\.ssh\config</code></p>
+<p>确保文件格式为 <strong>UTF-8 without BOM</strong></p>
+<h3 id="3-github-多账号使用">3. GitHub 多账号使用
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 克隆不同仓库</span>
+</span></span><span style="display:flex;"><span>git clone git@github.com:username/repo1.git      <span style="color:#75715e"># 使用 id_rsa</span>
+</span></span><span style="display:flex;"><span>git clone git@github-work:company/repo2.git     <span style="color:#75715e"># 使用 id_rsa_work</span>
+</span></span></code></pre></div><h2 id="常见问题">常见问题
+</h2><h3 id="q-permission-denied-publickey">Q: Permission denied (publickey)
+</h3><p>A: 检查 SSH Key 是否正确添加：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 调试连接</span>
+</span></span><span style="display:flex;"><span>ssh -vT git@github.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看加载了哪些 Key</span>
+</span></span><span style="display:flex;"><span>ssh-add -l
+</span></span></code></pre></div><h3 id="q-仍然提示需要密码">Q: 仍然提示需要密码
+</h3><p>A: 确认 config 文件格式正确：</p>
+<pre tabindex="0"><code>Host github.com
+    HostName github.com
+    IdentityFile ~/.ssh/id_rsa
+</code></pre><h3 id="q-windows-git-bash-无法识别-config">Q: Windows Git Bash 无法识别 config
+</h3><p>A: 使用记事本或 VS Code 创建 config 文件，避免格式问题</p>
+<h2 id="简化版-config-示例">简化版 config 示例
+</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 默认</span>
+</span></span><span style="display:flex;"><span>Host github.com
+</span></span><span style="display:flex;"><span>    HostName github.com
+</span></span><span style="display:flex;"><span>    IdentityFile ~/.ssh/id_rsa
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 别名1</span>
+</span></span><span style="display:flex;"><span>Host gh-work
+</span></span><span style="display:flex;"><span>    HostName github.com
+</span></span><span style="display:flex;"><span>    IdentityFile ~/.ssh/id_rsa_work
+</span></span></code></pre></div><h2 id="总结">总结
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">步骤</th>
+          <th style="text-align: left">操作</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1</td>
+          <td style="text-align: left">生成多个 SSH Key（不同文件名）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2</td>
+          <td style="text-align: left">添加到对应的 GitHub 账户</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">3</td>
+          <td style="text-align: left">创建 <code>~/.ssh/config</code> 配置</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">修改仓库 remote URL 或克隆时指定</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>通过以上配置，就可以在一台机器上同时使用多个 GitHub 账号管理不同的仓库了。</p>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/git/">Git</a>
+        
+            <a href="/tags/github/">GitHub</a>
+        
+            <a href="/tags/ssh/">SSH</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgithub%E7%9A%84ssh-key%E9%85%8D%E7%BD%AE/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 同时使用多个GitHub的SSH Key配置" loading="lazy" src="/images/cover-vcs.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">同时使用多个GitHub的SSH Key配置</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=" 在读这本书之前，我已经熟悉了Go的语法，并编码实现了具体的应用。但这本书据说详细解读了Go语言的诞生背景和作者的设计初衷&amp;理念，所以，带着好奇的心态读了这本书，顺带查缺补漏。\n">
+<title>《Go语言编程》☞鉴赏</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/go%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B%E9%89%B4%E8%B5%8F/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="《Go语言编程》☞鉴赏">
+<meta property='og:description' content=" 在读这本书之前，我已经熟悉了Go的语法，并编码实现了具体的应用。但这本书据说详细解读了Go语言的诞生背景和作者的设计初衷&amp;理念，所以，带着好奇的心态读了这本书，顺带查缺补漏。\n">
+<meta property='og:url' content='https://yison.life/posts/go%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B%E9%89%B4%E8%B5%8F/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' />
+<meta name="twitter:title" content="《Go语言编程》☞鉴赏">
+<meta name="twitter:description" content=" 在读这本书之前，我已经熟悉了Go的语法，并编码实现了具体的应用。但这本书据说详细解读了Go语言的诞生背景和作者的设计初衷&amp;理念，所以，带着好奇的心态读了这本书，顺带查缺补漏。\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#前言">前言</a>
+      <ul>
+        <li><a href="#并发与分布式">并发与分布式</a></li>
+        <li><a href="#软件工程">软件工程</a></li>
+        <li><a href="#编程哲学">编程哲学</a></li>
+      </ul>
+    </li>
+    <li><a href="#go语言特性">Go语言特性</a>
+      <ul>
+        <li><a href="#自动垃圾回收">自动垃圾回收</a></li>
+        <li><a href="#更丰富的内置类型">更丰富的内置类型</a></li>
+        <li><a href="#函数多返回值">函数多返回值</a></li>
+        <li><a href="#错误处理">错误处理</a></li>
+        <li><a href="#匿名函数和闭包">匿名函数和闭包</a></li>
+        <li><a href="#类型和接口">类型和接口</a></li>
+        <li><a href="#并发编程">并发编程</a></li>
+        <li><a href="#反射">反射</a></li>
+        <li><a href="#语言交互性">语言交互性</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用标准库">常用标准库</a></li>
+    <li><a href="#最后">最后</a></li>
+    <li><a href="#关于我">关于我</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E8%AF%BB%E4%B9%A6/" style="background-color: hsl(260, 60%, 84%); color: hsl(260, 60%, 15%);">
+                读书
+            </a>
+        
+            
+            
+            
+            <a href="/categories/%E7%BC%96%E7%A8%8B/" style="background-color: hsl(268, 60%, 84%); color: hsl(268, 60%, 15%);">
+                编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/go%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B%E9%89%B4%E8%B5%8F/">《Go语言编程》☞鉴赏</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 16 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#前言">前言</a>
+      <ul>
+        <li><a href="#并发与分布式">并发与分布式</a></li>
+        <li><a href="#软件工程">软件工程</a></li>
+        <li><a href="#编程哲学">编程哲学</a></li>
+      </ul>
+    </li>
+    <li><a href="#go语言特性">Go语言特性</a>
+      <ul>
+        <li><a href="#自动垃圾回收">自动垃圾回收</a></li>
+        <li><a href="#更丰富的内置类型">更丰富的内置类型</a></li>
+        <li><a href="#函数多返回值">函数多返回值</a></li>
+        <li><a href="#错误处理">错误处理</a></li>
+        <li><a href="#匿名函数和闭包">匿名函数和闭包</a></li>
+        <li><a href="#类型和接口">类型和接口</a></li>
+        <li><a href="#并发编程">并发编程</a></li>
+        <li><a href="#反射">反射</a></li>
+        <li><a href="#语言交互性">语言交互性</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用标准库">常用标准库</a></li>
+    <li><a href="#最后">最后</a></li>
+    <li><a href="#关于我">关于我</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>在读这本书之前，我已经熟悉了Go的语法，并编码实现了具体的应用。但这本书据说详细解读了Go语言的诞生背景和作者的设计初衷&amp;理念，所以，带着好奇的心态读了这本书，顺带查缺补漏。</p>
+
+    </blockquote>
+<h2 id="前言">前言
+</h2><p>Go语言官方自称，之所以开发Go 语言，是因为“近10年来开发程序之难让我们有点沮丧”。<br>
+这一定位暗示了Go语言希望取代C和Java的地位，成为最流行的通用开发语言。</p>
+<p>Go希望成为互联网时代的C语言。多数系统级语言（包括Java和C#）的根本编程哲学来源于C++，将C++的面向对象进一步发扬光大。但是Go语言的设计者却有不同的看法，他们认为C++ 真的没啥好学的，值得学习的是C语言。</p>
+<p>C语言经久不衰的根源是它足够简单。因此，Go语言也要足够简单！</p>
+<p><img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/article/2020-12-03/toibe_rank.jpeg"></p>
+
+    <blockquote>
+        <p>如果一个特性
+并不对解决任何问题有显著的价值，那么Go就不提供它</p>
+
+    </blockquote>
+<h3 id="并发与分布式">并发与分布式
+</h3><p>多核化和集群化是互联网时代的典型特征，那语言需要哪些特性来应对这些特征呢？</p>
+<p><strong>并发执行的“执行体”</strong><br>
+执行体是个抽象的概念，在操作系统层面有多个概念与之对应，比如操作系统自己掌管的进程（process）、进程内的线程（thread）以及进程内的协程（coroutine，也叫轻量级线程）。</p>
+<p>多数语言在语法层面并不直接支持协程，而通过库的方式支持的协程的功能也并不完整，比如仅仅提供协程的创建、销毁与切换等能力。如果在这样的协程中调用一个同步IO操作，比如网络通信、本地文件读写，都会阻塞其他的并发执行协程，从而无法真正达到协程本身期望达到的目标。</p>
+<p>Go语言在语言级别支持协程，叫goroutine。Go语言标准库提供的所有系统调用（syscall）操
+作，当然也包括所有同步IO操作，都会出让CPU给其他goroutine，这让事情变得非常简单。我们
+对比一下Java和Go，近距离观摩下两者对“执行体”的支持。</p>
+<p>为了简化，我们在样例中使用的是Java标准库中的线程，而不是协程，具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyThread</span> <span style="color:#66d9ef">implements</span> Runnable { 
+</span></span><span style="display:flex;"><span> 	String arg; 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MyThread</span>(String a) { 
+</span></span><span style="display:flex;"><span> 		arg <span style="color:#f92672">=</span> a; 
+</span></span><span style="display:flex;"><span> 	} 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() { 
+</span></span><span style="display:flex;"><span> 		<span style="color:#75715e">// ... </span>
+</span></span><span style="display:flex;"><span> 	} 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) { 
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">new</span> Thread(<span style="color:#66d9ef">new</span> MyThread(<span style="color:#e6db74">&#34;test&#34;</span>)).<span style="color:#a6e22e">start</span>(); 
+</span></span><span style="display:flex;"><span> 		<span style="color:#75715e">// ... </span>
+</span></span><span style="display:flex;"><span> 	}
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>相同功能的代码，在Go语言中是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">arg</span> <span style="color:#66d9ef">string</span>) { 
+</span></span><span style="display:flex;"><span> 	<span style="color:#75715e">// ... </span>
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() { 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;test&#34;</span>) 
+</span></span><span style="display:flex;"><span> 	<span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>对比非常鲜明。我相信你已经明白为什么Go语言会叫Go语言了：Go语言献给这个时代最好
+的礼物，就是加了go这个关键字。</p>
+<p><strong>“执行体间的通信”</strong><br>
+执行体间的通信包含几个方式：</p>
+<ul>
+<li>执行体之间的互斥与同步
+<ul>
+<li>当执行体之间存在共享资源（一般是共享内存）时，为保证内存访问逻辑的确定性，需要对访问该共享资源的相关执行体进行互斥。当多个执行体之间的逻辑存在时序上的依赖时，也往往需要在执行体之间进行同步。</li>
+<li>互斥与同步是执行体间最基础的交互方式。</li>
+<li>多数语言在库层面提供了线程间的互斥与同步支持，那么协程之间的互斥与同步呢？
+<ul>
+<li>呃，不好意思，没有。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>执行体之间的消息传递
+<ul>
+<li>在并发编程模型的选择上，有两个流派，一个是共享内存模型，一个是消息传递模型。</li>
+<li>多数传统语言选择了前者，少数语言选择后者，其中选择“消息传递模型”的最典型代表是Erlang语言。业界有专门的术语叫“Erlang风格的并发模型”，其主体思想是两点：一是“轻量级的进程（Erlang中‘进程’这个术语就是我们上面说的‘执行体’）”，二是“消息乃进程间通信的唯一方式”。</li>
+<li>Go语言推荐采用“Erlang风格的并发模型”的编程范式，尽管传统的“共享内存模型”仍然被保留，允许适度地使用。在Go语言中内置了消息队列的支持，只不过它叫通道（channel）。两
+个goroutine之间可以通过通道来进行交互。</li>
+</ul>
+</li>
+</ul>
+<h3 id="软件工程">软件工程
+</h3><p>单机时代的语言可以只关心问题本身的解决，但是随着工程规模的不断扩大，软件复杂度的
+不断增加，软件工程也成为语言设计层面要考虑的重要课题。</p>
+<p>多数软件需要一个团队共同去完成，在团队协作的过程中，人们需要建立统一的交互语言来降低沟通的成本。规范化体现在多个层面，如：</p>
+<ul>
+<li>代码风格规范</li>
+<li>错误处理规范</li>
+<li>包管理</li>
+<li>契约规范（接口）</li>
+<li>单元测试规范</li>
+<li>功能开发的流程规范</li>
+</ul>
+<p>Go语言很可能是第一个将代码风格强制统一的语言，例如Go语言要求public的变量必须以
+大写字母开头，private变量则以小写字母开头，这种做法不仅免除了public、private关键
+字，更重要的是统一了命名风格。</p>
+<p>另外，Go语言对{ }应该怎么写进行了强制，比如以下风格是正确的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">expression</span> { 
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>但下面这个写法就是错误的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">expression</span> 
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>而C和Java语言中则对花括号的位置没有任何要求。哪种更有利，这个见仁见智。但很显然
+的是，所有的Go代码的花括号位置肯定是非常统一的。</p>
+<p>最有意思的其实还是 Go 语言首创的错误处理规范：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">filename</span>) 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> { 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Open file failed:&#34;</span>, <span style="color:#a6e22e">err</span>) 
+</span></span><span style="display:flex;"><span> 	<span style="color:#66d9ef">return</span> 
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>() 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span> <span style="color:#75715e">// 操作已经打开的f文件</span>
+</span></span></code></pre></div>
+    <blockquote>
+        <p>defer语句的含义是不管程序是否出现异常，均在函数退出时自动执行相关代码。<br>
+Go语言的函数允许返回多个值。</p>
+
+    </blockquote>
+<p>大多数函数的最后一个返回值会为error类型，以在错误情况下返回详细信息。<br>
+error类型只是一个系统内置的interface，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#66d9ef">error</span> <span style="color:#66d9ef">interface</span> { 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>有了error类型，程序出现错误的逻辑看起来就相当统一。</p>
+<p>在Java中，你可能这样写代码来保证资源正确释放：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">try</span> { 
+</span></span><span style="display:flex;"><span> 	Statement stmt <span style="color:#f92672">=</span> ...; 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">try</span> { 
+</span></span><span style="display:flex;"><span> 		ResultSet rset <span style="color:#f92672">=</span> ...; 
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">try</span> { 
+</span></span><span style="display:flex;"><span> 			... <span style="color:#75715e">// 正常代码</span>
+</span></span><span style="display:flex;"><span> 		} 
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">finally</span> { 
+</span></span><span style="display:flex;"><span> 			rset.<span style="color:#a6e22e">close</span>(); 
+</span></span><span style="display:flex;"><span> 		} 
+</span></span><span style="display:flex;"><span> 	} 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">finally</span> { 
+</span></span><span style="display:flex;"><span> 		stmt.<span style="color:#a6e22e">close</span>(); 
+</span></span><span style="display:flex;"><span> 	} 
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">finally</span> { 
+</span></span><span style="display:flex;"><span>conn.<span style="color:#a6e22e">close</span>(); 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>完成同样的功能，相应的Go代码只需要写成这样：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">conn</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>() 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">stmt</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">stmt</span>.<span style="color:#a6e22e">Close</span>() 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">rset</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">...</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">rset</span>.<span style="color:#a6e22e">Close</span>() 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span> <span style="color:#75715e">// 正常代码</span>
+</span></span></code></pre></div><p>对比两段代码，Go语言处理错误的优势显而易见。当然，其实Go语言带给我们的惊喜还有很多。</p>
+<h3 id="编程哲学">编程哲学
+</h3><p>计算机软件经历了数十年的发展，形成了多种学术流派，有面向过程编程、面向对象编程、
+函数式编程、面向消息编程等，这些思想究竟孰优孰劣，众说纷纭。
+C语言是纯过程式的，这和它产生的历史背景有关。Java语言则是激进的面向对象主义推崇
+者，典型表现是它不能容忍体系里存在孤立的函数。而Go语言没有去否认任何一方，而是用批
+判吸收的眼光，将所有编程思想做了一次梳理，融合众家之长，但时刻警惕特性复杂化，极力维
+持语言特性的简洁，力求小而精。
+从编程范式的角度来说，Go语言是变革派，而不是改良派。
+对于C++、Java和C#等语言为代表的面向对象（OO）思想体系，Go语言总体来说持保守态
+度，有限吸收。
+首先，Go语言反对函数和操作符重载（overload），而C++、Java和C#都允许出现同名函数或
+操作符，只要它们的参数列表不同。虽然重载解决了一小部分面向对象编程（OOP）的问题，但
+同样给这些语言带来了极大的负担。而Go语言有着完全不同的设计哲学，既然函数重载带来了
+负担，并且这个特性并不对解决任何问题有显著的价值，那么Go就不提供它。
+其次，Go语言支持类、类成员方法、类的组合，但反对继承，反对虚函数（virtual function）
+和虚函数重载。确切地说，Go也提供了继承，只不过是采用了组合的文法来提供：</p>
+<pre tabindex="0"><code>type Foo struct { 
+ 	Base 
+ 	... 
+} 
+func (foo *Foo) Bar() { 
+ 	... 
+} 
+</code></pre><p>再次，Go语言也放弃了构造函数（constructor）和析构函数（destructor）。由于Go语言中没
+有虚函数，也就没有vptr，支持构造函数和析构函数就没有太大的价值。本着“如果一个特性
+并不对解决任何问题有显著的价值，那么Go就不提供它”的原则，构造函数和析构函数就这样
+被Go语言的作者们干掉了。
+在放弃了大量的OOP特性后，Go语言送上了一份非常棒的礼物：接口（interface）。你可能
+会说，除了C这么原始的语言外，还有什么语言没有接口呢？是的，多数语言都提供接口，但它
+们的接口都不同于Go语言的接口。
+Go语言中的接口与其他语言最大的一点区别是它的非侵入性。在C++、Java和C#中，为了实
+现一个接口，你需要从该接口继承，具体代码如下：</p>
+<pre tabindex="0"><code>class Foo implements IFoo { // Java文法
+ 	... 
+} 
+class Foo : public IFoo { // C++文法
+ 	... 
+} 
+IFoo* foo = new Foo; 
+在Go语言中，实现类的时候无需从接口派生，具体代码如下：
+type Foo struct { // Go 文法
+ 	... 
+} 
+var foo IFoo = new(Foo) 
+</code></pre><p>只要Foo实现了接口IFoo要求的所有方法，就实现了该接口，可以进行赋值。
+Go语言的非侵入式接口，看似只是做了很小的文法调整，实则影响深远。
+其一，Go语言的标准库再也不需要绘制类库的继承树图。你只需要知道这个类实现了哪些
+方法，每个方法是啥含义就足够了。
+其二，不用再纠结接口需要拆得多细才合理，比如我们实现了File类，它有下面这些方法：</p>
+<pre tabindex="0"><code>Read(buf []byte) (n int, err error) 
+Write(buf []byte) (n int, err error) 
+Seek(off int64, whence int) (pos int64, err error) 
+Close() error 
+</code></pre><p>那么，到底是应该定义一个IFile接口，还是应该定义一系列的IReader、IWriter、
+ISeeker和ICloser接口，然后让File从它们派生好呢？事实上，脱离了实际的用户场景，讨
+论这两个设计哪个更好并无意义。问题在于，实现File类的时候，我怎么知道外部会如何用它
+呢？
+其三，不用为了实现一个接口而专门导入一个包，而目的仅仅是引用其中的某个接口的定义。
+在Go语言中，只要两个接口拥有相同的方法列表，那么它们就是等同的，可以相互赋值，如对
+于以下两个接口，第一个接口：</p>
+<pre tabindex="0"><code>package one 
+type ReadWriter interface { 
+ 	Read(buf [] byte) (n int, err error) 
+ 	Write(buf [] byte) (n int, err error) 
+} 
+第二个接口：
+package two 
+type IStream interface { 
+ 	Write(buf [] byte) (n int, err error) 
+ 	Read(buf [] byte) (n int, err error) 
+} 
+</code></pre><p>这里我们定义了两个接口，一个叫one.ReadWriter，一个叫two.IStream，两者都定义
+了Read()和Write()方法，只是定义的次序相反。one.ReadWriter先定义了Read()再定义
+Write()，而two.IStream反之。
+在Go语言中，这两个接口实际上并无区别，因为：</p>
+<ul>
+<li>任何实现了one.ReadWriter接口的类，均实现了two.IStream；</li>
+<li>任何one.ReadWriter接口对象可赋值给two.IStream，反之亦然；</li>
+<li>在任何地方使用one.ReadWriter接口，与使用two.IStream并无差异。<br>
+所以在Go语言中，为了引用另一个包中的接口而导入这个包的做法是不被推荐的。因为多
+引用一个外部的包，就意味着更多的耦合。
+除了OOP外，近年出现了一些小众的编程哲学，Go语言对这些思想亦有所吸收。例如，Go
+语言接受了函数式编程的一些想法，支持匿名函数与闭包。再如，Go语言接受了以Erlang语言为
+代表的面向消息编程思想，支持goroutine和通道，并推荐使用消息而不是共享内存来进行并发编
+程。总体来说，Go语言是一个非常现代化的语言，精小但非常强大。</li>
+</ul>
+<h2 id="go语言特性">Go语言特性
+</h2><p>Go语言作为一门全新的静态类型开发语言，与当前的开发语言相比具备众多令人兴奋不已
+的新特性。</p>
+<h3 id="自动垃圾回收">自动垃圾回收
+</h3><p>我们可以先看下不支持垃圾回收的语言的资源管理方式，以下为一小段C语言代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() 
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span> 	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> p <span style="color:#f92672">=</span> new <span style="color:#66d9ef">char</span>[<span style="color:#ae81ff">128</span>]; 
+</span></span><span style="display:flex;"><span> 	... <span style="color:#75715e">// 对p指向的内存块进行赋值
+</span></span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">func1</span>(p); <span style="color:#75715e">// 使用内存指针
+</span></span></span><span style="display:flex;"><span> 	delete[] p; 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>各种非预期的原因，比如由于开发者的疏忽导致最后的delete语句没有被调用，都会引发经典而恼人的内存泄露问题。<br>
+假如该函数被调用得非常频繁，那么我们观察该进程执行时，会发现该进程所占用的内存会一直疯长，直至占用所有系统内存并导致程序崩溃，而如果泄露的是系统资源的话，那么后果还会更加严重，最终很有可能导致系统崩溃。</p>
+<p>如果使用Go语言实现，我们就完全不用考虑何时需要释放之前分配的内存的问题，系统会自动帮我们判断，并在合适的时候（比如CPU相对空闲的时候）进行自动垃圾收集工作。</p>
+<h3 id="更丰富的内置类型">更丰富的内置类型
+</h3><ul>
+<li>支持几乎所有语言都支持的简单内置类型（比如整型和浮点型等）</li>
+<li>Go语言也内置了一些比较新的语言中内置的高级类型，比如C#和Java中的数组和字符串。</li>
+<li>除此之外，Go语言还内置了一个对于其他静态类型语言通常用库方式支持的字典类型（map）。</li>
+<li>另外有一个新增的数据类型：数组切片（Slice）。我们可以认为数组切片是一种可动态增长的数组。</li>
+</ul>
+<p>这几种数据结构基本上覆盖了绝大部分的应用场景。</p>
+<h3 id="函数多返回值">函数多返回值
+</h3><p>目前的主流语言中除Python外基本都不支持函数的多返回值功能，不是没有这类需求，可能是语言设计者没有想好该如何提供这个功能，或者认为这个功能会影响语言的美感。</p>
+<p>Go语言革命性地在静态开发语言阵营中率先提供了多返回值功能。<br>
+这个特性让开发者可以从原来用各种比较别扭的方式返回多个值的痛苦中解脱出来，既不用再区分参数列表中哪几个用于输入，哪几个用于输出，也不用再只为了返回多个值而专门定义一个数据结构。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getName</span>()(<span style="color:#a6e22e">firstName</span>, <span style="color:#a6e22e">middleName</span>, <span style="color:#a6e22e">lastName</span>, <span style="color:#a6e22e">nickName</span> <span style="color:#66d9ef">string</span>){ 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;May&#34;</span>, <span style="color:#e6db74">&#34;M&#34;</span>, <span style="color:#e6db74">&#34;Chen&#34;</span>, <span style="color:#e6db74">&#34;Babe&#34;</span> 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>因为返回值都已经有名字，因此各个返回值也可以用如下方式来在不同的位置进行赋值，从
+而提供了极大的灵活性：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getName</span>()(<span style="color:#a6e22e">firstName</span>, <span style="color:#a6e22e">middleName</span>, <span style="color:#a6e22e">lastName</span>, <span style="color:#a6e22e">nickName</span> <span style="color:#66d9ef">string</span>){ 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">firstName</span> = <span style="color:#e6db74">&#34;May&#34;</span> 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">middleName</span> = <span style="color:#e6db74">&#34;M&#34;</span> 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">lastName</span> = <span style="color:#e6db74">&#34;Chen&#34;</span> 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">nickName</span> = <span style="color:#e6db74">&#34;Babe&#34;</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>并不是每一个返回值都必须赋值，没有被明确赋值的返回值将保持默认的空值。而函数的调用相比C/C++语言要简化很多：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">fn</span>, <span style="color:#a6e22e">mn</span>, <span style="color:#a6e22e">ln</span>, <span style="color:#a6e22e">nn</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">getName</span>() 
+</span></span></code></pre></div><p>如果开发者只对该函数其中的某几个返回值感兴趣的话，也可以直接用下划线作为占位符来
+忽略其他不关心的返回值。下面的调用表示调用者只希望接收lastName的值，这样可以避免声
+明完全没用的变量：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">lastName</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">getName</span>()
+</span></span></code></pre></div><h3 id="错误处理">错误处理
+</h3><p>Go语言引入了3个关键字用于标准的错误处理流程，这3个关键字分别为defer、panic和recover。</p>
+<p>整体上而言与C++和Java等语言中的异常捕获机制相比，Go语言的错误处理机制可以大量减少代码量，让开发者也无需仅仅为了程序安全性而添加大量一层套一层的try-catch语句，这对于代码的阅读者和维护者来说也是一件很好的事情。</p>
+<h3 id="匿名函数和闭包">匿名函数和闭包
+</h3><p>Go语言支持常规的匿名函数和闭包，比如下列代码就定义了一个名为f的匿名函数，开发者可以随意对该匿名函数变量进行传递和调用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">f</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> { 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span> 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="类型和接口">类型和接口
+</h3><p>Go语言的类型定义非常接近于C语言中的结构（struct），甚至直接沿用了struct关键字。相比而言，Go语言并没有直接沿袭C++和Java的传统去设计一个超级复杂的类型系统，不支持继承和重载，而只是支持了最基本的类型组合功能。</p>
+<p>巧妙的是，虽然看起来支持的功能过于简洁，细用起来你却会发现，C++和Java使用那些复杂的类型系统实现的功能在Go语言中并不会出现无法表现的情况，这反而让人反思其他语言中引入这些复杂概念的必要性。</p>
+<h3 id="并发编程">并发编程
+</h3><p>Go语言引入了goroutine概念，它使得并发编程变得非常简单。通过使用goroutine而不是裸用操作系统的并发机制，以及使用消息传递来共享内存而不是使用共享内存来通信，Go语言让并发编程变得更加轻盈和安全。</p>
+<p>通过在函数调用前使用关键字go，我们即可让该函数以goroutine方式执行。goroutine是一种比线程更加轻盈、更省资源的协程。Go语言通过系统的线程来多路派遣这些函数的执行，使得每个用go关键字执行的函数可以运行成为一个单位协程。当一个协程阻塞的时候，调度器就会自动把其他协程安排到另外的线程中去执行，从而实现了程序无等待并行化运行。而且调度的开销非常小，一颗CPU调度的规模不下于每秒百万次，这使得我们能够创建大量的goroutine，从而可以很轻松地编写高并发程序，达到我们想要的目的。</p>
+<p>下面我们用一个简单的例子来演示goroutine和channel的使用方式。这是一个并行计算的例子，由两个goroutine进行并行的累加计算，待这两个计算过程都完成后打印计算结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">values</span> [] <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">resultChan</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) { 
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">value</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">values</span> { 
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">sum</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">value</span> 
+</span></span><span style="display:flex;"><span>	} 
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">resultChan</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sum</span> <span style="color:#75715e">// 将计算结果发送到channel中</span>
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() { 
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">values</span> <span style="color:#f92672">:=</span> [] <span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>} 
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">resultChan</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">2</span>) 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">values</span>[:len(<span style="color:#a6e22e">values</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>], <span style="color:#a6e22e">resultChan</span>) 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">values</span>[len(<span style="color:#a6e22e">values</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>:], <span style="color:#a6e22e">resultChan</span>) 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">sum1</span>, <span style="color:#a6e22e">sum2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">resultChan</span>, <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">resultChan</span> <span style="color:#75715e">// 接收结果</span>
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Result:&#34;</span>, <span style="color:#a6e22e">sum1</span>, <span style="color:#a6e22e">sum2</span>, <span style="color:#a6e22e">sum1</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">sum2</span>) 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="反射">反射
+</h3><p>反射（reflection）是在Java语言出现后迅速流行起来的一种概念。通过反射，你可以获取对象类型的详细信息，并可动态操作对象。反射是把双刃剑，功能强大但代码可读性并不理想。若非必要，我们并不推荐使用反射。</p>
+<p>Go语言的反射实现了反射的大部分功能，但没有像Java语言那样内置类型工厂，故而无法做到像Java那样通过类型字符串创建对象实例。在Java中，你可以读取配置并根据类型名称创建对应的类型，这是一种常见的编程手法，但在Go语言中这并不被推荐。</p>
+<h3 id="语言交互性">语言交互性
+</h3><p>由于Go语言与C语言之间的天生联系，Go语言的设计者们自然不会忽略如何重用现有C模块的这个问题，这个功能直接被命名为Cgo。Cgo既是语言特性，同时也是一个工具的名称。</p>
+<p>在Go代码中，可以按Cgo的特定语法混合编写C语言代码，然后Cgo工具可以将这些混合的C代码提取并生成对于C功能的调用包装代码。开发者基本上可以完全忽略这个Go语言和C语言的边界是如何跨越的。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include &lt;stdio.h&gt; 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;C&#34;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;unsafe&#34;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() { 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">cstr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">C</span>.<span style="color:#a6e22e">CString</span>(<span style="color:#e6db74">&#34;Hello, world&#34;</span>) 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">C</span>.<span style="color:#a6e22e">puts</span>(<span style="color:#a6e22e">cstr</span>) 
+</span></span><span style="display:flex;"><span> 	<span style="color:#a6e22e">C</span>.<span style="color:#a6e22e">free</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">cstr</span>)) 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="常用标准库">常用标准库
+</h2><p>Go标准库可以大致按其中库的功能进行以下分类，这个分类比较简单，不求准确，但求能够帮助开发者根据自己模糊的需求更快找到自己需要的包。</p>
+<ul>
+<li>输入输出。
+<ul>
+<li>这个分类包括二进制以及文本格式在屏幕、键盘、文件以及其他设备上的输入输出等，比如二进制文件的读写。对应于此分类的包有bufio、fmt、io、log和flag等，其中flag用于处理命令行参数。</li>
+</ul>
+</li>
+<li>文本处理。
+<ul>
+<li>这个分类包括字符串和文本内容的处理，比如字符编码转换等。对应于此分类的包有encoding、bytes、strings、strconv、text、mime、unicode、regexp、index和path等。其中path用于处理路径字符串。</li>
+</ul>
+</li>
+<li>网络。
+<ul>
+<li>这个分类包括开发网络程序所需要的包，比如Socket编程和网站开发等。对应于此分类的包有：net、http和expvar等。</li>
+</ul>
+</li>
+<li>系统。
+<ul>
+<li>这个分类包含对系统功能的封装，比如对操作系统的交互以及原子性操作等。对应于此分类的包有os、syscall、sync、time和unsafe等。</li>
+</ul>
+</li>
+<li>数据结构与算法。
+<ul>
+<li>对应于此分类的包有math、sort、container、crypto、hash、archive、compress和image等。因为image包里提供的图像编解码都是算法，所以也归入此类。</li>
+</ul>
+</li>
+<li>运行时。
+<ul>
+<li>对应于此分类的包有：runtime、reflect和go等。</li>
+</ul>
+</li>
+</ul>
+<h2 id="最后">最后
+</h2><p>这本书还给我们深入讲解了很多有意思的东西，只有自己用心投入去阅读和享受才能真的有所收获，其中还剖析了音乐播放器、聊天系统、网页相册等实际项目例子&amp;核心源代码，总的来说挺不错的，有兴趣的童鞋尽管认真地去翻阅、去学习、去尝试吧。</p>
+<p>最后，让我们引用作者的话来结束本篇鉴赏吧。</p>
+<pre tabindex="0"><code>在十余年的技术生涯中，我接触过、使用过、喜爱过不同的编程语言，但总体而言，Go语
+言的出现是最让我兴奋的事情。
+
+我个人对未来10年编程语言排行榜的趋势判断如下：
+❤ Java语言的份额继续下滑，并最终被C和Go语言超越；
+❤ C语言将长居编程榜第二的位置，并有望在Go取代Java前重获语言榜第一的宝座；
+❤ Go语言最终会取代Java，居于编程榜之首。
+
+由七牛云存储团队编著的这本书将尽可能展现出Go语言的迷人魅力。希望本书能够让更多
+人理解这门语言，热爱这门语言，让这门优秀的语言能够落到实处，把程序员从以往繁杂的语言
+细节中解放出来，集中精力开发更加优秀的系统软件。
+
+许式伟
+2012年3月7日
+</code></pre><h2 id="关于我">关于我
+</h2><p>name: yison.li<br>
+github: <a class="link" href="https://github.com/yisonli"  target="_blank" rel="noopener"
+    >https://github.com/yisonli</a></p>
+<p><img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/YisonWechat.png"></p>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

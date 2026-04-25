@@ -1,0 +1,202 @@
+baseURL = "https://yison.life/"
+title = "Yison's Blog"
+theme = "hugo-theme-stack"
+
+# Favicon
+favicon = "/favicon.svg"
+
+defaultContentLanguage = "zh"
+hasCJKLanguage = true
+preserveTOC = true
+
+# 多语言配置
+[languages]
+[languages.zh]
+languageName = "简体中文"
+languageCode = "zh-CN"
+weight = 1
+title = "Yison's Blog"
+
+
+# 启用功能
+enableRobotsTXT = true
+enableGitInfo = false
+canCleanUp = true
+
+# 永久链接设置
+[permalinks]
+  posts = "/posts/:slug/"
+
+# 分类设置 (Stack 主题默认已包含 category 和 tag)
+# [taxonomies]
+#   category = "categories"
+#   tag = "tags"
+
+# 作者信息
+[author]
+  name = "Yison"
+  link = "https://github.com/yisonli"
+
+# 菜单设置
+[[menu.main]]
+  identifier = "home"
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  identifier = "posts"
+  name = "文章"
+  url = "/posts/"
+  weight = 2
+  [menu.main.params]
+    icon = "home"
+
+[[menu.main]]
+  identifier = "tags"
+  name = "标签"
+  url = "/tags/"
+  weight = 3
+  [menu.main.params]
+    icon = "tag"
+
+[[menu.main]]
+  identifier = "about"
+  name = "关于"
+  url = "/about/"
+  weight = 4
+  [menu.main.params]
+    icon = "user"
+
+[[menu.main]]
+  identifier = "devtools"
+  name = "工具"
+  url = "/dev_tools/"
+  weight = 5
+  [menu.main.params]
+    icon = "link"
+
+# 社交链接
+[[menu.social]]
+  name = "GitHub"
+  url = "https://github.com/yisonli"
+  [menu.social.params]
+    icon = "brand-github"
+
+[[menu.social]]
+  name = "邮箱"
+  url = "mailto:yisonli@vip.qq.com"
+  [menu.social.params]
+    icon = "mail"
+
+# Stack 主题参数
+[params]
+  # 主内容区域
+  mainSections = ["posts"]
+  
+  # 日期格式
+  since = 2016
+  rssFullContent = true
+  
+  # 排序方式: default 或 lastmod
+  SortBy = "default"
+  
+  # ============================================
+  # 侧边栏配置
+  # ============================================
+  [params.sidebar]
+    compact = false
+    # 设置头像 (放在 static/images/ 目录下)
+    avatar = "/images/author.jpg"
+    subtitle = "后端开发 · 技术笔记"
+    
+    # 固定侧边栏
+    sticky = true
+    
+  # ============================================
+  # 文章配置
+  # ============================================
+  [params.article]
+    headingAnchor = false
+    math = false
+    toc = true
+    readingTime = true
+    breadcrumb = true
+    
+    [params.article.list]
+      showTags = true
+      showCategories = true
+    
+    [params.article.license]
+      enabled = false
+  
+  # ============================================
+  # 日期格式配置
+  # ============================================
+  [params.dateFormat]
+    published = "2006年1月2日"
+    lastUpdated = "2006年1月2日 15:04"
+  
+  # ============================================
+  # 颜色方案
+  # ============================================
+  [params.colorScheme]
+    toggle = true
+    default = "light"  # light, dark, auto
+  
+  # ============================================
+  # 小部件配置
+  # ============================================
+  [params.widgets]
+    homepage = [
+      { type = "search" },
+      { type = "categories", html_class = "widget-col" },
+      { type = "tag-cloud", html_class = "widget-col" },
+    ]
+    page = [
+      { type = "toc" },
+    ]
+  
+  # ============================================
+  # 社交链接
+  # ============================================
+
+  
+  # ============================================
+  # 图片处理
+  # ============================================
+  [params.imageProcessing]
+    autoOrient = false
+    enabled = false  # 禁用图片处理，直接显示原始图片
+
+# 评论配置 (暂时禁用)
+[params.comments]
+  enabled = false
+
+# Footer 配置
+[params.footer]
+  customText = "© 2016-2026 Yison. All rights reserved."
+
+# 高级设置
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  # 允许 HTML
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 6
+
+# 输出设置
+[outputs]
+  home = ["HTML", "RSS"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]
+
+# 隐私设置
+[privacy]
+  [privacy.twitter]
+    disableInline = false
+  [privacy.youtube]
+    privacyEnhanced = true

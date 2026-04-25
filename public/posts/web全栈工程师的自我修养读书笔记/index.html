@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=" 当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。\n但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。\n">
+<title>《Web全栈工程师的自我修养》读书笔记</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="《Web全栈工程师的自我修养》读书笔记">
+<meta property='og:description' content=" 当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。\n但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。\n">
+<meta property='og:url' content='https://yison.life/posts/web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Web前端' /><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="《Web全栈工程师的自我修养》读书笔记">
+<meta name="twitter:description" content=" 当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。\n但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#概念">概念</a></li>
+            <li><a href="#一专多长">一专多长</a></li>
+            <li><a href="#解决问题而不是醉心技术">解决问题，而不是醉心技术</a></li>
+            <li><a href="#web性能优化">Web性能优化</a></li>
+            <li><a href="#重视作品集">重视作品集</a></li>
+            <li><a href="#设计模式">设计模式</a></li>
+            <li><a href="#学习管理">学习管理</a></li>
+            <li><a href="#扩展阅读书单">扩展阅读书单</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+            <img alt="Featured image of post 《Web全栈工程师的自我修养》读书笔记" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-reading.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E8%AF%BB%E4%B9%A6/" style="background-color: hsl(260, 60%, 84%); color: hsl(260, 60%, 15%);">
+                读书
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">《Web全栈工程师的自我修养》读书笔记</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 5 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#概念">概念</a></li>
+            <li><a href="#一专多长">一专多长</a></li>
+            <li><a href="#解决问题而不是醉心技术">解决问题，而不是醉心技术</a></li>
+            <li><a href="#web性能优化">Web性能优化</a></li>
+            <li><a href="#重视作品集">重视作品集</a></li>
+            <li><a href="#设计模式">设计模式</a></li>
+            <li><a href="#学习管理">学习管理</a></li>
+            <li><a href="#扩展阅读书单">扩展阅读书单</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>当我们知道一个“东西”的名字，就会在看到这个“东西”的时候，立马意识到它。<br>
+但是如果我们不知道它的名字，可能一辈子也不会认识它。 这就是约书亚树原理。</p>
+
+    </blockquote>
+<h4 id="概念">概念
+</h4><ul>
+<li>
+<p>全栈工程师（Full-Stack Engineer）：</p>
+<ul>
+<li>一个能处理数据库、服务器、系统工程和客户端的所有工作的工程师。</li>
+</ul>
+</li>
+<li>
+<p>全栈：</p>
+<ul>
+<li>表示为了完成一个项目，所需要的一系列技术的集合。简单来说，全栈工程师就是可以独立完成一个产品的</li>
+<li>能力 + 思维</li>
+</ul>
+</li>
+<li>
+<p>Web开发流程</p>
+<ul>
+<li>产品设计</li>
+<li>交互设计</li>
+<li>视觉设计</li>
+<li>前端开发</li>
+<li>后台开发</li>
+<li>测试</li>
+<li>发布</li>
+</ul>
+</li>
+</ul>
+<h4 id="一专多长">一专多长
+</h4><ul>
+<li>先在一个特定的方向上有比较深入的钻研，然后再将学习目标渐渐推广开来。</li>
+<li>比如先从前端方向入手，掌握了基本的HTML、CSS、JavaScript之后，不要转头向服务器端语言或者App方向发展，而是深入到性能优化、SEO、多种框架、响应式页面等前端细节中去。</li>
+</ul>
+<h4 id="解决问题而不是醉心技术">解决问题，而不是醉心技术
+</h4><ul>
+<li>公司存在的意义就是解决问题，公司要解决用户的问题，而员工要解决公司的问题。</li>
+<li>公司的问题可能是降低成本、扩大用户群、增加成交量、优化性能，等等。</li>
+<li>设计四大原则：对齐、对比、距离和重复。</li>
+</ul>
+<h4 id="web性能优化">Web性能优化
+</h4><ul>
+<li>压缩源码和图片
+<ul>
+<li>JavaScript文件源代码可以采用混淆压缩的方式，CSS文件源代码进行普通压缩，JPG图片可以根据具体质量来压缩为50%到70%，PNG可以使用一些开源压缩软件来压缩，比如24色变成8色、去掉一些PNG格式信息等。</li>
+</ul>
+</li>
+<li>选择合适的图片格式
+<ul>
+<li>如果图片颜色数较多就使用JPG格式，如果图片颜色数较少就使用PNG格式，如果能够通过服务器端判断浏览器支持WebP，那么就使用WebP格式和SVG格式。</li>
+</ul>
+</li>
+<li>合并静态资源
+<ul>
+<li>包括CSS、JavaScript和小图片，减少HTTP请求。</li>
+</ul>
+</li>
+<li>开启服务器端的Gzip压缩
+<ul>
+<li>这对文本资源非常有效，对图片资源则没那么大的压缩比率。</li>
+</ul>
+</li>
+<li>使用CDN
+<ul>
+<li>或者一些公开库使用第三方提供的静态资源地址（比如jQuery、normalize.css）。</li>
+<li>一方面增加并发下载量，另一方面能够和其他网站共享缓存。</li>
+</ul>
+</li>
+<li>延长静态资源缓存时间
+<ul>
+<li>这样，频繁访问网站的访客就能够更快地访问。</li>
+<li>不过，这里要通过修改文件名的方式，确保在资源更新的时候，用户会拉取到最新的内容。</li>
+</ul>
+</li>
+<li>把CSS放在页面头部，把JavaScript放在页面底部</li>
+</ul>
+<h4 id="重视作品集">重视作品集
+</h4><ul>
+<li>作品集（portfolio），是指您个人的项目和作品的集合，一份精心准备的作品集比简历更能说服人。</li>
+</ul>
+<h4 id="设计模式">设计模式
+</h4><ul>
+<li>创建型模式
+<ul>
+<li>单例模式</li>
+<li>工厂方法</li>
+<li>抽象工厂</li>
+<li>建造模式</li>
+<li>原型模式</li>
+<li>对象池模式</li>
+<li>多例模式</li>
+</ul>
+</li>
+<li>结构型模式
+<ul>
+<li>适配器模式</li>
+<li>桥接模式</li>
+<li>组合模式</li>
+<li>装饰模式</li>
+<li>外观模式</li>
+<li>享元模式</li>
+<li>代理模式</li>
+</ul>
+</li>
+<li>行为型模式
+<ul>
+<li>观察者模式</li>
+<li>黑板</li>
+<li>责任链</li>
+<li>命令</li>
+<li>解释器</li>
+<li>迭代器</li>
+<li>中介者</li>
+<li>备忘录</li>
+<li>空对象</li>
+<li>模板方法</li>
+<li>访问者模式</li>
+</ul>
+</li>
+</ul>
+<h4 id="学习管理">学习管理
+</h4><ul>
+<li>在项目最开始做出合理的时间评估</li>
+<li>根据人员的强项来安排任务</li>
+<li>唤起团队对项目成功的渴望</li>
+<li>保障沟通。理想沟通频率每周至少两次。</li>
+</ul>
+<h4 id="扩展阅读书单">扩展阅读书单
+</h4><ul>
+<li>
+<p>【思想类】</p>
+<ul>
+<li>《黑客与画家》（美）保罗·格雷厄姆，人民邮电出版社</li>
+<li>《专业主义》（日）大前研一，中信出版社</li>
+</ul>
+</li>
+<li>
+<p>【商业类】</p>
+<ul>
+<li>《重来：更为简单有效的商业思维》 （美） 贾森·弗里德 / （丹） 戴维·海涅迈尔·汉森，中信出版社</li>
+<li>《精益创业》（美） 埃里克·莱斯，中信出版社</li>
+</ul>
+</li>
+<li>
+<p>【面试类】</p>
+<ul>
+<li>《编程之美：微软技术面试心得》《编程之美》小组，电子工业出版社</li>
+</ul>
+</li>
+<li>
+<p>【企业文化类】</p>
+<ul>
+<li>《打造Facebook》王淮， 印刷工业出版社</li>
+</ul>
+</li>
+<li>
+<p>【个人展示类】</p>
+<ul>
+<li>《您就是极客：软件开发人员生存指南》（美）Michael Lopp，人民邮电出版社</li>
+<li>《代码整洁之道》（美）Robert C. Martin，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【性能优化类】</p>
+<ul>
+<li>《图解HTTP》（日）上野宣，人民邮电出版社</li>
+<li>《高性能网站建设进阶指南》（美）Steve Souders，电子工业出版社</li>
+<li>《网站性能监测与优化》（美）Alistair Croll / Sean Power，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【前端工程师类】</p>
+<ul>
+<li>《精通CSS:高级Web标准解决方案（第2版）》（英）Andy Budd/Simon Collison/Cameron Moll，人民邮电出版社</li>
+<li>《单页Web应用：JavaScript从前端到后端》（美）Michael S. Mikowski /Josh C. Powell，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【服务器类】</p>
+<ul>
+<li>《鸟哥的Linux私房菜.基础学习篇》鸟哥，人民邮电出版社</li>
+<li>《只是为了好玩 : Linux之父林纳斯自传》（美）Linus Torvalds、David Diamond，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【版本控制类】</p>
+<ul>
+<li>《Git版本控制管理》（美）Jon Loeliger/ Matthew McCullough，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【代码艺术类】</p>
+<ul>
+<li>《代码大全》（美）Steve McConnell，电子工业出版社</li>
+<li>《代码的未来》 （日）松本行弘，人民邮电出版社</li>
+<li>《禅与摩托车维修艺术》（美）罗伯特·M.波西格，重庆出版社</li>
+</ul>
+</li>
+<li>
+<p>【设计模式类】</p>
+<ul>
+<li>《设计模式：可复用面向对象软件的基础》（美）Erich Gamma / Richard Helm / Ralph Johnson / John Vlissides，机械工业出版社</li>
+<li>《JavaScript设计模式》 （美）Addy Osmani，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【效率类】</p>
+<ul>
+<li>《软件随想录：程序员部落酋长Joel谈软件》（美）Joel Spolsky，人民邮电出版社</li>
+<li>《卓有成效的程序员》（美）Neal Ford，机械工业出版社</li>
+</ul>
+</li>
+<li>
+<p>【设计类】</p>
+<ul>
+<li>《写给大家看的设计书（第3版）》Robin Williams ，人民邮电出版社</li>
+<li>《写给大家看的设计书：实例与创意》Robin Williams ，人民邮电出版社</li>
+</ul>
+</li>
+<li>
+<p>【修为类】</p>
+<ul>
+<li>《卓有成效的管理者》（美）彼得·德鲁克， 机械工业出版社</li>
+<li>《麦肯锡教我的写作武器》（日）高杉尚孝， 北京联合出版公司·后浪出版公司</li>
+<li>《金字塔原理》（美）巴巴拉·明托，民主与建设出版社</li>
+<li>《安静：内向性格的竞争力》（美）苏珊·凯恩，中信出版社</li>
+</ul>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/web%E5%89%8D%E7%AB%AF/">Web前端</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/web%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 《Web全栈工程师的自我修养》读书笔记" loading="lazy" src="/images/cover-reading.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">《Web全栈工程师的自我修养》读书笔记</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>

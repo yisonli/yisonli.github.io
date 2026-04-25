@@ -1,0 +1,284 @@
+---
+categories:
+- 编程
+date: 2019-12-07
+description: wxmsg - Laravel Admin扩展，用于可视化编辑微信客服消息
+image: /images/cover-programming.svg
+lastmod: 2019-12-07
+tags:
+- Laravel
+- PHP
+- 微信开发
+- Laravel Admin
+title: 微信消息编辑器 - Laravel Admin扩展
+---
+
+> 本文介绍 wxmsg，一个 Laravel Admin 的扩展工具。可视化地编辑待回复的微信消息，最终输出 JSON 格式。
+
+## 简介
+
+这是一个基于 `laravel-admin` 后台框架开发的扩展，可在 Form 表单中进行可视化编辑微信消息。
+
+**功能特点：**
+- 支持多种消息类型（文本、图片、图文、链接、小程序卡片）
+- 消息类型切换自动更新编辑界面
+- 支持多公众号关联
+- 输出标准微信客服消息 JSON 格式
+
+## 截图
+
+> 可访问 [GitHub 仓库](https://github.com/yisonli/wxmsg) 查看完整截图
+
+## 安装
+
+### 使用 Composer 安装
+
+```bash
+composer require yisonli/wxmsg
+```
+
+### 发布资源
+
+```bash
+php artisan vendor:publish --tag=wxmsg-assets
+```
+
+## 基础用法
+
+```php
+<?php
+
+namespace App\\Admin\\Controllers;
+
+use Encore\\Admin\\Controllers\\AdminController;
+use App\\Models\\WechatReply;
+
+class WechatReplyController extends AdminController
+{
+    protected function grid()
+    {
+        $grid = new Grid(new WechatReply());
+        
+        $grid->id('ID');
+        $grid->app_id('公众号');
+        $grid->msgtype('消息类型');
+        $grid->content('回复内容');
+        $grid->created_at('创建时间');
+        $grid->updated_at('更新时间');
+        
+        return $grid;
+    }
+    
+    protected function form()
+    {
+        $form = new Form(new WechatReply());
+        
+        // 选择公众号
+        $form->select('app_id', '公众号')
+            ->options(WechatApp::pluck('name', 'id'))
+            ->rules('required');
+        
+        // 消息类型
+        $form->select('msgtype', '回复消息类型')
+            ->options([
+                'text' => '文本',
+                'image' => '图片',
+                'news' => '图文',
+                'link' => '链接',
+                'miniprogrampage' => '小程序卡片',
+            ])
+            ->rules('required');
+        
+        // 微信消息编辑器
+        $form->wxmsg('content', '回复内容');
+        
+        return $form;
+    }
+}
+```
+
+## 高级用法
+
+### 关联消息类型
+
+当消息类型字段使用自定义定义方式时，可用 `relateTo` 函数进行关联：
+
+```php
+$form->select('app_id', '公众号')
+    ->options($app_list)
+    ->rules('required');
+
+$form->select('msgtype', '回复消息类型')
+    ->options([
+        'text' => '文本',
+        'image' => '图片',
+        'news' => '图文',
+        'link' => '链接',
+        'miniprogrampage' => '小程序卡片',
+    ])
+    ->rules('required');
+
+$form->wxmsg('content', '回复内容')
+    ->relateTo('msgtype', 'app_id');
+```
+
+### 关联多公众号
+
+支持多公众号场景，通过 `selectMedia` 函数选择素材：
+
+```php
+$form->select('app_id', '公众号')
+    ->options($app_list)
+    ->rules('required');
+
+$form->select('msgtype', '回复消息类型')
+    ->options([...])
+    ->rules('required');
+
+$form->wxmsg('content', '回复内容')
+    ->relateTo('msgtype', 'app_id')
+    ->selectMedia('/wechat/reply/medias');
+```
+
+### 实现素材查询 API
+
+在控制器中添加 API 方法：
+
+```php
+<?php
+
+namespace App\\Http\\Controllers\\Admin;
+
+use Illuminate\\Http\\Request;
+use App\\Models\\WechatMedia;
+
+class ReplyController extends Controller
+{
+    /**
+     * 查询素材列表
+     */
+    public function medias(Request $request)
+    {
+        $app_id = $request->get('a');
+        $name = $request->get('q');
+        $type = $request->get('t');
+        
+        $query = WechatMedia::query();
+        
+        if ($app_id) {
+            $query->where('app_id', $app_id);
+        }
+        
+        if ($type) {
+            $query->where('type', $type);
+        }
+        
+        if ($name) {
+            $query->where('name', 'like', "%{$name}%");
+        }
+        
+        $result = $query->paginate(20, ['media_id', 'name', 'url']);
+        
+        $data = $result->map(function ($item) {
+            return [
+                'id' => $item->media_id,
+                'text' => sprintf(
+                    '<img style="max-width:40px;max-height:40px;" src="%s" /> %s',
+                    $item->url,
+                    $item->name
+                ),
+            ];
+        });
+        
+        return response()->json($data);
+    }
+}
+```
+
+添加路由：
+
+```php
+// routes/admin.php
+$router->get('/wechat/reply/medias', 'Wechat\\ReplyController@medias');
+```
+
+## 支持的消息类型
+
+| 类型 | 说明 | JSON 格式 |
+|:---|:---|:---|
+| text | 文本消息 | `{"msgtype":"text","text":{"content":"..."}}` |
+| image | 图片消息 | `{"msgtype":"image","image":{"media_id":"..."}}` |
+| news | 图文消息 | `{"msgtype":"news","news":{"articles":[...]}}` |
+| link | 链接消息 | `{"msgtype":"link","link":{"title":"...","description":"...","url":"...","thumb_url":"..."}}` |
+| miniprogrampage | 小程序卡片 | `{"msgtype":"miniprogrampage","miniprogrampage":{"title":"...","appid":"...","pagepath":"...","thumb_media_id":"..."}}` |
+
+## 生成的 JSON 示例
+
+### 文本消息
+
+```json
+{
+    "msgtype": "text",
+    "text": {
+        "content": "欢迎关注我们的公众号！"
+    }
+}
+```
+
+### 图片消息
+
+```json
+{
+    "msgtype": "image",
+    "image": {
+        "media_id": "MEDIA_ID"
+    }
+}
+```
+
+### 图文消息
+
+```json
+{
+    "msgtype": "news",
+    "news": {
+        "articles": [
+            {
+                "title": "文章标题",
+                "description": "文章描述",
+                "url": "https://example.com/article",
+                "picurl": "https://example.com/image.jpg"
+            }
+        ]
+    }
+}
+```
+
+## 数据库表结构
+
+```sql
+CREATE TABLE `wechat_replies` (
+    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+    `app_id` bigint(20) unsigned NOT NULL COMMENT '公众号ID',
+    `msgtype` varchar(20) NOT NULL COMMENT '消息类型',
+    `content` text NOT NULL COMMENT '消息内容(JSON)',
+    `created_at` timestamp NULL DEFAULT NULL,
+    `updated_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_app_id` (`app_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+## 待开发功能
+
+- [ ] 支持更多消息类型（video、music、msgmenu 等）
+- [ ] 美化操作界面
+- [ ] 提供实时效果预览
+- [ ] 支持消息模板
+
+
+## 参考链接
+
+- [微信公众平台-客服消息](https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html)
+- [Laravel Admin](https://laravel-admin.org/)
+- [wxmsg GitHub](https://github.com/yisonli/wxmsg)

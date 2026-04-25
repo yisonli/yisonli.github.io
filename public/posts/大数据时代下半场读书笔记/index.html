@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=" 今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。\n如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。\n数据战争才刚刚开始，而我们每个人都已身在战场。\n">
+<title>《大数据时代下半场》读书笔记</title>
+
+
+<link rel="canonical" href="https://yison.life/posts/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+
+
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="《大数据时代下半场》读书笔记">
+<meta property='og:description' content=" 今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。\n如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。\n数据战争才刚刚开始，而我们每个人都已身在战场。\n">
+<meta property='og:url' content='https://yison.life/posts/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='Yison&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='大数据' /><meta property='og:image' content='https://yison.life/' />
+<meta name="twitter:title" content="《大数据时代下半场》读书笔记">
+<meta name="twitter:description" content=" 今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。\n如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。\n数据战争才刚刚开始，而我们每个人都已身在战场。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://yison.life/' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        <figure class="site-avatar">
+                <a href="/">
+                    <img src="/images/author.jpg" 
+                        width=""
+                        height=""
+                        class="site-logo"
+                        loading="lazy"
+                        alt="Avatar">
+                </a>
+                
+            </figure>
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Yison&#39;s Blog</a></h1>
+            <h2 class="site-description">后端开发 · 技术笔记</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/yisonli'
+                        
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='mailto:yisonli@vip.qq.com'
+                        
+                        title="邮箱"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                <span>首页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/posts/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>文章</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/dev_tools/' >
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>工具</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav class="toc-nav" id="TableOfContents">
+                
+  <ul>
+    <li><a href="#大数据的三个v">大数据的三个“V”</a></li>
+    <li><a href="#大数据的基本循环">大数据的基本循环</a></li>
+    <li><a href="#大数据与工业革命">大数据与工业革命</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据的智能循环">大数据的智能循环</a></li>
+    <li><a href="#企业变成分析型市场竞争者的过程">企业变成分析型市场竞争者的过程</a></li>
+    <li><a href="#总结-1">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据和开放运动">大数据和“开放运动”</a></li>
+    <li><a href="#德国联邦议会互联网和数字社会研究委员会">德国联邦议会“互联网和数字社会”研究委员会</a></li>
+    <li><a href="#总结-2">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据和企业文化">大数据和企业文化</a></li>
+    <li><a href="#社交软件与企业20">社交软件与企业2.0</a></li>
+    <li><a href="#大数据时代下客户关系的封闭循环">大数据时代下客户关系的封闭循环</a></li>
+    <li><a href="#目标冲突和内部阻力">目标冲突和内部阻力</a></li>
+    <li><a href="#总结-3">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#商业智能的复杂性提高">商业智能的复杂性提高</a></li>
+    <li><a href="#数据质量">数据质量</a></li>
+    <li><a href="#数据分析">数据分析</a></li>
+    <li><a href="#大数据分析法的四个条件因素">大数据分析法的四个条件因素</a></li>
+    <li><a href="#总结-4">总结</a></li>
+  </ul>
+
+            </nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+    <div class="article-image">
+        <a href="/posts/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+            <img alt="Featured image of post 《大数据时代下半场》读书笔记" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="/images/cover-reading.svg">
+        </a>
+    </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+            
+            
+            <a href="/categories/%E8%AF%BB%E4%B9%A6/" style="background-color: hsl(260, 60%, 84%); color: hsl(260, 60%, 15%);">
+                读书
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">《大数据时代下半场》读书笔记</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    
+    
+    
+    <footer class="article-meta">
+        
+            <div class="inline-meta">
+                
+
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                    <time class="article-time--reading">
+                        阅读时长: 9 分钟
+                    </time>
+                
+            </div>
+        
+
+        
+
+        
+    </footer>
+    
+</div>
+
+</header>
+
+    
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                    <span>目录</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                
+  <ul>
+    <li><a href="#大数据的三个v">大数据的三个“V”</a></li>
+    <li><a href="#大数据的基本循环">大数据的基本循环</a></li>
+    <li><a href="#大数据与工业革命">大数据与工业革命</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据的智能循环">大数据的智能循环</a></li>
+    <li><a href="#企业变成分析型市场竞争者的过程">企业变成分析型市场竞争者的过程</a></li>
+    <li><a href="#总结-1">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据和开放运动">大数据和“开放运动”</a></li>
+    <li><a href="#德国联邦议会互联网和数字社会研究委员会">德国联邦议会“互联网和数字社会”研究委员会</a></li>
+    <li><a href="#总结-2">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#大数据和企业文化">大数据和企业文化</a></li>
+    <li><a href="#社交软件与企业20">社交软件与企业2.0</a></li>
+    <li><a href="#大数据时代下客户关系的封闭循环">大数据时代下客户关系的封闭循环</a></li>
+    <li><a href="#目标冲突和内部阻力">目标冲突和内部阻力</a></li>
+    <li><a href="#总结-3">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#商业智能的复杂性提高">商业智能的复杂性提高</a></li>
+    <li><a href="#数据质量">数据质量</a></li>
+    <li><a href="#数据分析">数据分析</a></li>
+    <li><a href="#大数据分析法的四个条件因素">大数据分析法的四个条件因素</a></li>
+    <li><a href="#总结-4">总结</a></li>
+  </ul>
+
+            </nav>
+        </details>
+    </aside>
+    
+
+    <section class="article-content">
+    
+    
+    
+    <blockquote>
+        <p>今天，全世界每天产生的数据可能是过去几个世纪之和。我们在生活中都受到大数据的影响，没有人能被排除在外。每个人本身便是一个数据产品。<br>
+如同所有科技一样，数字都是死的，关键在于运用它的人。大数据在21世纪属于企业资本。大数据的商业价值持续增长，已经成为决定行业话语权与势力消长的兵家必争之地。大数据争夺战上半场主要是收集数据，下半场则转向数据治理、驱动与变现。<br>
+<strong>数据战争才刚刚开始，而我们每个人都已身在战场。</strong></p>
+
+    </blockquote>
+<h1 id="引言">引言
+</h1><h2 id="大数据的三个v">大数据的三个“V”
+</h2><ul>
+<li>1.容量（Volume，这里指数据容量）</li>
+<li>2.速度（Velocity，这里指数据加工和变化动态的速度）</li>
+<li>3.多样性（Variety，这里指数据结构和类型）</li>
+</ul>
+<h2 id="大数据的基本循环">大数据的基本循环
+</h2><p>外环：数据使用者 &ndash;(我们所有人)&ndash;&gt; 数据生产者 &mdash;-&gt; 企业是数据加工者 &mdash;-&gt; 数据使用者<br>
+内环：相互作用的数据 &mdash;-&gt; 观察数据 &mdash;-&gt; 相互作用的数据</p>
+<h2 id="大数据与工业革命">大数据与工业革命
+</h2><p>五个康德拉季耶夫周期：</p>
+<ul>
+<li>1.大约1780 - 1840年：早起机械化；德国工业革命的开端；蒸汽机</li>
+<li>2.大约1840 - 1890年：第二次工业革命；贝塞麦转炉钢和蒸汽船、铁路</li>
+<li>3.大约1890 - 1940年：电子技术和重型机器</li>
+<li>4.大约1940 - 1990年：专用自动仪器（汽车、合成电路、核能、晶体管、计算机）</li>
+<li>5.1990年开始：信息通信技术 —— 康德拉季耶夫周期与“全球化”紧密相连。</li>
+</ul>
+<h2 id="总结">总结
+</h2><ul>
+<li>“大数据现象”并没有一个通用的固定定义。</li>
+<li>第一个定义尝试聚焦于大数据的技术层面，如数据量、变化动态及数据结构和数据等级的差异性。</li>
+<li>大数据是所有生活领域大范围数字化所推动的具有高动态性的效应。</li>
+<li>大数据出现的原因及由此导致的总体主题的多层次性，赋予了“数字革命”持续变化的潜力，并有着深远的社会文化影响。</li>
+<li>大数据与我们每个人都相关，人人都扮演着不同的角色参与其中。</li>
+<li>大数据在21世纪属于企业资本。</li>
+<li>大数据是通过技术、工具和数学的结合，以及恰到好处地使用资本儿发展的，并且大数据的应用工具与其他主题是相互分离的。</li>
+<li>大数据的发展假设了一种不能被人控制的自身动态。</li>
+<li>大数据重要的特点之一便是进行行为分析的可能性，这能够通过新的数据等级及相互影响的数据关系来实现。</li>
+</ul>
+<h1 id="大数据时代的企业战略目标">大数据时代的企业战略目标
+</h1><h2 id="大数据的智能循环">大数据的智能循环
+</h2><ul>
+<li>原始数据的加工
+<ul>
+<li>组织</li>
+<li>协调</li>
+<li>巩固</li>
+<li>丰富</li>
+<li>高级数据</li>
+</ul>
+</li>
+<li>知识生产
+<ul>
+<li>定义分析模式</li>
+<li>阐释成果</li>
+<li>建议行动</li>
+</ul>
+</li>
+<li>行动
+<ul>
+<li>做出决定</li>
+<li>采取措施</li>
+</ul>
+</li>
+<li>反馈
+<ul>
+<li>成果反馈</li>
+</ul>
+</li>
+</ul>
+<h2 id="企业变成分析型市场竞争者的过程">企业变成分析型市场竞争者的过程
+</h2><ul>
+<li>1.战略</li>
+<li>2.集成</li>
+<li>3.智能循环</li>
+<li>4.分析型竞争者</li>
+<li>5.信息主宰者</li>
+</ul>
+<h2 id="总结-1">总结
+</h2><ul>
+<li>企业利用大数据的首要目标即实现产量和销售量的增长，特别是通过大数据分析带来的知识增长来完成这一目标。</li>
+<li>大数据也能显示新的价值创造和新的商业模式的潜力。</li>
+<li>通过注重数据分析产生知识的能力，企业发展成具有分析能力的市场竞争者。</li>
+<li>一个企业作为具有分析能力的市场竞争者，可以通过掌握一个具体领域的信息主宰权和解释权，而使公众接受其商业模式，并且保障一个企业永久占据客观的市场份额。</li>
+<li>在企业内部，各个部门也都在竞争信息主宰权和解释权。</li>
+</ul>
+<h1 id="社会生活中的大数据">社会生活中的大数据
+</h1><h2 id="大数据和开放运动">大数据和“开放运动”
+</h2><ul>
+<li>开放数据</li>
+<li>开放教育</li>
+<li>开放内容</li>
+<li>开放政府</li>
+</ul>
+<h2 id="德国联邦议会互联网和数字社会研究委员会">德国联邦议会“互联网和数字社会”研究委员会
+</h2><p>该委员会的12个工作群体显示了该主题的多层次性</p>
+<ul>
+<li>1.教育和研究</li>
+<li>2.数据保护和个人权益</li>
+<li>3.民主和国家</li>
+<li>4.国际和互联网管理</li>
+<li>5.协同工作、免费软件</li>
+<li>6.文化、媒体和公众</li>
+<li>7.媒体能力</li>
+<li>8.网络中立性</li>
+<li>9.著作权</li>
+<li>10.消费者保护</li>
+<li>11.经济、工作、绿色信息技术</li>
+<li>12.网络入口，结构和安全性</li>
+</ul>
+<h2 id="总结-2">总结
+</h2><ul>
+<li>大数据是自下而上的推动。</li>
+<li>从“自下而上”这个角度看，大数据包含了另一种含义，即技术发展赋予了大数据集中型的结构，与大数据紧密相关的科技在此提供了许多深远的技术可能性。</li>
+<li>从整体上看，大数据是变幻莫测的社会变化产生的一个效应。这种变化是由各个生活领域大规模的数字化推动的，没有人能够全身而退。</li>
+<li>当前关于大数据和世界数字化的公开讨论改变了公众关于互联网使用和隐私保护的意识。</li>
+<li>这种已然改变的意识导致了产生的行为规则和期待也发生了变化，人们扮演着不同的角色，如客户、消费者、员工和公民，如今也向企业和国家机构提出了新的挑战。</li>
+<li>在这个过程中，经济层面上的道德问题也日益获得关注。</li>
+<li>这一系列的主题由于其广泛的社会意义，在更高的政治层面上也日益获得关注。</li>
+<li>该整体状况对于企业内外关系中的相关主题有着直接的影响。</li>
+</ul>
+<h1 id="企业中的数据治理">企业中的数据治理
+</h1><h2 id="大数据和企业文化">大数据和企业文化
+</h2><p>组织文化指的是组织内在的文化价值模式的形成和发展。在企业中这种现象也被称为企业文化</p>
+<ul>
+<li>1.领导方式</li>
+<li>2.员工之间的关系</li>
+<li>3.内部合作的方式（合作模式）</li>
+<li>4.内部沟通（沟通方式）</li>
+<li>5.决策方式</li>
+<li>6.支持合作、沟通和决策的技术基础设施的价值</li>
+<li>7.对于内部矛盾及政治矛盾的处理（争论文化）</li>
+<li>8.与客户、供应方和其他外部合作者的关系</li>
+</ul>
+<h2 id="社交软件与企业20">社交软件与企业2.0
+</h2><p>“社交软件”所指的是软件工具，它通过一个主题将所有的员工进行联合，为企业的某些大事件起到推动和支持作用。<br>
+社交软件的投入使用是体现企业2.0的基本之一，它的目的就在于优化企业内部的团结合作。</p>
+<ul>
+<li>社交与商业一体化</li>
+<li>智能合作</li>
+</ul>
+<h2 id="大数据时代下客户关系的封闭循环">大数据时代下客户关系的封闭循环
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: center">以客户为中心</th>
+          <th style="text-align: center">➡️</th>
+          <th style="text-align: center">数据保护</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">⬆️</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">⬇️</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>客户关系</strong></td>
+          <td style="text-align: center">⬅️</td>
+          <td style="text-align: center"><strong>信任</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+
+    <blockquote>
+        <p>1.88%的互联网用户不愿意自己的网上行为被追踪。<br>
+2.75%的用户希望企业不要备份用户的任何个人数据。</p>
+
+    </blockquote>
+<h2 id="目标冲突和内部阻力">目标冲突和内部阻力
+</h2><ul>
+<li>透明化 VS 不透明化</li>
+<li>结构化 VS 自由度</li>
+</ul>
+<h2 id="总结-3">总结
+</h2><ul>
+<li>企业处于全社会性质变革的中心，这种变革通过生活全方面数字化驱动带来广泛的社会性循环。</li>
+<li>大数据是数字化和这种社会文化变革的技术表现形式，另外由于他们的交互依赖性以及相互的作用共同铸就变革。</li>
+<li>发展固有的文化对企业有直接的影响，它要求企业通过利用现代技术的潜力找到让企业文化适应21世纪商业世界新要求的方法，其关键词就是企业2.0。</li>
+<li>面对由像棱镜门等事件引起的广泛讨论，人们必须站在企业的角度思考是否有必要对这种潜在威胁采取行动。</li>
+<li>像数据保护、个人隐私保护，以及像信任这样的传统价值等方面变得意义重大，同时成为有决定性作用的市场竞争因素。</li>
+</ul>
+<h1 id="大数据不仅仅是商业智能20">大数据不仅仅是商业智能2.0
+</h1><h2 id="商业智能的复杂性提高">商业智能的复杂性提高
+</h2><ul>
+<li>1.新的数据结构
+<ul>
+<li>并不存在“非结构化数据”，数据永远都是结构化的。</li>
+<li>大数据要求不同数据结构的整合，这个过程要求人们对不同层面的数据进行思考。</li>
+</ul>
+</li>
+<li>2.类型化的关键字</li>
+<li>3.新数据等级和存储技术</li>
+</ul>
+<h2 id="数据质量">数据质量
+</h2><ul>
+<li>低数据质量如何产生</li>
+<li>人们应该如何持续得到高质量的数据</li>
+<li>维持高水准的数据质量需要花费多少</li>
+</ul>
+<h2 id="数据分析">数据分析
+</h2><ul>
+<li>描述性分析
+<ul>
+<li>现有的财政数据基础上的月度结算</li>
+</ul>
+</li>
+<li>预测性分析
+<ul>
+<li>现有的措施基础上的销售预测</li>
+</ul>
+</li>
+<li>处方性分析
+<ul>
+<li>描述中长期的未来</li>
+</ul>
+</li>
+</ul>
+<h2 id="大数据分析法的四个条件因素">大数据分析法的四个条件因素
+</h2><ul>
+<li>大数据 —— 大量数据将被分析</li>
+<li>数据挖掘 —— 数学统计学工具将被使用，用以认知大量数据的模式。</li>
+<li>诊断式分析 —— 分析针对于未来不同的时间</li>
+<li>内存 —— 并不一定与大数据分析法有着直接联系</li>
+</ul>
+<h2 id="总结-4">总结
+</h2><ul>
+<li>大数据时代，商业智能的复杂性增加表面上是由技术层面上的数据容量、不同性质的数据结构和数据等级导致的。</li>
+<li>复杂性增加更大程度上是因为专业部门和信息技术需要大幅度协调。在整体战略和具体行为计划的框架下，这是非常必要的，这样数据的多层次性才能得到整体理解。</li>
+<li>战略性基本方针的缺失或者并不独立可能会导致摩擦损失，企业通过忍受高额成本和信息的不透明，投入资源并且建设“阴影信息技术”及“阴影化过程”，以此来弥补可能存在的摩擦损失。</li>
+<li>这种认知必然会导致意义斐然的合作模式的建立，能够连接所有的能力，将现有的资源引向目的。</li>
+<li>这个过程中要注意的是，提高大数据的潜力会导致人们对可测量的企业增值日益期待。这也要求有着不同专业知识背景的所有层次的参与者进行永恒且广泛的相互协调。</li>
+<li>与商业智能相比较，大数据分析法提出了一个新的要求，尤其是所形成的时间维度。</li>
+<li>传统方法的组合，比如数据挖掘，在商业智能中已经广为人知，比如诊断式数据分析，提升了大数据分析法的整体潜力。</li>
+</ul>
+<h1 id="内存">内存
+</h1><ul>
+<li>大数据和内存技术并不一定是紧密相关的，然而在涉及大数据潜力时，者两者常常会被同事列举出来。</li>
+<li>事实上，通过大量数据的实时分析，全新的应用可能诞生于世，这在没有大数据和内存技术时是不可想象的。</li>
+<li>这些可能性位人类的进步提供了巨大的潜力，然而同时也蕴藏着风险。</li>
+</ul>
+<h1 id="大数据对企业的意义">大数据对企业的意义
+</h1><p>1.大数据为企业的应变能力提供支持<br>
+2.大数据可以提高企业与客户沟通的效率<br>
+3.大数据会对企业的管理模式产生一定影响<br>
+4.大数据会对企业的战略产生一定影响</p>
+<ul>
+<li>为了描述企业中有关于大数据的话题，有目的地采取适当措施，需要企业在总体战略中确定不同主题。</li>
+<li>所有大数据活动应当给予主题相进性与商业智能能力中心（BICC）联系在一起，在大数据背景下，商业智能能力中心（BICC）需要继续发展成为数据分析能力中心（DACC）。这并不意味着大数据只是商业智能的拓展，而是尽可能地利用现有的结构。</li>
+<li>目前企业中还没有类似于BICC这样广泛意义上的组织单元，企业应当在大数据多样主题的压力下建立一个数据分析能力中心（DACC），为企业成为分析型市场竞争者提供支持。</li>
+<li>数据分析能力中心（DACC）的一个重要任务就是变革管理和通信管理，在数据分析能力的帮助下研究特定的培训内容。一方面，在整个企业范围内建立对大数据的普遍理解；另一方面，可以在具体的主题例如技术层面或者个人客户数据方面进行相关培训。</li>
+<li>大数据项目管理必须始终坚持使用商业智能的经验，在执行层面建立灵活性。</li>
+<li>实用主义和执行层面的灵活性并不违背战略一致性的要求；相反，这个战略为特定项目实现高自由度创造了前提，从而释放必要的创造力和生产力。</li>
+</ul>
+<h1 id="福兮祸兮">福兮祸兮
+</h1><ul>
+<li>对于一个真正存在的问题，其分析结果会因为增长的数据量、提高的结构复杂性、技术和逻辑上的清晰性儿变得愈加具有解释性。</li>
+<li>大数据需要一次全面的思想转换，因为这些多重结构并且内容复杂的大量数据在很大程度上时缺乏解释的，而涉及企业和社会决策的数据分析应该切合实际。</li>
+<li>这个世界时不可预测的，速度更快、连接更顺畅的IT系统当然能够使得愈加复杂的算法在越来越大的数据库中得以运用，并且也能够对具体问题的解决方面有所帮助。</li>
+<li>在大数据复杂的框架条件下，想要利用一个通过技术推动的、自动化的并且有算法控制的决策来解决现实问题，是不切实际的。</li>
+<li>在全球数字化的趋势下，越来越多方面的复杂性刚刚被人了解并且以数据的方式被存储起来，所以才产生了大数据。或者用另外一种表达方式来说，就是全球数字化正在高速运转并且在不久的将来会更加深入地渗透到人们生活的所有领域。</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-meta article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside>
+    <h2 class="section-title">相关文章</h2>
+    <div class="subsection-list">
+        <div class="article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E4%B8%8B%E5%8D%8A%E5%9C%BA%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+        
+        <div class="article-image">
+            <img alt="Featured image of post 《大数据时代下半场》读书笔记" loading="lazy" src="/images/cover-reading.svg">
+
+        </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">《大数据时代下半场》读书笔记</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Yison&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        
+            © 2016-2026 Yison. All rights reserved. <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="4.0.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+
+
+
+<script type="module">
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script>
+    
+
+            </main>
+        </div>
+        
+<script type="text/javascript" src="/ts/main.acaf849f2b273f6a8368a58b001f336738d0c948d92e79b116467d0c7515f932.js" defer></script>
+
+
+    </body>
+</html>
