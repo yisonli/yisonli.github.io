@@ -20,3 +20,4 @@ resources/
 
 # 独立的 dev_tools 仓库
 dev_tools/
+static/dev_tools/

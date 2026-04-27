@@ -426,12 +426,10 @@ tools:
 
 ### 8.1 相关资源
 
-| 资源 | 链接 |
-|:---|:---|
-| MCP 官方文档 | https://modelcontextprotocol.io |
-| MCP Python SDK | https://github.com/modelcontextprotocol/python-sdk |
-| MiniMax Token Plan | https://platform.minimaxi.com/subscribe/token-plan?code=JnGYGFFOVU&source=article |
-| MiniMax CLI | https://github.com/MiniMax-AI/cli |
+- [MCP 官方文档](https://modelcontextprotocol.io)
+- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+- [MiniMax Token Plan](https://platform.minimaxi.com/subscribe/token-plan?code=JnGYGFFOVU&source=article)
+- [MiniMax CLI](https://github.com/MiniMax-AI/cli)
 
 ### 8.2 常见问题
 
