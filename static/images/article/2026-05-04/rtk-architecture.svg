@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="'Inter','SF Pro Display','Segoe UI',system-ui,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0f1a"/>
+      <stop offset="100%" stop-color="#0d1424"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+    <filter id="glow-cyan">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-emerald">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="round-sm"><rect width="100%" height="100%" rx="6"/></clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <!-- Subtle grid -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="800" fill="url(#grid)" opacity="0.4"/>
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#cyan)" opacity="0.6"/>
+
+  <!-- ==================== TITLE ==================== -->
+  <text x="600" y="52" text-anchor="middle" font-size="22" font-weight="700" fill="#e2e8f0" letter-spacing="6">RTK ARCHITECTURE</text>
+  <text x="600" y="76" text-anchor="middle" font-size="13" fill="#64748b" letter-spacing="2">THREE-LAYER DESIGN FOR TOKEN OPTIMIZATION</text>
+  <!-- Divider -->
+  <line x1="380" y1="90" x2="820" y2="90" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- ==================== LAYER 1: HOOK ==================== -->
+  <!-- Layer label -->
+  <rect x="40" y="110" width="8" height="60" rx="4" fill="url(#cyan)"/>
+  <text x="58" y="132" font-size="11" font-weight="700" fill="#22d3ee" letter-spacing="3">LAYER 1</text>
+  <text x="58" y="152" font-size="16" font-weight="600" fill="#e2e8f0">Hook Interception</text>
+  <text x="58" y="166" font-size="11" fill="#64748b">Transparent command rewriting — AI unaware</text>
+
+  <!-- Flow diagram -->
+  <!-- AI Tool box -->
+  <rect x="80" y="190" width="160" height="50" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="160" y="212" text-anchor="middle" font-size="11" fill="#94a3b8">AI TOOL</text>
+  <text x="160" y="230" text-anchor="middle" font-size="14" font-weight="600" fill="#e2e8f0">git status</text>
+
+  <!-- Arrow 1 -->
+  <line x1="240" y1="215" x2="340" y2="215" stroke="#334155" stroke-width="1.5"/>
+  <polygon points="340,215 332,210 332,220" fill="#334155"/>
+  <text x="290" y="208" text-anchor="middle" font-size="10" fill="#475569">exec</text>
+
+  <!-- Hook box -->
+  <rect x="340" y="185" width="200" height="60" rx="8" fill="#0c2d48" stroke="#22d3ee" stroke-width="1.5" filter="url(#glow-cyan)"/>
+  <text x="440" y="208" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="600">PRETOOLUSE HOOK</text>
+  <text x="440" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">rtk git status</text>
+  <text x="440" y="242" text-anchor="middle" font-size="10" fill="#64748b">auto-rewrite</text>
+
+  <!-- Arrow 2 -->
+  <line x1="540" y1="215" x2="640" y2="215" stroke="#334155" stroke-width="1.5"/>
+  <polygon points="640,215 632,210 632,220" fill="#334155"/>
+
+  <!-- RTK Binary box -->
+  <rect x="640" y="185" width="160" height="60" rx="8" fill="#1a1a2e" stroke="#34d399" stroke-width="1.5"/>
+  <text x="720" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#34d399">RTK Binary</text>
+  <text x="720" y="232" text-anchor="middle" font-size="11" fill="#64748b">execute &amp; filter</text>
+
+  <!-- Arrow 3 (filtered output back) -->
+  <line x1="720" y1="245" x2="720" y2="275" stroke="#334155" stroke-width="1.5"/>
+  <polygon points="720,275 715,267 725,267" fill="#334155"/>
+
+  <!-- Result box -->
+  <rect x="640" y="275" width="160" height="40" rx="8" fill="#0a2e1a" stroke="#34d399" stroke-width="1"/>
+  <text x="720" y="300" text-anchor="middle" font-size="13" font-weight="600" fill="#34d399">✓ Filtered Output</text>
+
+  <!-- Savings badge -->
+  <rect x="830" y="195" width="100" height="36" rx="18" fill="#0a2e1a" stroke="#34d399" stroke-width="1.5"/>
+  <text x="880" y="218" text-anchor="middle" font-size="16" font-weight="800" fill="#34d399">-60~90%</text>
+
+  <!-- ==================== LAYER 2: ROUTER ==================== -->
+  <line x1="60" y1="335" x2="1140" y2="335" stroke="#1e293b" stroke-width="1"/>
+
+  <rect x="40" y="350" width="8" height="60" rx="4" fill="url(#violet)"/>
+  <text x="58" y="372" font-size="11" font-weight="700" fill="#a78bfa" letter-spacing="3">LAYER 2</text>
+  <text x="58" y="392" font-size="16" font-weight="600" fill="#e2e8f0">Command Router</text>
+  <text x="58" y="406" font-size="11" fill="#64748b">Route to specialized handler by command type</text>
+
+  <!-- Router flow -->
+  <!-- Entry -->
+  <rect x="80" y="425" width="140" height="44" rx="8" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="150" y="444" text-anchor="middle" font-size="11" fill="#a78bfa">ENTRY</text>
+  <text x="150" y="460" text-anchor="middle" font-size="13" font-weight="600" fill="#e2e8f0">main.rs</text>
+
+  <!-- Arrow -->
+  <line x1="220" y1="447" x2="290" y2="447" stroke="#334155" stroke-width="1.5"/>
+  <polygon points="290,447 282,442 282,452" fill="#334155"/>
+
+  <!-- Clap parser -->
+  <rect x="290" y="425" width="140" height="44" rx="8" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="360" y="444" text-anchor="middle" font-size="11" fill="#a78bfa">PARSER</text>
+  <text x="360" y="460" text-anchor="middle" font-size="13" font-weight="600" fill="#e2e8f0">Clap CLI</text>
+
+  <!-- Branch arrows -->
+  <line x1="430" y1="437" x2="530" y2="395" stroke="#334155" stroke-width="1.5"/>
+  <line x1="430" y1="447" x2="530" y2="447" stroke="#334155" stroke-width="1.5"/>
+  <line x1="430" y1="457" x2="530" y2="499" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Handler boxes -->
+  <rect x="530" y="375" width="180" height="40" rx="8" fill="#1a1a2e" stroke="#22d3ee" stroke-width="1"/>
+  <text x="620" y="400" text-anchor="middle" font-size="13" font-weight="600" fill="#22d3ee">Git Module</text>
+
+  <rect x="530" y="427" width="180" height="40" rx="8" fill="#1a1a2e" stroke="#34d399" stroke-width="1"/>
+  <text x="620" y="452" text-anchor="middle" font-size="13" font-weight="600" fill="#34d399">Go / Rust / JS Module</text>
+
+  <rect x="530" y="479" width="180" height="40" rx="8" fill="#1a1a2e" stroke="#fbbf24" stroke-width="1"/>
+  <text x="620" y="504" text-anchor="middle" font-size="13" font-weight="600" fill="#fbbf24">TOML Engine</text>
+
+  <!-- Example tags -->
+  <text x="730" y="400" font-size="11" fill="#475569">git status · git diff · git log</text>
+  <text x="730" y="452" font-size="11" fill="#475569">go test · cargo test · jest · pytest</text>
+  <text x="730" y="504" font-size="11" fill="#475569">du · ping · systemctl · curl (60+ built-in)</text>
+
+  <!-- ==================== LAYER 3: FILTER ENGINE ==================== -->
+  <line x1="60" y1="535" x2="1140" y2="535" stroke="#1e293b" stroke-width="1"/>
+
+  <rect x="40" y="550" width="8" height="60" rx="4" fill="url(#emerald)"/>
+  <text x="58" y="572" font-size="11" font-weight="700" fill="#34d399" letter-spacing="3">LAYER 3</text>
+  <text x="58" y="592" font-size="16" font-weight="600" fill="#e2e8f0">Filter Engine</text>
+  <text x="58" y="606" font-size="11" fill="#64748b">Two systems — each optimized for its command class</text>
+
+  <!-- System A: Rust Native -->
+  <rect x="80" y="625" width="500" height="150" rx="10" fill="#0c1a2e" stroke="#22d3ee" stroke-width="1.5"/>
+  <!-- Label -->
+  <rect x="80" y="625" width="120" height="28" rx="10" fill="#22d3ee"/>
+  <text x="140" y="644" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0f1a">SYSTEM A</text>
+  <text x="210" y="644" font-size="12" fill="#22d3ee" font-weight="600">Rust Native Parser</text>
+
+  <!-- System A content -->
+  <text x="100" y="675" font-size="12" fill="#94a3b8">Semantic parsing — structured extraction, not regex</text>
+
+  <text x="100" y="700" font-size="11" fill="#64748b">•</text>
+  <text x="112" y="700" font-size="12" fill="#cbd5e1">NDJSON parse</text>
+  <text x="230" y="700" font-size="11" fill="#475569">→ only keep failures + summary</text>
+
+  <text x="100" y="720" font-size="11" fill="#64748b">•</text>
+  <text x="112" y="720" font-size="12" fill="#cbd5e1">Porcelain parse</text>
+  <text x="238" y="720" font-size="11" fill="#475569">→ group by staged / modified / untracked</text>
+
+  <text x="100" y="740" font-size="11" fill="#64748b">•</text>
+  <text x="112" y="740" font-size="12" fill="#cbd5e1">Compact diff</text>
+  <text x="230" y="740" font-size="11" fill="#475569">→ per-file ±N, hunk truncation, context pruning</text>
+
+  <text x="100" y="760" font-size="11" fill="#64748b">•</text>
+  <text x="112" y="760" font-size="12" fill="#cbd5e1">Success short-circuit</text>
+  <text x="265" y="760" font-size="11" fill="#475569">→ git add → "ok", git push → "ok main"</text>
+
+  <!-- System B: TOML Declarative -->
+  <rect x="600" y="625" width="540" height="150" rx="10" fill="#1a0f2e" stroke="#fbbf24" stroke-width="1.5"/>
+  <!-- Label -->
+  <rect x="600" y="625" width="120" height="28" rx="10" fill="#fbbf24"/>
+  <text x="660" y="644" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0f1a">SYSTEM B</text>
+  <text x="730" y="644" font-size="12" fill="#fbbf24" font-weight="600">TOML Declarative Pipeline</text>
+
+  <!-- 8-stage pipeline -->
+  <text x="620" y="675" font-size="12" fill="#94a3b8">8-stage pipeline — zero code, config only</text>
+
+  <!-- Pipeline boxes -->
+  <rect x="620" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="646" y="709" text-anchor="middle" font-size="10" fill="#94a3b8">strip</text>
+  <text x="646" y="719" text-anchor="middle" font-size="9" fill="#64748b">ansi</text>
+
+  <text x="678" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="688" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="714" y="709" text-anchor="middle" font-size="10" fill="#94a3b8">replace</text>
+
+  <text x="746" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="756" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="782" y="705" text-anchor="middle" font-size="9" fill="#94a3b8">match</text>
+  <text x="782" y="715" text-anchor="middle" font-size="9" fill="#94a3b8">output</text>
+
+  <text x="814" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="822" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="848" y="705" text-anchor="middle" font-size="9" fill="#94a3b8">strip/</text>
+  <text x="848" y="715" text-anchor="middle" font-size="9" fill="#94a3b8">keep</text>
+
+  <text x="880" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="888" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="914" y="709" text-anchor="middle" font-size="10" fill="#94a3b8">truncate</text>
+
+  <text x="946" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="954" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="980" y="709" text-anchor="middle" font-size="10" fill="#94a3b8">head/tail</text>
+
+  <text x="1012" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="1020" y="690" width="52" height="28" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="1046" y="705" text-anchor="middle" font-size="9" fill="#94a3b8">max</text>
+  <text x="1046" y="715" text-anchor="middle" font-size="9" fill="#94a3b8">lines</text>
+
+  <text x="1078" y="709" font-size="12" fill="#334155">→</text>
+
+  <rect x="1086" y="690" width="52" height="28" rx="5" fill="#0a2e1a" stroke="#34d399" stroke-width="1.5"/>
+  <text x="1112" y="709" text-anchor="middle" font-size="10" fill="#34d399">output</text>
+
+  <!-- TOML example -->
+  <text x="620" y="745" font-size="11" fill="#64748b">Example: ping.toml — strip per-packet lines, keep summary only</text>
+  <text x="620" y="762" font-size="11" fill="#64748b">60+ built-in filters · add new commands with zero Rust code</text>
+
+  <!-- ==================== BOTTOM: SAFETY ==================== -->
+  <line x1="60" y1="790" x2="1140" y2="790" stroke="#1e293b" stroke-width="1"/>
+  <text x="600" y="808" text-anchor="middle" font-size="11" fill="#475569">Fail-Safe: if filtering fails → fallback to raw output · tee saves full log on error · &lt;10ms proxy overhead</text>
+</svg>
