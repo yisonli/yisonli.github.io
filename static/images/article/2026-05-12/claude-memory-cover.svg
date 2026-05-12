@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="brain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#533483;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="memory" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#bg)" rx="10"/>
+  
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="400" fill="url(#grid)"/>
+  
+  <!-- Brain icon -->
+  <g transform="translate(100, 80)">
+    <circle cx="80" cy="80" r="70" fill="none" stroke="url(#brain)" stroke-width="3" opacity="0.6"/>
+    <circle cx="80" cy="80" r="50" fill="none" stroke="url(#brain)" stroke-width="2" opacity="0.4"/>
+    <circle cx="80" cy="80" r="30" fill="url(#brain)" opacity="0.3"/>
+    <circle cx="80" cy="80" r="15" fill="#e94560"/>
+    
+    <!-- Neural connections -->
+    <line x1="80" y1="80" x2="40" y2="40" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="120" y2="40" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="40" y2="120" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="120" y2="120" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="80" y2="20" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="80" y2="140" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="20" y2="80" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    <line x1="80" y1="80" x2="140" y2="80" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+    
+    <!-- Dots at connection ends -->
+    <circle cx="40" cy="40" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="120" cy="40" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="40" cy="120" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="120" cy="120" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="80" cy="20" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="80" cy="140" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="20" cy="80" r="4" fill="#e94560" opacity="0.8"/>
+    <circle cx="140" cy="80" r="4" fill="#e94560" opacity="0.8"/>
+  </g>
+  
+  <!-- Memory layers -->
+  <g transform="translate(320, 100)">
+    <!-- Layer 1: CLAUDE.md -->
+    <rect x="0" y="0" width="200" height="45" rx="5" fill="url(#memory)" stroke="#0f3460" stroke-width="2"/>
+    <text x="100" y="28" text-anchor="middle" fill="#e94560" font-family="monospace" font-size="14" font-weight="bold">CLAUDE.md</text>
+    <text x="210" y="28" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="11">你写的</text>
+    
+    <!-- Layer 2: Auto Memory -->
+    <rect x="0" y="60" width="200" height="45" rx="5" fill="url(#memory)" stroke="#0f3460" stroke-width="2"/>
+    <text x="100" y="88" text-anchor="middle" fill="#e94560" font-family="monospace" font-size="14" font-weight="bold">Auto Memory</text>
+    <text x="210" y="88" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="11">AI 写的</text>
+    
+    <!-- Layer 3: Dream -->
+    <rect x="0" y="120" width="200" height="45" rx="5" fill="url(#memory)" stroke="#533483" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="100" y="148" text-anchor="middle" fill="#533483" font-family="monospace" font-size="14" font-weight="bold">autoDream</text>
+    <text x="210" y="148" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="11">梦境整合</text>
+    
+    <!-- Arrows -->
+    <path d="M 100 45 L 100 60" stroke="rgba(255,255,255,0.3)" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <path d="M 100 105 L 100 120" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Timeline -->
+  <g transform="translate(320, 290)">
+    <line x1="0" y1="0" x2="200" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+    
+    <!-- Time points -->
+    <circle cx="0" cy="0" r="6" fill="#e94560"/>
+    <text x="0" y="20" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="10">Per-Turn</text>
+    <text x="0" y="32" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="9">实时</text>
+    
+    <circle cx="100" cy="0" r="6" fill="#533483"/>
+    <text x="100" y="20" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="10">Per-Session</text>
+    <text x="100" y="32" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="9">会话</text>
+    
+    <circle cx="200" cy="0" r="6" fill="#0f3460"/>
+    <text x="200" y="20" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="10">autoDream</text>
+    <text x="200" y="32" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="9">梦境</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" fill="white" font-family="sans-serif" font-size="28" font-weight="bold">Claude Code 的记忆系统</text>
+  
+  <!-- Subtitle -->
+  <text x="400" y="380" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="sans-serif" font-size="14">源码级拆解 | 三层架构 | 梦境整合</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="700" cy="50" r="30" fill="none" stroke="rgba(233,69,96,0.2)" stroke-width="1"/>
+  <circle cx="700" cy="50" r="20" fill="none" stroke="rgba(233,69,96,0.3)" stroke-width="1"/>
+  <circle cx="700" cy="50" r="10" fill="rgba(233,69,96,0.4)"/>
+  
+  <circle cx="750" cy="350" r="20" fill="none" stroke="rgba(83,52,131,0.2)" stroke-width="1"/>
+  <circle cx="750" cy="350" r="10" fill="rgba(83,52,131,0.3)"/>
+</svg>
