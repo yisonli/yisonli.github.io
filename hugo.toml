@@ -129,6 +129,10 @@ canCleanUp = true
     
     [params.article.license]
       enabled = false
+    
+    [params.article.mermaid]
+      darkTheme = "dark"
+      lightTheme = "default"
   
   # ============================================
   # 日期格式配置
