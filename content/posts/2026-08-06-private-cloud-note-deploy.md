@@ -48,7 +48,7 @@ title: 30分钟搞定：从0到1搭建私有云笔记（双方案对比 + 迁移
 - VPS（2核2G足够）+ Docker + Docker Compose
 - 可选：域名 + Nginx + SSL证书
 
-![Joplin官网首页](/assets/joplin-home.png)
+![Joplin官网首页](/images/joplin-home.png)
 *Joplin官网首页示意*
 
 ### 2. 编写 `docker-compose.yml`
@@ -135,7 +135,7 @@ nginx -t && systemctl reload nginx
 
 和Joplin一样，要求更低，1G内存就能跑。
 
-![Trilium官网首页](/assets/trilium-home.png)
+![Trilium官网首页](/images/trilium-home.png)
 *Trilium官网首页示意*
 
 ### 2. 编写 `docker-compose.yml`
