@@ -71,7 +71,7 @@ canCleanUp = true
 [[menu.main]]
   identifier = "devtools"
   name = "工具"
-  url = "/dev_tools/"
+  url = "https://tool.7ys.top/"
   weight = 5
   [menu.main.params]
     icon = "link"
