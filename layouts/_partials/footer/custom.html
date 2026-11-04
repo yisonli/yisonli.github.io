@@ -1,0 +1,8 @@
+{{ if .Site.Params.sitecontent.enabled }}
+<link rel="stylesheet" href="{{ "content/slot.css" | relURL }}">
+<script type="module">
+  import { createContentRuntime } from {{ "content/slot-runtime.js" | relURL | jsonify | safeJS }};
+  const runtime = createContentRuntime({ apiBase: {{ .Site.Params.sitecontent.apiurl | jsonify | safeJS }}, siteId: 'blog' });
+  document.querySelectorAll('[data-sc-slot]').forEach(element => runtime.attach(element, { slotId: element.dataset.scSlot, layout: element.dataset.scLayout }));
+</script>
+{{ end }}

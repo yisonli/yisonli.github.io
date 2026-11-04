@@ -1,0 +1,3 @@
+{{ if and .Context.Site.Params.sitecontent.enabled .Context.IsHome }}
+  {{ partial "sitecontent/slot.html" (dict "Slot" "blog.home.sidebar" "Layout" "side" "Class" "widget sc-slot--side") }}
+{{ end }}

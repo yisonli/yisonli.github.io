@@ -1,0 +1,25 @@
+{{/* Project override of Stack 8e368743: add the optional, configured end-of-post slot. */}}
+<article class="{{ if .Params.image }}has-image {{ end }}main-article">
+    {{ partial "article/components/header" (dict "Page" . "IsList" false) }}
+    {{ if .Scratch.Get "TOCEnabled" }}
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    {{ partial "helper/icon" "chevron-right" }}
+                    <span>{{ T "article.tableOfContents" }}</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">{{ partial "article/components/toc" . | safeHTML }}</nav>
+        </details>
+    </aside>
+    {{ end }}
+    {{ partial "article/components/content" . }}
+    {{ if and .Site.Params.sitecontent.enabled (eq .Section "posts") }}
+      {{ partial "sitecontent/slot.html" (dict "Slot" "blog.article.end" "Layout" "wide" "Class" "sc-article-end") }}
+    {{ end }}
+    {{ partial "article/components/footer" . }}
+    {{ if or .Params.math .Site.Params.article.math }}
+        {{ partialCached "article/components/math.html" . }}
+    {{ end }}
+</article>

@@ -33,7 +33,9 @@ jobs:
           extended: true
 
       - name: Build
-        run: hugo --gc --minify
+        run: hugo --config hugo.toml,config/site-content.toml --gc --minify
+        env:
+          HUGO_PARAMS_SITECONTENT_APIURL: ${{ vars.SITE_CONTENT_API_URL || 'https://content.7ys.top' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

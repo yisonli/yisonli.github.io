@@ -1,0 +1,14 @@
+# Production content integration. Override the origin with repository variable
+# SITE_CONTENT_API_URL in the deployment workflow when using another domain.
+[params.sitecontent]
+enabled = true
+apiurl = "https://content.7ys.top"
+
+[params.widgets]
+homepage = [
+  { type = "search" },
+  { type = "categories", html_class = "widget-col" },
+  { type = "tag-cloud", html_class = "widget-col" },
+  { type = "recommendation" }
+]
+page = [{ type = "toc" }]
